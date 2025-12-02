@@ -7,12 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		126F3946234F4FA6AF9198CD /* libFLAC.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7BE16FDDF0B244F9B2482033 /* libFLAC.dylib */; };
-		16637069ED33416C993B3F33 /* libvorbisenc.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D15D9D8FD73A41239C22359A /* libvorbisenc.dylib */; };
-		1C5C0D5532334E92B583CE3C /* libogg.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 8511C25325C74130AB035BC2 /* libogg.dylib */; };
 		2F7446990DB6B7EA00F9684A /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2F7446970DB6B7EA00F9684A /* MainMenu.xib */; };
-		5024BAC53BE24ED3811E56D2 /* libvorbisenc.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = D15D9D8FD73A41239C22359A /* libvorbisenc.dylib */; };
-		5BB454D976524A6F9AEE0B6C /* libsamplerate.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 188E290D15E4488C99FD9A15 /* libsamplerate.dylib */; };
 		6D06C3D51260575B00A51557 /* AudioFileFLACLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D06C3D41260575B00A51557 /* AudioFileFLACLoader.m */; };
 		6D0C9A47136C398E00E1759B /* Playlist.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6D0C9A49136C398E00E1759B /* Playlist.xib */; };
 		6D1028461286C184006391A4 /* AudirvanaAppIcon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 6D1028451286C184006391A4 /* AudirvanaAppIcon.icns */; };
@@ -20,10 +15,6 @@
 		6D17CCE2136478F100740C02 /* libAudioOutputLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D17CCD61364784100740C02 /* libAudioOutputLib.a */; };
 		6D198F86120DB867006313FC /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D198F85120DB867006313FC /* AudioToolbox.framework */; };
 		6D2AA7BE131AD20000F4D2B0 /* AudirvanaBlackAppIcon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 6D2AA7BD131AD20000F4D2B0 /* AudirvanaBlackAppIcon.icns */; };
-		6D45B35B1350820E0077E721 /* libsndfile.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D45B35A1350820E0077E721 /* libsndfile.dylib */; };
-		6D45B35C135082170077E721 /* libsndfile.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6D45B35A1350820E0077E721 /* libsndfile.dylib */; };
-		6D45B35E135085CC0077E721 /* libtag.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D45B35D135085CC0077E721 /* libtag.dylib */; };
-		6D45B35F135085E40077E721 /* libtag.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6D45B35D135085CC0077E721 /* libtag.dylib */; };
 		6D4AB80F1299B22F00E92F02 /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D4AB80E1299B22F00E92F02 /* Sparkle.framework */; };
 		6D4AB81E1299B2B800E92F02 /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6D4AB80E1299B22F00E92F02 /* Sparkle.framework */; };
 		6D4AB8431299B66600E92F02 /* dsa_pub.pem in Resources */ = {isa = PBXBuildFile; fileRef = 6D4AB8421299B66600E92F02 /* dsa_pub.pem */; };
@@ -112,14 +103,9 @@
 		6DFFED90136CB2A100D0B454 /* SPMediaKeyTap.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DFFED88136CAFA900D0B454 /* SPMediaKeyTap.m */; };
 		770B37ED0679A11B001EADE2 /* Audirvana_DataModel.xcdatamodel in Sources */ = {isa = PBXBuildFile; fileRef = 770B37EC0679A11B001EADE2 /* Audirvana_DataModel.xcdatamodel */; };
 		77C8280E06725ACE000B614F /* Audirvana_AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 77C8280C06725ACE000B614F /* Audirvana_AppDelegate.m */; };
-		7A2654DE77064E6EBFFFDF6A /* libogg.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 8511C25325C74130AB035BC2 /* libogg.dylib */; };
-		7D1EE0562CC14206B8D284AD /* libsamplerate.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 188E290D15E4488C99FD9A15 /* libsamplerate.dylib */; };
-		7FEB2A81B90444EEA01EFA01 /* libvorbis.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = D8D845FE6A2C43FC947B529C /* libvorbis.dylib */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
-		BA1616D8C37C4DED88E87F7A /* libvorbis.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D8D845FE6A2C43FC947B529C /* libvorbis.dylib */; };
-		BD5FFA7FD9B041A0864FC121 /* libFLAC.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 7BE16FDDF0B244F9B2482033 /* libFLAC.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -139,13 +125,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				6D45B35F135085E40077E721 /* libtag.dylib in CopyFiles */,
-				6D45B35C135082170077E721 /* libsndfile.dylib in CopyFiles */,
-				7D1EE0562CC14206B8D284AD /* libsamplerate.dylib in CopyFiles */,
-				BD5FFA7FD9B041A0864FC121 /* libFLAC.dylib in CopyFiles */,
-				1C5C0D5532334E92B583CE3C /* libogg.dylib in CopyFiles */,
-				7FEB2A81B90444EEA01EFA01 /* libvorbis.dylib in CopyFiles */,
-				5024BAC53BE24ED3811E56D2 /* libvorbisenc.dylib in CopyFiles */,
 				6D4AB81E1299B2B800E92F02 /* Sparkle.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -166,7 +145,6 @@
 /* Begin PBXFileReference section */
 		089C165DFE840E0CC02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
-		188E290D15E4488C99FD9A15 /* libsamplerate.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libsamplerate.dylib; sourceTree = "<group>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = Application/main.m; sourceTree = "<group>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
@@ -186,8 +164,6 @@
 		6D17CCDB1364784200740C02 /* AudioOutputLib-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AudioOutputLib-Prefix.pch"; sourceTree = "<group>"; };
 		6D198F85120DB867006313FC /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = /System/Library/Frameworks/AudioToolbox.framework; sourceTree = "<absolute>"; };
 		6D2AA7BD131AD20000F4D2B0 /* AudirvanaBlackAppIcon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = AudirvanaBlackAppIcon.icns; sourceTree = "<group>"; };
-		6D45B35A1350820E0077E721 /* libsndfile.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libsndfile.dylib; sourceTree = "<group>"; };
-		6D45B35D135085CC0077E721 /* libtag.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libtag.dylib; sourceTree = "<group>"; };
 		6D4AB80E1299B22F00E92F02 /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Sparkle.framework; path = extern/Sparkle.framework; sourceTree = "<group>"; };
 		6D4AB8421299B66600E92F02 /* dsa_pub.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = dsa_pub.pem; sourceTree = "<group>"; };
 		6D54ECB6123D73AE009E146F /* PlaylistView_Delegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PlaylistView_Delegate.h; path = Player/PlaylistView_Delegate.h; sourceTree = "<group>"; };
@@ -304,12 +280,8 @@
 		77C82804067257F0000B614F /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
 		77C8280B06725ACE000B614F /* Audirvana_AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Audirvana_AppDelegate.h; path = Application/Audirvana_AppDelegate.h; sourceTree = "<group>"; };
 		77C8280C06725ACE000B614F /* Audirvana_AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Audirvana_AppDelegate.m; path = Application/Audirvana_AppDelegate.m; sourceTree = "<group>"; };
-		7BE16FDDF0B244F9B2482033 /* libFLAC.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libFLAC.dylib; sourceTree = "<group>"; };
-		8511C25325C74130AB035BC2 /* libogg.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libogg.dylib; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Audirvana-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; explicitFileType = text.plist.xml; path = "Audirvana-Info.plist"; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* Audirvana.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Audirvana.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		D15D9D8FD73A41239C22359A /* libvorbisenc.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libvorbisenc.dylib; sourceTree = "<group>"; };
-		D8D845FE6A2C43FC947B529C /* libvorbis.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libvorbis.dylib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -330,13 +302,6 @@
 				6D198F86120DB867006313FC /* AudioToolbox.framework in Frameworks */,
 				6D6001E212902125006B4701 /* IOKit.framework in Frameworks */,
 				6D4AB80F1299B22F00E92F02 /* Sparkle.framework in Frameworks */,
-				6D45B35B1350820E0077E721 /* libsndfile.dylib in Frameworks */,
-				6D45B35E135085CC0077E721 /* libtag.dylib in Frameworks */,
-				5BB454D976524A6F9AEE0B6C /* libsamplerate.dylib in Frameworks */,
-				126F3946234F4FA6AF9198CD /* libFLAC.dylib in Frameworks */,
-				7A2654DE77064E6EBFFFDF6A /* libogg.dylib in Frameworks */,
-				BA1616D8C37C4DED88E87F7A /* libvorbis.dylib in Frameworks */,
-				16637069ED33416C993B3F33 /* libvorbisenc.dylib in Frameworks */,
 				6DFFED8E136CB29200D0B454 /* Carbon.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -642,13 +607,6 @@
 		6DF4A035123B523F00191768 /* lib */ = {
 			isa = PBXGroup;
 			children = (
-				6D45B35D135085CC0077E721 /* libtag.dylib */,
-				6D45B35A1350820E0077E721 /* libsndfile.dylib */,
-				188E290D15E4488C99FD9A15 /* libsamplerate.dylib */,
-				7BE16FDDF0B244F9B2482033 /* libFLAC.dylib */,
-				8511C25325C74130AB035BC2 /* libogg.dylib */,
-				D8D845FE6A2C43FC947B529C /* libvorbis.dylib */,
-				D15D9D8FD73A41239C22359A /* libvorbisenc.dylib */,
 			);
 			path = lib;
 			sourceTree = "<group>";
@@ -962,7 +920,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/extern/lib\"",
+					vcpkg_installed/universal-osx/lib,
 				);
 				PRODUCT_NAME = Audirvana;
 				WRAPPER_EXTENSION = app;
@@ -987,7 +945,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/extern/lib\"",
+					vcpkg_installed/universal-osx/lib,
 				);
 				PRODUCT_NAME = Audirvana;
 				WRAPPER_EXTENSION = app;
@@ -1008,10 +966,11 @@
 				HEADER_SEARCH_PATHS = (
 					/opt/homebrew/include,
 					extern/include,
+				vcpkg_installed/universal-osx/include,
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				ONLY_ACTIVE_ARCH = YES;
-				OTHER_LDFLAGS = "";
+				OTHER_LDFLAGS = "-lFLAC -logg -lvorbis -lvorbisenc -lvorbisfile -lsamplerate -lsndfile -ltag -ltag_c -lz -lopus";
 				SDKROOT = macosx;
 			};
 			name = Debug;
@@ -1029,10 +988,11 @@
 				HEADER_SEARCH_PATHS = (
 					/opt/homebrew/include,
 					extern/include,
+				vcpkg_installed/universal-osx/include,
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				ONLY_ACTIVE_ARCH = NO;
-				OTHER_LDFLAGS = "";
+				OTHER_LDFLAGS = "-lFLAC -logg -lvorbis -lvorbisenc -lvorbisfile -lsamplerate -lsndfile -ltag -ltag_c -lz -lopus";
 				SDKROOT = macosx;
 			};
 			name = Release;
@@ -1049,7 +1009,7 @@
 				GCC_PREFIX_HEADER = "";
 				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				OTHER_LDFLAGS = "";
+				OTHER_LDFLAGS = "-lFLAC -logg -lvorbis -lvorbisenc -lvorbisfile -lsamplerate -lsndfile -ltag -ltag_c -lz -lopus";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 			};
@@ -1064,7 +1024,7 @@
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
-				OTHER_LDFLAGS = "";
+				OTHER_LDFLAGS = "-lFLAC -logg -lvorbis -lvorbisenc -lvorbisfile -lsamplerate -lsndfile -ltag -ltag_c -lz -lopus";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 			};
