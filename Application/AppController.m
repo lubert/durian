@@ -111,10 +111,6 @@
 
 	[parentWindow setStyleMask:NSBorderlessWindowMask|NSMiniaturizableWindowMask];
 	[parentWindow setOpaque:NO];
-	if (uiSkinTheme == kAUDUISilverTheme)
-		[parentWindow setBackgroundColor:[NSColor colorWithPatternImage:[NSImage imageNamed:@"Silver_PlayerWin_mainWindowBackground.png"]]];
-	else
-		[parentWindow setBackgroundColor:[NSColor colorWithPatternImage:[NSImage imageNamed:@"Black_PlayerWin_mainWindowBackground.png"]]];
 
 	audioOut = [[AudioOutput alloc] initWithController:self];
 
@@ -328,8 +324,7 @@
 	[nc addObserver:self selector:@selector(handleUpdateMediaKeysUse:)
 			   name:AUDMediaKeysUseChangeNotification object:nil];
 
-	if (uiSkinTheme != kAUDUISilverTheme)
-		[self handleUpdateUISkinTheme:nil];
+	[self handleUpdateUISkinTheme:nil];
 }
 
 - (void)dealloc
@@ -1689,7 +1684,9 @@
 	switch ([[NSUserDefaults standardUserDefaults] integerForKey:AUDUISkinTheme]) {
 		case kAUDUIBlackTheme:
 		{
-			[parentWindow setBackgroundColor:[NSColor colorWithPatternImage:[NSImage imageNamed:@"Black_PlayerWin_mainWindowBackground.png"]]];
+			[parentWindow setBackgroundColor:[NSColor clearColor]];
+			[[parentWindow contentView] setWantsLayer:YES];
+			[[parentWindow contentView] layer].contents = [NSImage imageNamed:@"Black_PlayerWin_mainWindowBackground.png"];
 
 			NSImage *iconImage = [NSImage imageNamed:@"AudirvanaBlackAppIcon"];
             [NSApp setApplicationIconImage:iconImage];
@@ -1758,7 +1755,9 @@
 		case kAUDUISilverTheme:
 		default:
 		{
-			[parentWindow setBackgroundColor:[NSColor colorWithPatternImage:[NSImage imageNamed:@"Silver_PlayerWin_mainWindowBackground.png"]]];
+			[parentWindow setBackgroundColor:[NSColor clearColor]];
+			[[parentWindow contentView] setWantsLayer:YES];
+			[[parentWindow contentView] layer].contents = [NSImage imageNamed:@"Silver_PlayerWin_mainWindowBackground.png"];
 
 			NSImage *iconImage = [NSImage imageNamed:@"AudirvanaAppIcon"];
             [NSApp setApplicationIconImage:iconImage];
