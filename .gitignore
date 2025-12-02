@@ -1,3 +1,6 @@
 *.DS_Store
 
 build
+
+# vcpkg installed packages (generated from vcpkg.json manifest)
+vcpkg_installed/

@@ -1,0 +1,17 @@
+// vcpkg configuration for Xcode
+// This file configures the project to use vcpkg-installed universal binaries
+//
+// Usage: Reference this file in your Xcode project's build settings:
+// Project > Info > Configurations > Set "Based on configuration file"
+
+// vcpkg paths (relative to project root)
+VCPKG_INSTALLED_DIR = $(PROJECT_DIR)/vcpkg_installed/universal-osx
+
+// Header search paths - add vcpkg includes
+HEADER_SEARCH_PATHS = $(inherited) $(VCPKG_INSTALLED_DIR)/include
+
+// Library search paths - add vcpkg libs
+LIBRARY_SEARCH_PATHS = $(inherited) $(VCPKG_INSTALLED_DIR)/lib $(VCPKG_INSTALLED_DIR)/debug/lib
+
+// Link against vcpkg static libraries
+OTHER_LDFLAGS = $(inherited) -lFLAC -logg -lvorbis -lvorbisenc -lvorbisfile -lsamplerate -lsndfile -ltag -ltag_c

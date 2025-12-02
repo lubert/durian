@@ -502,12 +502,12 @@ using namespace std;
 			[mFileMetadata setObject:[NSNumber numberWithInt:trackNumber]
 							  forKey:[NSString stringWithUTF8String: kAFInfoDictionary_TrackNumber]];
 
-		if (!tag->itemMap().isEmpty() && tag->contains("\251wrt")) {
+		if (tag->contains("\251wrt")) {
 			[mFileMetadata setObject:[NSString stringWithUTF8String:tag->item("\251wrt").toStringList().toString().toCString(true)]
 							  forKey:[NSString stringWithUTF8String: kAFInfoDictionary_Composer]];
 		}
 
-		if (!tag->itemMap().isEmpty() && tag->contains("covr")) {
+		if (tag->contains("covr")) {
 			TagLib::MP4::CoverArtList coverartlist = tag->item("covr").toCoverArtList();
 			if (!coverartlist.isEmpty()) {
 				NSImage	*albumArt = [[NSImage alloc] initWithData:[NSData dataWithBytes:coverartlist.front().data().data() length:coverartlist.front().data().size()]];

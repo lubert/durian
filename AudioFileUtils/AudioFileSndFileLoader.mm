@@ -672,8 +672,8 @@ NextInputPosition:(SInt64*)nextInputPosition
 
 	TagLib::RIFF::WAV::File wavfile(filePathStr, false);
 
-	if (wavfile.isValid() && wavfile.ID3v2Tag() ) {
-		TagLib::ID3v2::Tag *tag = wavfile.ID3v2Tag();
+	if (wavfile.isValid() && wavfile.tag() ) {
+		TagLib::ID3v2::Tag *tag = dynamic_cast<TagLib::ID3v2::Tag *>(wavfile.tag());
 		TagLib::String str;
 		unsigned int trackNumber;
 

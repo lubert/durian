@@ -22,7 +22,7 @@
 
 #import "AudioFileLoader.h"
 #include <FLAC/stream_decoder.h>
-#include <samplerate/samplerate.h>
+#include <samplerate.h>
 
 @interface AudioFileFLACLoader : AudioFileLoader {
 	FLAC__StreamDecoder *mFLACStreamDecoder;

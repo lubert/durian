@@ -21,8 +21,8 @@
 
 #import "AudioFileLoader.h"
 
-#include <sndfile/sndfile.h>
-#include <samplerate/samplerate.h>
+#include <sndfile.h>
+#include <samplerate.h>
 
 @interface AudioFileSndFileLoader : AudioFileLoader {
 	SNDFILE *mSndFileRef;
