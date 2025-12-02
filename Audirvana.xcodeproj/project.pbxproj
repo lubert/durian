@@ -18,8 +18,22 @@
 		6D45B35B1350820E0077E721 /* libsndfile.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D45B35A1350820E0077E721 /* libsndfile.dylib */; };
 		6D45B35C135082170077E721 /* libsndfile.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6D45B35A1350820E0077E721 /* libsndfile.dylib */; };
 		6D45B35E135085CC0077E721 /* libtag.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D45B35D135085CC0077E721 /* libtag.dylib */; };
+		188E290D15E4488C99FD9A15 /* libsamplerate.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libsamplerate.dylib; sourceTree = "<group>"; };
+		7BE16FDDF0B244F9B2482033 /* libFLAC.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libFLAC.dylib; sourceTree = "<group>"; };
+		8511C25325C74130AB035BC2 /* libogg.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libogg.dylib; sourceTree = "<group>"; };
+		D8D845FE6A2C43FC947B529C /* libvorbis.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libvorbis.dylib; sourceTree = "<group>"; };
+		D15D9D8FD73A41239C22359A /* libvorbisenc.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libvorbisenc.dylib; sourceTree = "<group>"; };
 		6D45B35F135085E40077E721 /* libtag.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6D45B35D135085CC0077E721 /* libtag.dylib */; };
-		6D49A8EE1285CF2E003B8D97 /* libsamplerate.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D49A8ED1285CF2E003B8D97 /* libsamplerate.a */; };
+		5BB454D976524A6F9AEE0B6C /* libsamplerate.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 188E290D15E4488C99FD9A15 /* libsamplerate.dylib */; };
+		7D1EE0562CC14206B8D284AD /* libsamplerate.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 188E290D15E4488C99FD9A15 /* libsamplerate.dylib */; };
+		126F3946234F4FA6AF9198CD /* libFLAC.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7BE16FDDF0B244F9B2482033 /* libFLAC.dylib */; };
+		BD5FFA7FD9B041A0864FC121 /* libFLAC.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 7BE16FDDF0B244F9B2482033 /* libFLAC.dylib */; };
+		7A2654DE77064E6EBFFFDF6A /* libogg.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 8511C25325C74130AB035BC2 /* libogg.dylib */; };
+		1C5C0D5532334E92B583CE3C /* libogg.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 8511C25325C74130AB035BC2 /* libogg.dylib */; };
+		BA1616D8C37C4DED88E87F7A /* libvorbis.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D8D845FE6A2C43FC947B529C /* libvorbis.dylib */; };
+		7FEB2A81B90444EEA01EFA01 /* libvorbis.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = D8D845FE6A2C43FC947B529C /* libvorbis.dylib */; };
+		16637069ED33416C993B3F33 /* libvorbisenc.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D15D9D8FD73A41239C22359A /* libvorbisenc.dylib */; };
+		5024BAC53BE24ED3811E56D2 /* libvorbisenc.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = D15D9D8FD73A41239C22359A /* libvorbisenc.dylib */; };
 		6D4AB80F1299B22F00E92F02 /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D4AB80E1299B22F00E92F02 /* Sparkle.framework */; };
 		6D4AB81E1299B2B800E92F02 /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6D4AB80E1299B22F00E92F02 /* Sparkle.framework */; };
 		6D4AB8431299B66600E92F02 /* dsa_pub.pem in Resources */ = {isa = PBXBuildFile; fileRef = 6D4AB8421299B66600E92F02 /* dsa_pub.pem */; };
@@ -103,10 +117,6 @@
 		6DF17B3A126984A900051593 /* PreferenceController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DF17B39126984A900051593 /* PreferenceController.m */; };
 		6DF17B3D1269857800051593 /* Preferences.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6DF17B3B1269857800051593 /* Preferences.xib */; };
 		6DF49FE3123B50FC00191768 /* AudioFileSndFileLoader.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6DF49FE2123B50FC00191768 /* AudioFileSndFileLoader.mm */; };
-		6DF4A038123B523F00191768 /* libFLAC.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DF4A036123B523F00191768 /* libFLAC.a */; };
-		6DF4A0B5123B609A00191768 /* libogg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DF4A0B3123B609A00191768 /* libogg.a */; };
-		6DF4A0B6123B609A00191768 /* libvorbis.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DF4A0B4123B609A00191768 /* libvorbis.a */; };
-		6DF4A0BC123B60BB00191768 /* libvorbisenc.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DF4A0BB123B60BB00191768 /* libvorbisenc.a */; };
 		6DFFED8E136CB29200D0B454 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DFFED8D136CB29200D0B454 /* Carbon.framework */; };
 		6DFFED8F136CB29D00D0B454 /* NSObject+SPInvocationGrabbing.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DFFED8B136CB21600D0B454 /* NSObject+SPInvocationGrabbing.m */; };
 		6DFFED90136CB2A100D0B454 /* SPMediaKeyTap.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DFFED88136CAFA900D0B454 /* SPMediaKeyTap.m */; };
@@ -136,6 +146,11 @@
 			files = (
 				6D45B35F135085E40077E721 /* libtag.dylib in CopyFiles */,
 				6D45B35C135082170077E721 /* libsndfile.dylib in CopyFiles */,
+				7D1EE0562CC14206B8D284AD /* libsamplerate.dylib in CopyFiles */,
+				BD5FFA7FD9B041A0864FC121 /* libFLAC.dylib in CopyFiles */,
+				1C5C0D5532334E92B583CE3C /* libogg.dylib in CopyFiles */,
+				7FEB2A81B90444EEA01EFA01 /* libvorbis.dylib in CopyFiles */,
+				5024BAC53BE24ED3811E56D2 /* libvorbisenc.dylib in CopyFiles */,
 				6D4AB81E1299B2B800E92F02 /* Sparkle.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -177,7 +192,6 @@
 		6D2AA7BD131AD20000F4D2B0 /* AudirvanaBlackAppIcon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = AudirvanaBlackAppIcon.icns; sourceTree = "<group>"; };
 		6D45B35A1350820E0077E721 /* libsndfile.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libsndfile.dylib; sourceTree = "<group>"; };
 		6D45B35D135085CC0077E721 /* libtag.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libtag.dylib; sourceTree = "<group>"; };
-		6D49A8ED1285CF2E003B8D97 /* libsamplerate.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libsamplerate.a; sourceTree = "<group>"; };
 		6D4AB80E1299B22F00E92F02 /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Sparkle.framework; path = extern/Sparkle.framework; sourceTree = "<group>"; };
 		6D4AB8421299B66600E92F02 /* dsa_pub.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = dsa_pub.pem; sourceTree = "<group>"; };
 		6D54ECB6123D73AE009E146F /* PlaylistView_Delegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PlaylistView_Delegate.h; path = Player/PlaylistView_Delegate.h; sourceTree = "<group>"; };
@@ -287,10 +301,6 @@
 		6DF17B3C1269857800051593 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/Preferences.xib; sourceTree = "<group>"; };
 		6DF49FE1123B50FC00191768 /* AudioFileSndFileLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AudioFileSndFileLoader.h; path = AudioFileUtils/AudioFileSndFileLoader.h; sourceTree = "<group>"; };
 		6DF49FE2123B50FC00191768 /* AudioFileSndFileLoader.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AudioFileSndFileLoader.mm; path = AudioFileUtils/AudioFileSndFileLoader.mm; sourceTree = "<group>"; };
-		6DF4A036123B523F00191768 /* libFLAC.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libFLAC.a; sourceTree = "<group>"; };
-		6DF4A0B3123B609A00191768 /* libogg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libogg.a; sourceTree = "<group>"; };
-		6DF4A0B4123B609A00191768 /* libvorbis.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libvorbis.a; sourceTree = "<group>"; };
-		6DF4A0BB123B60BB00191768 /* libvorbisenc.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libvorbisenc.a; sourceTree = "<group>"; };
 		6DFFED88136CAFA900D0B454 /* SPMediaKeyTap.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SPMediaKeyTap.m; path = withSource/SPMediaKeyTap.m; sourceTree = "<group>"; };
 		6DFFED8B136CB21600D0B454 /* NSObject+SPInvocationGrabbing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSObject+SPInvocationGrabbing.m"; path = "withSource/NSObject+SPInvocationGrabbing.m"; sourceTree = "<group>"; };
 		6DFFED8D136CB29200D0B454 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = System/Library/Frameworks/Carbon.framework; sourceTree = SDKROOT; };
@@ -318,15 +328,15 @@
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
 				6D7A5D1812085DC900007F5D /* CoreAudio.framework in Frameworks */,
 				6D198F86120DB867006313FC /* AudioToolbox.framework in Frameworks */,
-				6DF4A038123B523F00191768 /* libFLAC.a in Frameworks */,
-				6DF4A0B5123B609A00191768 /* libogg.a in Frameworks */,
-				6DF4A0B6123B609A00191768 /* libvorbis.a in Frameworks */,
-				6DF4A0BC123B60BB00191768 /* libvorbisenc.a in Frameworks */,
-				6D49A8EE1285CF2E003B8D97 /* libsamplerate.a in Frameworks */,
 				6D6001E212902125006B4701 /* IOKit.framework in Frameworks */,
 				6D4AB80F1299B22F00E92F02 /* Sparkle.framework in Frameworks */,
 				6D45B35B1350820E0077E721 /* libsndfile.dylib in Frameworks */,
 				6D45B35E135085CC0077E721 /* libtag.dylib in Frameworks */,
+				5BB454D976524A6F9AEE0B6C /* libsamplerate.dylib in Frameworks */,
+				126F3946234F4FA6AF9198CD /* libFLAC.dylib in Frameworks */,
+				7A2654DE77064E6EBFFFDF6A /* libogg.dylib in Frameworks */,
+				BA1616D8C37C4DED88E87F7A /* libvorbis.dylib in Frameworks */,
+				16637069ED33416C993B3F33 /* libvorbisenc.dylib in Frameworks */,
 				6DFFED8E136CB29200D0B454 /* Carbon.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -634,11 +644,11 @@
 			children = (
 				6D45B35D135085CC0077E721 /* libtag.dylib */,
 				6D45B35A1350820E0077E721 /* libsndfile.dylib */,
-				6D49A8ED1285CF2E003B8D97 /* libsamplerate.a */,
-				6DF4A0BB123B60BB00191768 /* libvorbisenc.a */,
-				6DF4A0B3123B609A00191768 /* libogg.a */,
-				6DF4A0B4123B609A00191768 /* libvorbis.a */,
-				6DF4A036123B523F00191768 /* libFLAC.a */,
+				188E290D15E4488C99FD9A15 /* libsamplerate.dylib */,
+				7BE16FDDF0B244F9B2482033 /* libFLAC.dylib */,
+				8511C25325C74130AB035BC2 /* libogg.dylib */,
+				D8D845FE6A2C43FC947B529C /* libvorbis.dylib */,
+				D15D9D8FD73A41239C22359A /* libvorbisenc.dylib */,
 			);
 			path = lib;
 			sourceTree = "<group>";
@@ -934,7 +944,7 @@
 		26FC0A850875C7B200E6366F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				ARCHS = arm64;
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -942,14 +952,15 @@
 				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Audirvana_Prefix.pch;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "Audirvana-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"@executable_path/../Frameworks",
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/extern/lib\"",
@@ -962,20 +973,21 @@
 		26FC0A860875C7B200E6366F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				ARCHS = arm64;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/extern\"",
 				);
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Audirvana_Prefix.pch;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "Audirvana-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"@executable_path/../Frameworks",
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/extern/lib\"",
@@ -988,46 +1000,41 @@
 		26FC0A890875C7B200E6366F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				ARCHS = arm64;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_UNROLL_LOOPS = YES;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_CHECK_SWITCH_STATEMENTS = YES;
 				GCC_WARN_SIGN_COMPARE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = extern/include;
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				HEADER_SEARCH_PATHS = "/opt/homebrew/include extern/include";
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "";
 				SDKROOT = macosx;
-				VALID_ARCHS = "x86_64 i386";
+				VALID_ARCHS = arm64;
 			};
 			name = Debug;
 		};
 		26FC0A8A0875C7B200E6366F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
-				GCC_AUTO_VECTORIZATION = YES;
+				ARCHS = arm64;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_ENABLE_SSE3_EXTENSIONS = YES;
-				GCC_ENABLE_SUPPLEMENTAL_SSE3_INSTRUCTIONS = YES;
 				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_UNROLL_LOOPS = YES;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_SIGN_COMPARE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = extern/include;
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				HEADER_SEARCH_PATHS = "/opt/homebrew/include extern/include";
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = "";
 				SDKROOT = macosx;
-				VALID_ARCHS = "x86_64 i386";
+				VALID_ARCHS = arm64;
 			};
 			name = Release;
 		};
@@ -1035,7 +1042,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				ARCHS = arm64;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
@@ -1044,7 +1051,6 @@
 				GCC_PREFIX_HEADER = "";
 				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -1055,13 +1061,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				ARCHS = arm64;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;

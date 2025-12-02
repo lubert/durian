@@ -1,6 +1,7 @@
 // Copyright (c) 2010 Spotify AB
 #import "SPMediaKeyTap.h"
 #import "NSObject+SPInvocationGrabbing.h" // https://gist.github.com/511181, in submodule
+#import <ApplicationServices/ApplicationServices.h>
 
 @interface SPMediaKeyTap ()
 -(BOOL)shouldInterceptMediaKeyEvents;
@@ -65,6 +66,39 @@ static CGEventRef tapEventCallback(CGEventTapProxy proxy, CGEventType type, CGEv
 	[self setShouldInterceptMediaKeyEvents:YES];
 
     if (!_eventPort) {
+        // Check if we have accessibility permissions (required on macOS 10.9+)
+        // On macOS 10.14+, AXIsProcessTrusted() is the recommended way to check
+        BOOL hasPermission = NO;
+
+        // Try to check accessibility permissions
+        if (&AXIsProcessTrusted != NULL) {
+            hasPermission = AXIsProcessTrusted();
+        }
+
+        if (!hasPermission) {
+            NSLog(@"Media key support requires Accessibility permissions.");
+            NSLog(@"Please grant access in System Settings > Privacy & Security > Accessibility");
+
+            // Show a user-friendly alert (non-blocking)
+            dispatch_async(dispatch_get_main_queue(), ^{
+                NSAlert *alert = [[NSAlert alloc] init];
+                [alert setMessageText:@"Accessibility Permission Required"];
+                [alert setInformativeText:@"Audirvana needs Accessibility permission to support media keys (play/pause, etc.).\n\nYou can grant permission in System Settings > Privacy & Security > Accessibility.\n\nThe app will work normally, but media key support will be disabled."];
+                [alert addButtonWithTitle:@"Open System Settings"];
+                [alert addButtonWithTitle:@"Continue Without Media Keys"];
+                [alert setAlertStyle:NSAlertStyleWarning];
+
+                NSModalResponse response = [alert runModal];
+                if (response == NSAlertFirstButtonReturn) {
+                    // Open System Settings to Accessibility pane
+                    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility"]];
+                }
+                [alert release];
+            });
+
+            return; // Gracefully skip media key setup
+        }
+
         // Add an event tap to intercept the system defined media key events
         _eventPort = CGEventTapCreate(kCGSessionEventTap,
                                       kCGHeadInsertEventTap,
@@ -72,10 +106,19 @@ static CGEventRef tapEventCallback(CGEventTapProxy proxy, CGEventType type, CGEv
                                       CGEventMaskBit(NX_SYSDEFINED),
                                       tapEventCallback,
                                       self);
-        assert(_eventPort != NULL);
+
+        if (_eventPort == NULL) {
+            NSLog(@"Warning: Failed to create event tap for media keys.");
+            return;
+        }
 
         _eventPortSource = CFMachPortCreateRunLoopSource(kCFAllocatorSystemDefault, _eventPort, 0);
-        assert(_eventPortSource != NULL);
+        if (_eventPortSource == NULL) {
+            NSLog(@"Warning: Failed to create run loop source for media keys.");
+            CFRelease(_eventPort);
+            _eventPort = NULL;
+            return;
+        }
 
         // Let's do this in a separate thread so that a slow app doesn't lag the event tap
         [NSThread detachNewThreadSelector:@selector(eventTapThread) toTarget:self withObject:nil];
