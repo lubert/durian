@@ -257,7 +257,7 @@
                         </textFieldCell>
                     </textField>
                     <imageView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="821">
-                        <rect key="frame" x="668" y="110" width="15" height="10"/>
+                        <rect key="frame" x="667" y="109" width="15" height="10"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="Silver_PlayerWin_integermode_off" id="822"/>
                     </imageView>
