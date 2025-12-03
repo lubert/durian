@@ -10,11 +10,11 @@
 		2F7446990DB6B7EA00F9684A /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2F7446970DB6B7EA00F9684A /* MainMenu.xib */; };
 		6D06C3D51260575B00A51557 /* AudioFileFLACLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D06C3D41260575B00A51557 /* AudioFileFLACLoader.m */; };
 		6D0C9A47136C398E00E1759B /* Playlist.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6D0C9A49136C398E00E1759B /* Playlist.xib */; };
-		6D1028461286C184006391A4 /* AudirvanaAppIcon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 6D1028451286C184006391A4 /* AudirvanaAppIcon.icns */; };
+		6D1028461286C184006391A4 /* DurianAppIcon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 6D1028451286C184006391A4 /* DurianAppIcon.icns */; };
 		6D17CCDF136478A800740C02 /* AudioOutput.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DBA9BB2123D04550083B20D /* AudioOutput.m */; };
 		6D17CCE2136478F100740C02 /* libAudioOutputLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D17CCD61364784100740C02 /* libAudioOutputLib.a */; };
 		6D198F86120DB867006313FC /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D198F85120DB867006313FC /* AudioToolbox.framework */; };
-		6D2AA7BE131AD20000F4D2B0 /* AudirvanaBlackAppIcon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 6D2AA7BD131AD20000F4D2B0 /* AudirvanaBlackAppIcon.icns */; };
+		6D2AA7BE131AD20000F4D2B0 /* DurianBlackAppIcon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 6D2AA7BD131AD20000F4D2B0 /* DurianBlackAppIcon.icns */; };
 		6D4AB80F1299B22F00E92F02 /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D4AB80E1299B22F00E92F02 /* Sparkle.framework */; };
 		6D4AB81E1299B2B800E92F02 /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6D4AB80E1299B22F00E92F02 /* Sparkle.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		6D4AB8431299B66600E92F02 /* dsa_pub.pem in Resources */ = {isa = PBXBuildFile; fileRef = 6D4AB8421299B66600E92F02 /* dsa_pub.pem */; };
@@ -101,8 +101,8 @@
 		6DFFED8E136CB29200D0B454 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DFFED8D136CB29200D0B454 /* Carbon.framework */; };
 		6DFFED8F136CB29D00D0B454 /* NSObject+SPInvocationGrabbing.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DFFED8B136CB21600D0B454 /* NSObject+SPInvocationGrabbing.m */; };
 		6DFFED90136CB2A100D0B454 /* SPMediaKeyTap.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DFFED88136CAFA900D0B454 /* SPMediaKeyTap.m */; };
-		770B37ED0679A11B001EADE2 /* Audirvana_DataModel.xcdatamodel in Sources */ = {isa = PBXBuildFile; fileRef = 770B37EC0679A11B001EADE2 /* Audirvana_DataModel.xcdatamodel */; };
-		77C8280E06725ACE000B614F /* Audirvana_AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 77C8280C06725ACE000B614F /* Audirvana_AppDelegate.m */; };
+		770B37ED0679A11B001EADE2 /* Durian_DataModel.xcdatamodel in Sources */ = {isa = PBXBuildFile; fileRef = 770B37EC0679A11B001EADE2 /* Durian_DataModel.xcdatamodel */; };
+		77C8280E06725ACE000B614F /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 77C8280C06725ACE000B614F /* AppDelegate.m */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
@@ -149,7 +149,7 @@
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		2F7446980DB6B7EA00F9684A /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/MainMenu.xib; sourceTree = "<group>"; };
-		32CA4F630368D1EE00C91783 /* Audirvana_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Audirvana_Prefix.pch; sourceTree = "<group>"; };
+		32CA4F630368D1EE00C91783 /* Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Prefix.pch; sourceTree = "<group>"; };
 		6D016B21136C202C00555E24 /* fr */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = fr; path = fr.lproj/Preferences.xib; sourceTree = "<group>"; };
 		6D016B22136C202C00555E24 /* fr */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = fr; path = fr.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		6D016B23136C202C00555E24 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -158,12 +158,12 @@
 		6D06C3D31260575B00A51557 /* AudioFileFLACLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AudioFileFLACLoader.h; path = AudioFileUtils/AudioFileFLACLoader.h; sourceTree = "<group>"; };
 		6D06C3D41260575B00A51557 /* AudioFileFLACLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AudioFileFLACLoader.m; path = AudioFileUtils/AudioFileFLACLoader.m; sourceTree = "<group>"; };
 		6D0C9A4B136C399700E1759B /* fr */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = fr; path = fr.lproj/Playlist.xib; sourceTree = "<group>"; };
-		6D1028451286C184006391A4 /* AudirvanaAppIcon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = AudirvanaAppIcon.icns; path = Images/AudirvanaAppIcon.icns; sourceTree = "<group>"; };
+		6D1028451286C184006391A4 /* DurianAppIcon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = DurianAppIcon.icns; path = Images/DurianAppIcon.icns; sourceTree = "<group>"; };
 		6D17CCD61364784100740C02 /* libAudioOutputLib.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libAudioOutputLib.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		6D17CCD71364784100740C02 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		6D17CCDB1364784200740C02 /* AudioOutputLib-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AudioOutputLib-Prefix.pch"; sourceTree = "<group>"; };
 		6D198F85120DB867006313FC /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = /System/Library/Frameworks/AudioToolbox.framework; sourceTree = "<absolute>"; };
-		6D2AA7BD131AD20000F4D2B0 /* AudirvanaBlackAppIcon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = AudirvanaBlackAppIcon.icns; sourceTree = "<group>"; };
+		6D2AA7BD131AD20000F4D2B0 /* DurianBlackAppIcon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = DurianBlackAppIcon.icns; sourceTree = "<group>"; };
 		6D4AB80E1299B22F00E92F02 /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Sparkle.framework; path = extern/Sparkle.framework; sourceTree = "<group>"; };
 		6D4AB8421299B66600E92F02 /* dsa_pub.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = dsa_pub.pem; sourceTree = "<group>"; };
 		6D54ECB6123D73AE009E146F /* PlaylistView_Delegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PlaylistView_Delegate.h; path = Player/PlaylistView_Delegate.h; sourceTree = "<group>"; };
@@ -276,12 +276,12 @@
 		6DFFED88136CAFA900D0B454 /* SPMediaKeyTap.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SPMediaKeyTap.m; path = withSource/SPMediaKeyTap.m; sourceTree = "<group>"; };
 		6DFFED8B136CB21600D0B454 /* NSObject+SPInvocationGrabbing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSObject+SPInvocationGrabbing.m"; path = "withSource/NSObject+SPInvocationGrabbing.m"; sourceTree = "<group>"; };
 		6DFFED8D136CB29200D0B454 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = System/Library/Frameworks/Carbon.framework; sourceTree = SDKROOT; };
-		770B37EC0679A11B001EADE2 /* Audirvana_DataModel.xcdatamodel */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = wrapper.xcdatamodel; path = Audirvana_DataModel.xcdatamodel; sourceTree = "<group>"; };
+		770B37EC0679A11B001EADE2 /* Durian_DataModel.xcdatamodel */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = wrapper.xcdatamodel; path = Durian_DataModel.xcdatamodel; sourceTree = "<group>"; };
 		77C82804067257F0000B614F /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
-		77C8280B06725ACE000B614F /* Audirvana_AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Audirvana_AppDelegate.h; path = Application/Audirvana_AppDelegate.h; sourceTree = "<group>"; };
-		77C8280C06725ACE000B614F /* Audirvana_AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Audirvana_AppDelegate.m; path = Application/Audirvana_AppDelegate.m; sourceTree = "<group>"; };
-		8D1107310486CEB800E47090 /* Audirvana-Info.plist */ = {isa = PBXFileReference; explicitFileType = text.plist.xml; fileEncoding = 4; path = "Audirvana-Info.plist"; sourceTree = "<group>"; };
-		8D1107320486CEB800E47090 /* Audirvana.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Audirvana.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		77C8280B06725ACE000B614F /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = Application/AppDelegate.h; sourceTree = "<group>"; };
+		77C8280C06725ACE000B614F /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = Application/AppDelegate.m; sourceTree = "<group>"; };
+		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; explicitFileType = text.plist.xml; fileEncoding = 4; path = "Info.plist"; sourceTree = "<group>"; };
+		8D1107320486CEB800E47090 /* Durian.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Durian.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -330,7 +330,7 @@
 		19C28FACFE9D520D11CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				8D1107320486CEB800E47090 /* Audirvana.app */,
+				8D1107320486CEB800E47090 /* Durian.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -357,7 +357,7 @@
 		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
-				32CA4F630368D1EE00C91783 /* Audirvana_Prefix.pch */,
+				32CA4F630368D1EE00C91783 /* Prefix.pch */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
 			);
 			name = "Other Sources";
@@ -372,7 +372,7 @@
 				6DC8D37912A0110600B9628C /* appcast.xml */,
 				6D4AB8421299B66600E92F02 /* dsa_pub.pem */,
 				6D6EEA2112747AAB00873D3C /* Images */,
-				8D1107310486CEB800E47090 /* Audirvana-Info.plist */,
+				8D1107310486CEB800E47090 /* Info.plist */,
 				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
 				2F7446970DB6B7EA00F9684A /* MainMenu.xib */,
 				6D0C9A49136C398E00E1759B /* Playlist.xib */,
@@ -454,7 +454,7 @@
 				6D752FD11333FE660069BDF5 /* UserPrefsAudioSystem.png */,
 				6D7CDED6131A942A0054F8FA /* BlackTheme */,
 				6D8BC3EA131954200090B9A5 /* SilverTheme */,
-				6D1028451286C184006391A4 /* AudirvanaAppIcon.icns */,
+				6D1028451286C184006391A4 /* DurianAppIcon.icns */,
 			);
 			name = Images;
 			sourceTree = "<group>";
@@ -475,7 +475,7 @@
 		6D7CDED6131A942A0054F8FA /* BlackTheme */ = {
 			isa = PBXGroup;
 			children = (
-				6D2AA7BD131AD20000F4D2B0 /* AudirvanaBlackAppIcon.icns */,
+				6D2AA7BD131AD20000F4D2B0 /* DurianBlackAppIcon.icns */,
 				6D7CDED7131A942A0054F8FA /* PlayerWindow */,
 			);
 			name = BlackTheme;
@@ -583,8 +583,8 @@
 		6DBA9B9A123D02420083B20D /* Application */ = {
 			isa = PBXGroup;
 			children = (
-				77C8280B06725ACE000B614F /* Audirvana_AppDelegate.h */,
-				77C8280C06725ACE000B614F /* Audirvana_AppDelegate.m */,
+				77C8280B06725ACE000B614F /* AppDelegate.h */,
+				77C8280C06725ACE000B614F /* AppDelegate.m */,
 				6D7A5CD31208569300007F5D /* AppController.h */,
 				6D7A5CD41208569300007F5D /* AppController.m */,
 				6DF17B38126984A900051593 /* PreferenceController.h */,
@@ -614,7 +614,7 @@
 		7756732906782D8800D1FEB8 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				770B37EC0679A11B001EADE2 /* Audirvana_DataModel.xcdatamodel */,
+				770B37EC0679A11B001EADE2 /* Durian_DataModel.xcdatamodel */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -649,9 +649,9 @@
 			productReference = 6D17CCD61364784100740C02 /* libAudioOutputLib.a */;
 			productType = "com.apple.product-type.library.static";
 		};
-		8D1107260486CEB800E47090 /* Audirvana */ = {
+		8D1107260486CEB800E47090 /* Durian */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 26FC0A840875C7B200E6366F /* Build configuration list for PBXNativeTarget "Audirvana" */;
+			buildConfigurationList = 26FC0A840875C7B200E6366F /* Build configuration list for PBXNativeTarget "Durian" */;
 			buildPhases = (
 				8D1107290486CEB800E47090 /* Resources */,
 				8D11072C0486CEB800E47090 /* Sources */,
@@ -664,10 +664,10 @@
 			dependencies = (
 				6D17CCE1136478E800740C02 /* PBXTargetDependency */,
 			);
-			name = Audirvana;
+			name = Durian;
 			productInstallPath = "$(HOME)/Applications";
 			productName = TrueAudioPlayer;
-			productReference = 8D1107320486CEB800E47090 /* Audirvana.app */;
+			productReference = 8D1107320486CEB800E47090 /* Durian.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -680,7 +680,7 @@
 				LastUpgradeCheck = 2610;
 				ORGANIZATIONNAME = "Free Software";
 			};
-			buildConfigurationList = 26FC0A880875C7B200E6366F /* Build configuration list for PBXProject "Audirvana" */;
+			buildConfigurationList = 26FC0A880875C7B200E6366F /* Build configuration list for PBXProject "Durian" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 1;
@@ -697,7 +697,7 @@
 			projectRoot = "";
 			targets = (
 				6D17CCD51364784100740C02 /* AudioOutputLib */,
-				8D1107260486CEB800E47090 /* Audirvana */,
+				8D1107260486CEB800E47090 /* Durian */,
 			);
 		};
 /* End PBXProject section */
@@ -712,7 +712,7 @@
 				6DB104B61221512200864AE5 /* LICENSE in Resources */,
 				6D0C9A47136C398E00E1759B /* Playlist.xib in Resources */,
 				6DF17B3D1269857800051593 /* Preferences.xib in Resources */,
-				6D1028461286C184006391A4 /* AudirvanaAppIcon.icns in Resources */,
+				6D1028461286C184006391A4 /* DurianAppIcon.icns in Resources */,
 				6DA2DFD112992FBD00F29798 /* Debug.xib in Resources */,
 				6D4AB8431299B66600E92F02 /* dsa_pub.pem in Resources */,
 				6D73A31C12C5562A00088378 /* Credits.rtfd in Resources */,
@@ -761,7 +761,7 @@
 				6D7CDEFB131A942A0054F8FA /* Black_PlayerWin_stop_pressed.png in Resources */,
 				6D7CDEFC131A942A0054F8FA /* Black_PlayerWin_volume_knob.png in Resources */,
 				6D7CDEFD131A942A0054F8FA /* Black_PlayerWin_volume_slider.png in Resources */,
-				6D2AA7BE131AD20000F4D2B0 /* AudirvanaBlackAppIcon.icns in Resources */,
+				6D2AA7BE131AD20000F4D2B0 /* DurianBlackAppIcon.icns in Resources */,
 				6D752FD21333FE660069BDF5 /* UserPrefsAudioFilters.png in Resources */,
 				6D752FD31333FE660069BDF5 /* UserPrefsAudioSystem.png in Resources */,
 				6D7FDFC11336965300756111 /* UserPrefsGeneral.png in Resources */,
@@ -793,8 +793,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				8D11072D0486CEB800E47090 /* main.m in Sources */,
-				77C8280E06725ACE000B614F /* Audirvana_AppDelegate.m in Sources */,
-				770B37ED0679A11B001EADE2 /* Audirvana_DataModel.xcdatamodel in Sources */,
+				77C8280E06725ACE000B614F /* AppDelegate.m in Sources */,
+				770B37ED0679A11B001EADE2 /* Durian_DataModel.xcdatamodel in Sources */,
 				6D7A5CD51208569300007F5D /* AppController.m in Sources */,
 				6D5D2028122905B300D16D29 /* AudioFileCoreAudioLoader.mm in Sources */,
 				6D5D203C12290C4000D16D29 /* AudioFileLoader.m in Sources */,
@@ -918,9 +918,9 @@
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = Audirvana_Prefix.pch;
+				GCC_PREFIX_HEADER = Prefix.pch;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				INFOPLIST_FILE = "Audirvana-Info.plist";
+				INFOPLIST_FILE = "Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = (
@@ -929,7 +929,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.lubert.durian;
-				PRODUCT_NAME = Audirvana;
+				PRODUCT_NAME = Durian;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				WRAPPER_EXTENSION = app;
 			};
@@ -950,9 +950,9 @@
 				);
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = Audirvana_Prefix.pch;
+				GCC_PREFIX_HEADER = Prefix.pch;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				INFOPLIST_FILE = "Audirvana-Info.plist";
+				INFOPLIST_FILE = "Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = (
@@ -961,7 +961,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.lubert.durian;
-				PRODUCT_NAME = Audirvana;
+				PRODUCT_NAME = Durian;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				WRAPPER_EXTENSION = app;
 			};
@@ -1157,7 +1157,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		26FC0A840875C7B200E6366F /* Build configuration list for PBXNativeTarget "Audirvana" */ = {
+		26FC0A840875C7B200E6366F /* Build configuration list for PBXNativeTarget "Durian" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				26FC0A850875C7B200E6366F /* Debug */,
@@ -1166,7 +1166,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		26FC0A880875C7B200E6366F /* Build configuration list for PBXProject "Audirvana" */ = {
+		26FC0A880875C7B200E6366F /* Build configuration list for PBXProject "Durian" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				26FC0A890875C7B200E6366F /* Debug */,

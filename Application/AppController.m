@@ -1,20 +1,20 @@
 ﻿/*
  AppController.m
 
- This file is part of Audirvana.
+ This file is part of Durian.
 
- Audirvana is free software: you can redistribute it and/or modify
+ Durian is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
 
- Audirvana is distributed in the hope that it will be useful,
+ Durian is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with Audirvana.  If not, see <http://www.gnu.org/licenses/>.
+ along with Durian.  If not, see <http://www.gnu.org/licenses/>.
 
  Original code written by Damien Plisson 10/2010
  */
@@ -23,7 +23,7 @@
 #include <sys/types.h>
 #include <CoreAudio/CoreAudio.h>
 
-#import "Audirvana_AppDelegate.h"
+#import "AppDelegate.h"
 #import "AppController.h"
 #import "PreferenceController.h"
 #import "DebugController.h"
@@ -121,9 +121,9 @@
 	mPlaylistDoc = [[PlaylistDocument alloc] init];
 	[mPlaylistDoc showWindow:nil];
 	[togglePlaylistButton setState:YES];
-	[(Audirvana_AppDelegate*)[[NSApplication sharedApplication] delegate] setPlaylistDocument:mPlaylistDoc];
+	[(AppDelegate*)[[NSApplication sharedApplication] delegate] setPlaylistDocument:mPlaylistDoc];
 
-    [(Audirvana_AppDelegate*)[[NSApplication sharedApplication] delegate] setAppController:self];
+    [(AppDelegate*)[[NSApplication sharedApplication] delegate] setAppController:self];
 
 	//Display DAC info string
 	NSMutableParagraphStyle* styledParagraphStyle= [[NSMutableParagraphStyle alloc] init];
@@ -597,7 +597,7 @@
 		if ([[NSUserDefaults standardUserDefaults] integerForKey:AUDUISkinTheme] == kAUDUISilverTheme)
 			[[NSImage imageNamed:@"NSApplicationIcon"] dissolveToPoint:NSZeroPoint fraction:1.0f];
 		else
-			[[NSImage imageNamed:@"AudirvanaBlackAppIcon"] dissolveToPoint:NSZeroPoint fraction:1.0f];
+			[[NSImage imageNamed:@"DurianBlackAppIcon"] dissolveToPoint:NSZeroPoint fraction:1.0f];
 		[dockIcon unlockFocus];
 		[NSApp setApplicationIconImage:dockIcon];
 		[dockIcon release];
@@ -1231,7 +1231,7 @@
 	if ([[NSUserDefaults standardUserDefaults] integerForKey:AUDUISkinTheme] == kAUDUISilverTheme)
 		[[NSImage imageNamed:@"NSApplicationIcon"] dissolveToPoint:NSZeroPoint fraction:1.0f];
 	else
-		[[NSImage imageNamed:@"AudirvanaBlackAppIcon"] dissolveToPoint:NSZeroPoint fraction:1.0f];
+		[[NSImage imageNamed:@"DurianBlackAppIcon"] dissolveToPoint:NSZeroPoint fraction:1.0f];
 
 
 	// Background
@@ -1693,7 +1693,7 @@
 			[[parentWindow contentView] setWantsLayer:YES];
 			[[parentWindow contentView] layer].contents = [NSImage imageNamed:@"Black_PlayerWin_mainWindowBackground.png"];
 
-			NSImage *iconImage = [NSImage imageNamed:@"AudirvanaBlackAppIcon"];
+			NSImage *iconImage = [NSImage imageNamed:@"DurianBlackAppIcon"];
             [NSApp setApplicationIconImage:iconImage];
             //Make application image change permanent
             [[NSWorkspace sharedWorkspace] setIcon:iconImage
@@ -1764,7 +1764,7 @@
 			[[parentWindow contentView] setWantsLayer:YES];
 			[[parentWindow contentView] layer].contents = [NSImage imageNamed:@"Silver_PlayerWin_mainWindowBackground.png"];
 
-			NSImage *iconImage = [NSImage imageNamed:@"AudirvanaAppIcon"];
+			NSImage *iconImage = [NSImage imageNamed:@"DurianAppIcon"];
             [NSApp setApplicationIconImage:iconImage];
             //Make application image change permanent
             [[NSWorkspace sharedWorkspace] setIcon:iconImage

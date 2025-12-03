@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-# Build script for Audirvana using vcpkg dependencies
+# Build script for Durian using vcpkg dependencies
 # This script installs vcpkg dependencies and builds the project
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -10,7 +10,7 @@ PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 cd "$PROJECT_ROOT"
 
 echo "================================================"
-echo "Building Audirvana with vcpkg dependencies"
+echo "Building Durian with vcpkg dependencies"
 echo "================================================"
 echo ""
 
@@ -49,8 +49,8 @@ echo "----------------------------------------"
 CONFIGURATION="${1:-Release}"
 
 xcodebuild \
-    -project Audirvana.xcodeproj \
-    -target Audirvana \
+    -project Durian.xcodeproj \
+    -target Durian \
     -configuration "$CONFIGURATION" \
     clean build \
     HEADER_SEARCH_PATHS="vcpkg_installed/universal-osx/include extern/include" \
@@ -61,8 +61,8 @@ xcodebuild \
 echo ""
 echo "Step 4: Verifying output..."
 echo "----------------------------------------"
-APP_BUNDLE="build/$CONFIGURATION/Audirvana.app"
-APP_BINARY="$APP_BUNDLE/Contents/MacOS/Audirvana"
+APP_BUNDLE="build/$CONFIGURATION/Durian.app"
+APP_BINARY="$APP_BUNDLE/Contents/MacOS/Durian"
 
 if [ ! -f "$APP_BINARY" ]; then
     echo "Error: Build failed - binary not found"

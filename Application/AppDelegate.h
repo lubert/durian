@@ -1,6 +1,6 @@
 //
-//  Audirvana_AppDelegate.h
-//  Audirvana
+//  AppDelegate.h
+//  Durian
 //
 //  Created by Damien Plisson on 03/08/10.
 //  Copyright __MyCompanyName__ 2010 . All rights reserved.
@@ -11,7 +11,7 @@
 @class PlaylistDocument;
 @class AppController;
 
-@interface Audirvana_AppDelegate : NSObject
+@interface AppDelegate : NSObject
 {
     NSWindow *window;
 

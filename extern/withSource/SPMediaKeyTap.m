@@ -83,7 +83,7 @@ static CGEventRef tapEventCallback(CGEventTapProxy proxy, CGEventType type, CGEv
             dispatch_async(dispatch_get_main_queue(), ^{
                 NSAlert *alert = [[NSAlert alloc] init];
                 [alert setMessageText:@"Accessibility Permission Required"];
-                [alert setInformativeText:@"Audirvana needs Accessibility permission to support media keys (play/pause, etc.).\n\nYou can grant permission in System Settings > Privacy & Security > Accessibility.\n\nThe app will work normally, but media key support will be disabled."];
+                [alert setInformativeText:@"Durian needs Accessibility permission to support media keys (play/pause, etc.).\n\nYou can grant permission in System Settings > Privacy & Security > Accessibility.\n\nThe app will work normally, but media key support will be disabled."];
                 [alert addButtonWithTitle:@"Open System Settings"];
                 [alert addButtonWithTitle:@"Continue Without Media Keys"];
                 [alert setAlertStyle:NSAlertStyleWarning];

@@ -1,17 +1,17 @@
 //
-//  Audirvana_AppDelegate.m
-//  Audirvana
+//  AppDelegate.m
+//  Durian
 //
 //  Created by Damien Plisson on 03/08/10.
 //  Copyright __MyCompanyName__ 2010 . All rights reserved.
 //
 
-#import "Audirvana_AppDelegate.h"
+#import "AppDelegate.h"
 #import "PlaylistDocument.h"
 #import "AppController.h"
 #import "PreferenceController.h"
 
-@implementation Audirvana_AppDelegate
+@implementation AppDelegate
 
 @synthesize window;
 
@@ -33,7 +33,7 @@
 
 /**
     Returns the support directory for the application, used to store the Core Data
-    store file.  This code uses a directory named "Audirvana" for
+    store file.  This code uses a directory named "Durian" for
     the content, either in the NSApplicationSupportDirectory location or (if the
     former cannot be found), the system's temporary directory.
  */
@@ -42,7 +42,7 @@
 
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
     NSString *basePath = ([paths count] > 0) ? [paths objectAtIndex:0] : NSTemporaryDirectory();
-    return [basePath stringByAppendingPathComponent:@"Audirvana"];
+    return [basePath stringByAppendingPathComponent:@"Durian"];
 }
 
 
