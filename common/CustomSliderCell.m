@@ -48,10 +48,11 @@
 {
 	if (mKnobImage) {
 		if ([self isVertical])
-			[mKnobImage drawInRect:NSMakeRect(knobRect.origin.x+1,knobRect.origin.y, [mKnobImage size].width, [mKnobImage size].height)
+			[mKnobImage drawInRect:NSMakeRect(knobRect.origin.x + (knobRect.size.width - [mKnobImage size].width) / 2,knobRect.origin.y, [mKnobImage size].width, [mKnobImage size].height)
 						  fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0f respectFlipped:YES hints:nil];
 		else
-			[mKnobImage drawInRect:NSMakeRect(knobRect.origin.x+[mKnobImage size].width-2,knobRect.origin.y+[mKnobImage size].height,
+			[mKnobImage drawInRect:NSMakeRect(knobRect.origin.x + (knobRect.size.width - [mKnobImage size].width) / 2,
+											  knobRect.origin.y + (knobRect.size.height - [mKnobImage size].height) / 2,
 											  [mKnobImage size].width, [mKnobImage size].height)
 						  fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0f respectFlipped:YES hints:nil];
 	}

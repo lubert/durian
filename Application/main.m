@@ -23,5 +23,7 @@
 
 int main(int argc, char *argv[])
 {
-	return NSApplicationMain(argc,  (const char **) argv);
+	@autoreleasepool {
+		return NSApplicationMain(argc,  (const char **) argv);
+	}
 }

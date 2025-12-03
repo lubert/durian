@@ -29,7 +29,7 @@
 #import "AudioFileFLACLoader.h"
 
 #include <dispatch/dispatch.h>
-#include <samplerate/samplerate.h>
+#include <samplerate.h>
 
 @implementation AudioFileLoader
 @synthesize mInputFileURL,mBitDepth,mNativeSampleRate,mTargetSampleRate,mLengthFrames,mChannels;

@@ -27,7 +27,7 @@
 #include <taglib/attachedpictureframe.h>
 
 #include <dispatch/dispatch.h>
-#include </usr/include/mach/vm_map.h>
+#include <mach/vm_map.h>
 
 #import "AppController.h"
 #import "AudioFileSndFileLoader.h"
@@ -615,18 +615,18 @@ NextInputPosition:(SInt64*)nextInputPosition
 	if (aifffile.isValid() && aifffile.tag() ) {
 		TagLib::ID3v2::Tag *tag = aifffile.tag();
 		TagLib::String str;
-		TagLib::uint trackNumber;
+		unsigned int trackNumber;
 
 		str = tag->title();
-		if (!str.isNull())
+		if (!str.isEmpty())
 			[mFileMetadata setObject:[NSString stringWithUTF8String:str.toCString(true)]
 							  forKey:[NSString stringWithUTF8String: kAFInfoDictionary_Title]];
 		str = tag->artist();
-		if (!str.isNull())
+		if (!str.isEmpty())
 			[mFileMetadata setObject:[NSString stringWithUTF8String:str.toCString(true)]
 							  forKey:[NSString stringWithUTF8String: kAFInfoDictionary_Artist]];
 		str = tag->album();
-		if (!str.isNull())
+		if (!str.isEmpty())
 			[mFileMetadata setObject:[NSString stringWithUTF8String:str.toCString(true)]
 							  forKey:[NSString stringWithUTF8String: kAFInfoDictionary_Album]];
 
@@ -673,20 +673,20 @@ NextInputPosition:(SInt64*)nextInputPosition
 	TagLib::RIFF::WAV::File wavfile(filePathStr, false);
 
 	if (wavfile.isValid() && wavfile.tag() ) {
-		TagLib::ID3v2::Tag *tag = wavfile.tag();
+		TagLib::ID3v2::Tag *tag = dynamic_cast<TagLib::ID3v2::Tag *>(wavfile.tag());
 		TagLib::String str;
-		TagLib::uint trackNumber;
+		unsigned int trackNumber;
 
 		str = tag->title();
-		if (!str.isNull())
+		if (!str.isEmpty())
 			[mFileMetadata setObject:[NSString stringWithUTF8String:str.toCString(true)]
 							  forKey:[NSString stringWithUTF8String: kAFInfoDictionary_Title]];
 		str = tag->artist();
-		if (!str.isNull())
+		if (!str.isEmpty())
 			[mFileMetadata setObject:[NSString stringWithUTF8String:str.toCString(true)]
 							  forKey:[NSString stringWithUTF8String: kAFInfoDictionary_Artist]];
 		str = tag->album();
-		if (!str.isNull())
+		if (!str.isEmpty())
 			[mFileMetadata setObject:[NSString stringWithUTF8String:str.toCString(true)]
 							  forKey:[NSString stringWithUTF8String: kAFInfoDictionary_Album]];
 

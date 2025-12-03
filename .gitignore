@@ -1,2 +1,23 @@
 *.DS_Store
 
+build
+
+# vcpkg installed packages (generated from vcpkg.json manifest)
+vcpkg_installed/
+
+# Xcode user-specific files
+xcuserdata/
+*.xcworkspace/
+*.xcuserstate
+*.xcuserdatad
+
+# Xcode build artifacts
+DerivedData/
+*.hmap
+*.ipa
+
+# Backup files
+*.backup
+*.bak
+*.bak2
+*.bak3

@@ -23,7 +23,7 @@
 #define __AUDIOCOREAUDIOFILELOADER_H__
 
 #import "AudioFileLoader.h"
-#include <samplerate/samplerate.h>
+#include <samplerate.h>
 
 @interface AudioFileCoreAudioLoader : AudioFileLoader
 {

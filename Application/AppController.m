@@ -111,10 +111,6 @@
 
 	[parentWindow setStyleMask:NSBorderlessWindowMask|NSMiniaturizableWindowMask];
 	[parentWindow setOpaque:NO];
-	if (uiSkinTheme == kAUDUISilverTheme)
-		[parentWindow setBackgroundColor:[NSColor colorWithPatternImage:[NSImage imageNamed:@"Silver_PlayerWin_mainWindowBackground.png"]]];
-	else
-		[parentWindow setBackgroundColor:[NSColor colorWithPatternImage:[NSImage imageNamed:@"Black_PlayerWin_mainWindowBackground.png"]]];
 
 	audioOut = [[AudioOutput alloc] initWithController:self];
 
@@ -221,11 +217,16 @@
 	if (!songTitleFont) {
 		songTitleFont = [NSFont labelFontOfSize:14.0f];
 	}
+	NSMutableParagraphStyle *songTitleParagraphStyle = [[NSMutableParagraphStyle alloc] init];
+	[songTitleParagraphStyle setLineBreakMode:NSLineBreakByTruncatingTail];
 	mSongTitleStringAttributes = [[NSDictionary alloc] initWithObjects:[NSArray arrayWithObjects:songTitleFont,
 																		lcdColor,
+																		songTitleParagraphStyle,
 																		nil]
 															   forKeys:[NSArray arrayWithObjects:NSFontAttributeName,
-																		NSForegroundColorAttributeName, nil]];
+																		NSForegroundColorAttributeName,
+																		NSParagraphStyleAttributeName, nil]];
+	[songTitleParagraphStyle release];
 
 	//Song info string attribute
 	NSFont *songInfoFont = [NSFont fontWithName:@"Lucida Grande" size:12.0f];
@@ -328,8 +329,7 @@
 	[nc addObserver:self selector:@selector(handleUpdateMediaKeysUse:)
 			   name:AUDMediaKeysUseChangeNotification object:nil];
 
-	if (uiSkinTheme != kAUDUISilverTheme)
-		[self handleUpdateUISkinTheme:nil];
+	[self handleUpdateUISkinTheme:nil];
 }
 
 - (void)dealloc
@@ -1689,7 +1689,9 @@
 	switch ([[NSUserDefaults standardUserDefaults] integerForKey:AUDUISkinTheme]) {
 		case kAUDUIBlackTheme:
 		{
-			[parentWindow setBackgroundColor:[NSColor colorWithPatternImage:[NSImage imageNamed:@"Black_PlayerWin_mainWindowBackground.png"]]];
+			[parentWindow setBackgroundColor:[NSColor clearColor]];
+			[[parentWindow contentView] setWantsLayer:YES];
+			[[parentWindow contentView] layer].contents = [NSImage imageNamed:@"Black_PlayerWin_mainWindowBackground.png"];
 
 			NSImage *iconImage = [NSImage imageNamed:@"AudirvanaBlackAppIcon"];
             [NSApp setApplicationIconImage:iconImage];
@@ -1758,7 +1760,9 @@
 		case kAUDUISilverTheme:
 		default:
 		{
-			[parentWindow setBackgroundColor:[NSColor colorWithPatternImage:[NSImage imageNamed:@"Silver_PlayerWin_mainWindowBackground.png"]]];
+			[parentWindow setBackgroundColor:[NSColor clearColor]];
+			[[parentWindow contentView] setWantsLayer:YES];
+			[[parentWindow contentView] layer].contents = [NSImage imageNamed:@"Silver_PlayerWin_mainWindowBackground.png"];
 
 			NSImage *iconImage = [NSImage imageNamed:@"AudirvanaAppIcon"];
             [NSApp setApplicationIconImage:iconImage];
