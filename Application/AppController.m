@@ -217,11 +217,16 @@
 	if (!songTitleFont) {
 		songTitleFont = [NSFont labelFontOfSize:14.0f];
 	}
+	NSMutableParagraphStyle *songTitleParagraphStyle = [[NSMutableParagraphStyle alloc] init];
+	[songTitleParagraphStyle setLineBreakMode:NSLineBreakByTruncatingTail];
 	mSongTitleStringAttributes = [[NSDictionary alloc] initWithObjects:[NSArray arrayWithObjects:songTitleFont,
 																		lcdColor,
+																		songTitleParagraphStyle,
 																		nil]
 															   forKeys:[NSArray arrayWithObjects:NSFontAttributeName,
-																		NSForegroundColorAttributeName, nil]];
+																		NSForegroundColorAttributeName,
+																		NSParagraphStyleAttributeName, nil]];
+	[songTitleParagraphStyle release];
 
 	//Song info string attribute
 	NSFont *songInfoFont = [NSFont fontWithName:@"Lucida Grande" size:12.0f];
