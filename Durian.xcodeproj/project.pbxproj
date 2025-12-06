@@ -150,7 +150,6 @@
 		6D5D203B12290C4000D16D29 /* AudioFileLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AudioFileLoader.m; path = AudioFileUtils/AudioFileLoader.m; sourceTree = "<group>"; };
 		6D6001A3129017B3006B4701 /* HIDRemote.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HIDRemote.m; path = withSource/HIDRemote.m; sourceTree = "<group>"; };
 		6D6001E112902125006B4701 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
-		6D6BD0251375D83800B172CE /* release-notes.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = "release-notes.html"; path = "web/release-notes.html"; sourceTree = "<group>"; };
 		6D7352FE133D374400971A80 /* ButtonMinus.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ButtonMinus.png; path = Images/ButtonMinus.png; sourceTree = "<group>"; };
 		6D7352FF133D374400971A80 /* ButtonPlus.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ButtonPlus.png; path = Images/ButtonPlus.png; sourceTree = "<group>"; };
 		6D735300133D374400971A80 /* ButtonRepeat_off.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ButtonRepeat_off.png; path = Images/ButtonRepeat_off.png; sourceTree = "<group>"; };
@@ -228,7 +227,6 @@
 		6DBA9BE2123D06850083B20D /* PlaylistDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PlaylistDocument.m; path = Player/PlaylistDocument.m; sourceTree = "<group>"; };
 		6DBA9BE4123D06D10083B20D /* PlaylistItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PlaylistItem.h; path = Player/PlaylistItem.h; sourceTree = "<group>"; };
 		6DBA9BE5123D06D10083B20D /* PlaylistItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PlaylistItem.m; path = Player/PlaylistItem.m; sourceTree = "<group>"; };
-		6DC8D37912A0110600B9628C /* appcast.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = appcast.xml; path = web/appcast.xml; sourceTree = "<group>"; };
 		6DCC57791226D93900BDCF56 /* AudioFileLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AudioFileLoader.h; path = AudioFileUtils/AudioFileLoader.h; sourceTree = "<group>"; };
 		6DD20312133FD3F90054849C /* ButtonShuffle_off.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ButtonShuffle_off.png; path = Images/ButtonShuffle_off.png; sourceTree = "<group>"; };
 		6DD20313133FD3F90054849C /* ButtonShuffle_on.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ButtonShuffle_on.png; path = Images/ButtonShuffle_on.png; sourceTree = "<group>"; };
@@ -329,10 +327,8 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				6D6BD0251375D83800B172CE /* release-notes.html */,
 				6D7F6493136C3DA5000F1C27 /* Localizable.strings */,
 				6D73A31A12C5562A00088378 /* Credits.rtfd */,
-				6DC8D37912A0110600B9628C /* appcast.xml */,
 				6D6EEA2112747AAB00873D3C /* Images */,
 				8D1107310486CEB800E47090 /* Info.plist */,
 				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
@@ -580,7 +576,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				);
+			);
 			name = Durian;
 			productInstallPath = "$(HOME)/Applications";
 			productName = TrueAudioPlayer;
