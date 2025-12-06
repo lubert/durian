@@ -52,1856 +52,1643 @@
 #import "HIDRemote.h"
 
 // Callback Prototypes
-static void HIDEventCallback(	void * target,
-				IOReturn result,
-				void * refcon,
-				void * sender);
+static void HIDEventCallback(void* target,
+    IOReturn result,
+    void* refcon,
+    void* sender);
 
-static void ServiceMatchingCallback(	void *refCon,
-					io_iterator_t iterator);
+static void ServiceMatchingCallback(void* refCon,
+    io_iterator_t iterator);
 
-static void ServiceNotificationCallback(void *		refCon,
-					io_service_t 	service,
-					natural_t 	messageType,
-					void *		messageArgument);
+static void ServiceNotificationCallback(void* refCon,
+    io_service_t service,
+    natural_t messageType,
+    void* messageArgument);
 
-static void SecureInputNotificationCallback(	void *		refCon,
-						io_service_t 	service,
-						natural_t 	messageType,
-						void *		messageArgument);
+static void SecureInputNotificationCallback(void* refCon,
+    io_service_t service,
+    natural_t messageType,
+    void* messageArgument);
 
 // Shared HIDRemote instance
-static HIDRemote *sHIDRemote = nil;
+static HIDRemote* sHIDRemote = nil;
 
 @implementation HIDRemote
 
-#pragma mark -- Init, dealloc & shared instance --
+#pragma mark-- Init, dealloc & shared instance --
 
-+ (HIDRemote *)sharedHIDRemote
++ (HIDRemote*)sharedHIDRemote
 {
-	if (!sHIDRemote)
-	{
-		sHIDRemote = [[HIDRemote alloc] init];
-	}
+    if (!sHIDRemote) {
+        sHIDRemote = [[HIDRemote alloc] init];
+    }
 
-	return (sHIDRemote);
+    return (sHIDRemote);
 }
 
 - (id)init
 {
-	if ((self = [super init]) != nil)
-	{
-		// Detect application becoming active/inactive
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_appStatusChanged:)	 name:NSApplicationDidBecomeActiveNotification	object:[NSApplication sharedApplication]];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_appStatusChanged:)	 name:NSApplicationWillResignActiveNotification object:[NSApplication sharedApplication]];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_appStatusChanged:)	 name:NSApplicationWillTerminateNotification	object:[NSApplication sharedApplication]];
+    if ((self = [super init]) != nil) {
+        // Detect application becoming active/inactive
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_appStatusChanged:) name:NSApplicationDidBecomeActiveNotification object:[NSApplication sharedApplication]];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_appStatusChanged:) name:NSApplicationWillResignActiveNotification object:[NSApplication sharedApplication]];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_appStatusChanged:) name:NSApplicationWillTerminateNotification object:[NSApplication sharedApplication]];
 
-		// Handle distributed notifications
-		[[NSDistributedNotificationCenter defaultCenter] addObserver:self selector:@selector(_handleNotifications:) name:kHIDRemoteDNHIDRemotePing	object:nil];
-		[[NSDistributedNotificationCenter defaultCenter] addObserver:self selector:@selector(_handleNotifications:) name:kHIDRemoteDNHIDRemoteRetry	object:[NSString stringWithFormat:@"%d", getpid()]];
+        // Handle distributed notifications
+        [[NSDistributedNotificationCenter defaultCenter] addObserver:self selector:@selector(_handleNotifications:) name:kHIDRemoteDNHIDRemotePing object:nil];
+        [[NSDistributedNotificationCenter defaultCenter] addObserver:self selector:@selector(_handleNotifications:) name:kHIDRemoteDNHIDRemoteRetry object:[NSString stringWithFormat:@"%d", getpid()]];
 
-		// Enabled by default: simulate hold events for plus/minus
-		_simulateHoldEvents = YES;
+        // Enabled by default: simulate hold events for plus/minus
+        _simulateHoldEvents = YES;
 
-		// Enabled by default: work around for a locking issue introduced with Security Update 2008-004 / 10.4.9 and beyond (credit for finding this workaround goes to Martin Kahr)
-		_secureEventInputWorkAround = YES;
-		_secureInputNotification = 0;
+        // Enabled by default: work around for a locking issue introduced with Security Update 2008-004 / 10.4.9 and beyond (credit for finding this workaround goes to Martin Kahr)
+        _secureEventInputWorkAround = YES;
+        _secureInputNotification = 0;
 
-		// Initialize instance variables
-		_lastSeenRemoteID = -1;
-		_lastSeenModel = kHIDRemoteModelUndetermined;
-		_unusedButtonCodes = [[NSMutableArray alloc] init];
-		_exclusiveLockLending = NO;
-	}
+        // Initialize instance variables
+        _lastSeenRemoteID = -1;
+        _lastSeenModel = kHIDRemoteModelUndetermined;
+        _unusedButtonCodes = [[NSMutableArray alloc] init];
+        _exclusiveLockLending = NO;
+    }
 
-	return (self);
+    return (self);
 }
 
 - (void)dealloc
 {
-	[[NSNotificationCenter defaultCenter] removeObserver:self name:NSApplicationWillTerminateNotification object:[NSApplication sharedApplication]];
-	[[NSNotificationCenter defaultCenter] removeObserver:self name:NSApplicationWillResignActiveNotification object:[NSApplication sharedApplication]];
-	[[NSNotificationCenter defaultCenter] removeObserver:self name:NSApplicationDidBecomeActiveNotification object:[NSApplication sharedApplication]];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:NSApplicationWillTerminateNotification object:[NSApplication sharedApplication]];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:NSApplicationWillResignActiveNotification object:[NSApplication sharedApplication]];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:NSApplicationDidBecomeActiveNotification object:[NSApplication sharedApplication]];
 
-	[[NSDistributedNotificationCenter defaultCenter] removeObserver:self name:kHIDRemoteDNHIDRemotePing object:nil];
-	[[NSDistributedNotificationCenter defaultCenter] removeObserver:self name:kHIDRemoteDNHIDRemoteRetry object:[NSString stringWithFormat:@"%d", getpid()]];
+    [[NSDistributedNotificationCenter defaultCenter] removeObserver:self name:kHIDRemoteDNHIDRemotePing object:nil];
+    [[NSDistributedNotificationCenter defaultCenter] removeObserver:self name:kHIDRemoteDNHIDRemoteRetry object:[NSString stringWithFormat:@"%d", getpid()]];
 
-	[self stopRemoteControl];
+    [self stopRemoteControl];
 
-	[self setExclusiveLockLendingEnabled:NO];
+    [self setExclusiveLockLendingEnabled:NO];
 
-	[self setDelegate:nil];
+    [self setDelegate:nil];
 
-	[_unusedButtonCodes release];
-	_unusedButtonCodes = nil;
+    [_unusedButtonCodes release];
+    _unusedButtonCodes = nil;
 
-	[super dealloc];
+    [super dealloc];
 }
 
-#pragma mark -- PUBLIC: System Information --
+#pragma mark-- PUBLIC: System Information --
 + (BOOL)isCandelairInstalled
 {
-	mach_port_t	masterPort = 0;
-	kern_return_t	kernResult;
-	io_service_t	matchingService = 0;
-	BOOL isInstalled = NO;
+    mach_port_t masterPort = 0;
+    kern_return_t kernResult;
+    io_service_t matchingService = 0;
+    BOOL isInstalled = NO;
 
-	kernResult = IOMasterPort(MACH_PORT_NULL, &masterPort);
-	if (kernResult || !masterPort) { return(NO); }
+    kernResult = IOMasterPort(MACH_PORT_NULL, &masterPort);
+    if (kernResult || !masterPort) {
+        return (NO);
+    }
 
-	if ((matchingService = IOServiceGetMatchingService(masterPort, IOServiceMatching("IOSPIRITIRController"))) != 0)
-	{
-		isInstalled = YES;
-		IOObjectRelease((io_object_t) matchingService);
-	}
+    if ((matchingService = IOServiceGetMatchingService(masterPort, IOServiceMatching("IOSPIRITIRController"))) != 0) {
+        isInstalled = YES;
+        IOObjectRelease((io_object_t)matchingService);
+    }
 
-	mach_port_deallocate(mach_task_self(), masterPort);
+    mach_port_deallocate(mach_task_self(), masterPort);
 
-	return (isInstalled);
+    return (isInstalled);
 }
 
 + (BOOL)isCandelairInstallationRequiredForRemoteMode:(HIDRemoteMode)remoteMode
 {
-	SInt32 systemVersion = 0;
+    SInt32 systemVersion = 0;
 
-	// Determine OS version
-	if (Gestalt(gestaltSystemVersion, &systemVersion) == noErr)
-	{
-		switch (systemVersion)
-		{
-			case 0x1060: // OS 10.6
-			case 0x1061: // OS 10.6.1
-				// OS X 10.6(.0) and OS X 10.6.1 require the Candelair driver for to be installed,
-				// so that third party apps can acquire an exclusive lock on the receiver HID Device
-				// via IOKit.
+    // Determine OS version
+    if (Gestalt(gestaltSystemVersion, &systemVersion) == noErr) {
+        switch (systemVersion) {
+        case 0x1060: // OS 10.6
+        case 0x1061: // OS 10.6.1
+            // OS X 10.6(.0) and OS X 10.6.1 require the Candelair driver for to be installed,
+            // so that third party apps can acquire an exclusive lock on the receiver HID Device
+            // via IOKit.
 
-				switch (remoteMode)
-				{
-					case kHIDRemoteModeExclusive:
-					case kHIDRemoteModeExclusiveAuto:
-						if (![self isCandelairInstalled])
-						{
-							return (YES);
-						}
-					break;
-					default:
-						break;
-				}
-			break;
-		}
-	}
+            switch (remoteMode) {
+            case kHIDRemoteModeExclusive:
+            case kHIDRemoteModeExclusiveAuto:
+                if (![self isCandelairInstalled]) {
+                    return (YES);
+                }
+                break;
+            default:
+                break;
+            }
+            break;
+        }
+    }
 
-	return (NO);
+    return (NO);
 }
 
 - (HIDRemoteAluminumRemoteSupportLevel)aluminiumRemoteSystemSupportLevel
 {
-	HIDRemoteAluminumRemoteSupportLevel supportLevel = kHIDRemoteAluminumRemoteSupportLevelNone;
-	NSEnumerator *attribDictsEnum;
-	NSDictionary *hidAttribsDict;
+    HIDRemoteAluminumRemoteSupportLevel supportLevel = kHIDRemoteAluminumRemoteSupportLevelNone;
+    NSEnumerator* attribDictsEnum;
+    NSDictionary* hidAttribsDict;
 
-	attribDictsEnum = [_serviceAttribMap objectEnumerator];
+    attribDictsEnum = [_serviceAttribMap objectEnumerator];
 
-	while ((hidAttribsDict = [attribDictsEnum nextObject]) != nil)
-	{
-		NSNumber *deviceSupportLevel;
+    while ((hidAttribsDict = [attribDictsEnum nextObject]) != nil) {
+        NSNumber* deviceSupportLevel;
 
-		if ((deviceSupportLevel = [hidAttribsDict objectForKey:kHIDRemoteAluminumRemoteSupportLevel]) != nil)
-		{
-			if ((unsigned)[deviceSupportLevel intValue] > supportLevel)
-			{
-				supportLevel = [deviceSupportLevel intValue];
-			}
-		}
-	}
+        if ((deviceSupportLevel = [hidAttribsDict objectForKey:kHIDRemoteAluminumRemoteSupportLevel]) != nil) {
+            if ((unsigned)[deviceSupportLevel intValue] > supportLevel) {
+                supportLevel = [deviceSupportLevel intValue];
+            }
+        }
+    }
 
-	return (supportLevel);
+    return (supportLevel);
 }
 
-#pragma mark -- PUBLIC: Interface / API --
+#pragma mark-- PUBLIC: Interface / API --
 - (BOOL)startRemoteControl:(HIDRemoteMode)hidRemoteMode
 {
-	if ((_mode == kHIDRemoteModeNone) && (hidRemoteMode != kHIDRemoteModeNone))
-	{
-		kern_return_t		kernReturn;
-		CFMutableDictionaryRef	matchDict=NULL;
-		io_service_t rootService;
+    if ((_mode == kHIDRemoteModeNone) && (hidRemoteMode != kHIDRemoteModeNone)) {
+        kern_return_t kernReturn;
+        CFMutableDictionaryRef matchDict = NULL;
+        io_service_t rootService;
 
-		do
-		{
-			// Get IOKit master port
-			kernReturn = IOMasterPort(bootstrap_port, &_masterPort);
-			if ((kernReturn!=kIOReturnSuccess) || (_masterPort==0)) { break; }
+        do {
+            // Get IOKit master port
+            kernReturn = IOMasterPort(bootstrap_port, &_masterPort);
+            if ((kernReturn != kIOReturnSuccess) || (_masterPort == 0)) {
+                break;
+            }
 
-			// Setup notification port
-			_notifyPort = IONotificationPortCreate(_masterPort);
+            // Setup notification port
+            _notifyPort = IONotificationPortCreate(_masterPort);
 
-			if ((_notifyRLSource = IONotificationPortGetRunLoopSource(_notifyPort)) != NULL)
-			{
-				CFRunLoopAddSource(	CFRunLoopGetCurrent(),
-							_notifyRLSource,
-							kCFRunLoopCommonModes);
-			}
-			else
-			{
-				break;
-			}
+            if ((_notifyRLSource = IONotificationPortGetRunLoopSource(_notifyPort)) != NULL) {
+                CFRunLoopAddSource(CFRunLoopGetCurrent(),
+                    _notifyRLSource,
+                    kCFRunLoopCommonModes);
+            } else {
+                break;
+            }
 
-			// Setup SecureInput notification
-			if ((hidRemoteMode == kHIDRemoteModeExclusive) || (hidRemoteMode == kHIDRemoteModeExclusiveAuto))
-			{
-				if ((rootService = IORegistryEntryFromPath(_masterPort, kIOServicePlane ":/")) != 0)
-				{
-					kernReturn = IOServiceAddInterestNotification(	_notifyPort,
-											rootService,
-											kIOBusyInterest,
-											SecureInputNotificationCallback,
-											(void *)self,
-											&_secureInputNotification);
-					if (kernReturn != kIOReturnSuccess) { break; }
+            // Setup SecureInput notification
+            if ((hidRemoteMode == kHIDRemoteModeExclusive) || (hidRemoteMode == kHIDRemoteModeExclusiveAuto)) {
+                if ((rootService = IORegistryEntryFromPath(_masterPort, kIOServicePlane ":/")) != 0) {
+                    kernReturn = IOServiceAddInterestNotification(_notifyPort,
+                        rootService,
+                        kIOBusyInterest,
+                        SecureInputNotificationCallback,
+                        (void*)self,
+                        &_secureInputNotification);
+                    if (kernReturn != kIOReturnSuccess) {
+                        break;
+                    }
 
-					[self _updateSessionInformation];
-				}
-				else
-				{
-					break;
-				}
-			}
+                    [self _updateSessionInformation];
+                } else {
+                    break;
+                }
+            }
 
-			// Setup notification matching dict
-			matchDict = IOServiceMatching(kIOHIDDeviceKey);
-			CFRetain(matchDict);
+            // Setup notification matching dict
+            matchDict = IOServiceMatching(kIOHIDDeviceKey);
+            CFRetain(matchDict);
 
-			// Actually add notification
-			kernReturn = IOServiceAddMatchingNotification(	_notifyPort,
-									kIOFirstMatchNotification,
-									matchDict,			// one reference count consumed by this call
-									ServiceMatchingCallback,
-									(void *) self,
-									&_matchingServicesIterator);
-			if (kernReturn != kIOReturnSuccess) { break; }
+            // Actually add notification
+            kernReturn = IOServiceAddMatchingNotification(_notifyPort,
+                kIOFirstMatchNotification,
+                matchDict, // one reference count consumed by this call
+                ServiceMatchingCallback,
+                (void*)self,
+                &_matchingServicesIterator);
+            if (kernReturn != kIOReturnSuccess) {
+                break;
+            }
 
-			// Setup serviceAttribMap
-			_serviceAttribMap = [[NSMutableDictionary alloc] init];
-			if (!_serviceAttribMap) { break; }
+            // Setup serviceAttribMap
+            _serviceAttribMap = [[NSMutableDictionary alloc] init];
+            if (!_serviceAttribMap) {
+                break;
+            }
 
-			// Phew .. everything went well!
-			_mode = hidRemoteMode;
-			CFRelease(matchDict);
+            // Phew .. everything went well!
+            _mode = hidRemoteMode;
+            CFRelease(matchDict);
 
-			[self _serviceMatching:_matchingServicesIterator];
+            [self _serviceMatching:_matchingServicesIterator];
 
-			[self _postStatusWithAction:kHIDRemoteDNStatusActionStart];
+            [self _postStatusWithAction:kHIDRemoteDNStatusActionStart];
 
-			return (YES);
+            return (YES);
 
-		}while(0);
+        } while (0);
 
-		// An error occured. Do necessary clean up.
-		if (matchDict)
-		{
-			CFRelease(matchDict);
-			matchDict = NULL;
-		}
+        // An error occured. Do necessary clean up.
+        if (matchDict) {
+            CFRelease(matchDict);
+            matchDict = NULL;
+        }
 
-		[self stopRemoteControl];
-	}
+        [self stopRemoteControl];
+    }
 
-	return (NO);
+    return (NO);
 }
 
 - (void)stopRemoteControl
 {
-	_autoRecover = NO;
+    _autoRecover = NO;
 
-	if (_autoRecoveryTimer)
-	{
-		[_autoRecoveryTimer invalidate];
-		[_autoRecoveryTimer release];
-		_autoRecoveryTimer = nil;
-	}
+    if (_autoRecoveryTimer) {
+        [_autoRecoveryTimer invalidate];
+        [_autoRecoveryTimer release];
+        _autoRecoveryTimer = nil;
+    }
 
-	if (_serviceAttribMap)
-	{
-		NSDictionary *cloneDict = [[NSDictionary alloc] initWithDictionary:_serviceAttribMap];
+    if (_serviceAttribMap) {
+        NSDictionary* cloneDict = [[NSDictionary alloc] initWithDictionary:_serviceAttribMap];
 
-		if (cloneDict)
-		{
-			NSEnumerator *mapKeyEnum = [cloneDict keyEnumerator];
-			NSNumber *serviceValue;
+        if (cloneDict) {
+            NSEnumerator* mapKeyEnum = [cloneDict keyEnumerator];
+            NSNumber* serviceValue;
 
-			while ((serviceValue = [mapKeyEnum nextObject]) != nil)
-			{
-				[self _destructService:(io_object_t)[serviceValue unsignedIntValue]];
-			};
+            while ((serviceValue = [mapKeyEnum nextObject]) != nil) {
+                [self _destructService:(io_object_t)[serviceValue unsignedIntValue]];
+            };
 
-			[cloneDict release];
-			cloneDict = nil;
-		}
+            [cloneDict release];
+            cloneDict = nil;
+        }
 
-		[_serviceAttribMap release];
-		_serviceAttribMap = nil;
-	}
+        [_serviceAttribMap release];
+        _serviceAttribMap = nil;
+    }
 
-	if (_matchingServicesIterator)
-	{
-		IOObjectRelease((io_object_t) _matchingServicesIterator);
-		_matchingServicesIterator = 0;
-	}
+    if (_matchingServicesIterator) {
+        IOObjectRelease((io_object_t)_matchingServicesIterator);
+        _matchingServicesIterator = 0;
+    }
 
-	if (_secureInputNotification)
-	{
-		IOObjectRelease((io_object_t) _secureInputNotification);
-		_secureInputNotification = 0;
-	}
+    if (_secureInputNotification) {
+        IOObjectRelease((io_object_t)_secureInputNotification);
+        _secureInputNotification = 0;
+    }
 
-	if (_notifyRLSource)
-	{
-		CFRunLoopSourceInvalidate(_notifyRLSource);
+    if (_notifyRLSource) {
+        CFRunLoopSourceInvalidate(_notifyRLSource);
 
-		_notifyRLSource = NULL;
-	}
+        _notifyRLSource = NULL;
+    }
 
-	if (_notifyPort)
-	{
-		IONotificationPortDestroy(_notifyPort);
-		_notifyPort = NULL;
-	}
+    if (_notifyPort) {
+        IONotificationPortDestroy(_notifyPort);
+        _notifyPort = NULL;
+    }
 
-	if (_masterPort)
-	{
-		mach_port_deallocate(mach_task_self(), _masterPort);
-	}
+    if (_masterPort) {
+        mach_port_deallocate(mach_task_self(), _masterPort);
+    }
 
-	[self _postStatusWithAction:kHIDRemoteDNStatusActionStop];
+    [self _postStatusWithAction:kHIDRemoteDNStatusActionStop];
 
-	[_returnToPID release];
-	_returnToPID = nil;
+    [_returnToPID release];
+    _returnToPID = nil;
 
-	_mode = kHIDRemoteModeNone;
+    _mode = kHIDRemoteModeNone;
 }
 
 - (BOOL)isStarted
 {
-	return (_mode != kHIDRemoteModeNone);
+    return (_mode != kHIDRemoteModeNone);
 }
 
 - (unsigned)activeRemoteControlCount
 {
-	return (unsigned)([_serviceAttribMap count]);
+    return (unsigned)([_serviceAttribMap count]);
 }
 
 - (SInt32)lastSeenRemoteControlID
 {
-	return (_lastSeenRemoteID);
+    return (_lastSeenRemoteID);
 }
 
 - (HIDRemoteModel)lastSeenModel
 {
-	return (_lastSeenModel);
+    return (_lastSeenModel);
 }
 
 - (void)setLastSeenModel:(HIDRemoteModel)aModel
 {
-	_lastSeenModel = aModel;
+    _lastSeenModel = aModel;
 }
 
 - (void)setSimulateHoldEvents:(BOOL)newSimulateHoldEvents
 {
-	_simulateHoldEvents = newSimulateHoldEvents;
+    _simulateHoldEvents = newSimulateHoldEvents;
 }
 
 - (BOOL)simulateHoldEvents
 {
-	return (_simulateHoldEvents);
+    return (_simulateHoldEvents);
 }
 
-- (NSArray *)unusedButtonCodes
+- (NSArray*)unusedButtonCodes
 {
-	return (_unusedButtonCodes);
+    return (_unusedButtonCodes);
 }
 
-- (void)setUnusedButtonCodes:(NSArray *)newArrayWithUnusedButtonCodesAsNSNumbers
+- (void)setUnusedButtonCodes:(NSArray*)newArrayWithUnusedButtonCodesAsNSNumbers
 {
-	[newArrayWithUnusedButtonCodesAsNSNumbers retain];
-	[_unusedButtonCodes release];
+    [newArrayWithUnusedButtonCodesAsNSNumbers retain];
+    [_unusedButtonCodes release];
 
-	_unusedButtonCodes = newArrayWithUnusedButtonCodesAsNSNumbers;
+    _unusedButtonCodes = newArrayWithUnusedButtonCodesAsNSNumbers;
 
-	[self _postStatusWithAction:kHIDRemoteDNStatusActionUpdate];
+    [self _postStatusWithAction:kHIDRemoteDNStatusActionUpdate];
 }
 
-- (void)setDelegate:(NSObject <HIDRemoteDelegate> *)newDelegate
+- (void)setDelegate:(NSObject<HIDRemoteDelegate>*)newDelegate
 {
-	_delegate = newDelegate;
+    _delegate = newDelegate;
 }
 
-- (NSObject <HIDRemoteDelegate> *)delegate
+- (NSObject<HIDRemoteDelegate>*)delegate
 {
-	return (_delegate);
+    return (_delegate);
 }
 
-#pragma mark -- PUBLIC: Expert APIs --
+#pragma mark-- PUBLIC: Expert APIs --
 - (void)setEnableSecureEventInputWorkaround:(BOOL)newEnableSecureEventInputWorkaround
 {
-	_secureEventInputWorkAround = newEnableSecureEventInputWorkaround;
+    _secureEventInputWorkAround = newEnableSecureEventInputWorkaround;
 }
 
 - (BOOL)enableSecureEventInputWorkaround
 {
-	return (_secureEventInputWorkAround);
+    return (_secureEventInputWorkAround);
 }
 
 - (void)setExclusiveLockLendingEnabled:(BOOL)newExclusiveLockLendingEnabled
 {
-	if (newExclusiveLockLendingEnabled != _exclusiveLockLending)
-	{
-		_exclusiveLockLending = newExclusiveLockLendingEnabled;
+    if (newExclusiveLockLendingEnabled != _exclusiveLockLending) {
+        _exclusiveLockLending = newExclusiveLockLendingEnabled;
 
-		if (_exclusiveLockLending)
-		{
-			[[NSDistributedNotificationCenter defaultCenter] addObserver:self selector:@selector(_handleNotifications:) name:kHIDRemoteDNHIDRemoteStatus object:nil];
-		}
-		else
-		{
-			[[NSDistributedNotificationCenter defaultCenter] removeObserver:self name:kHIDRemoteDNHIDRemoteStatus object:nil];
+        if (_exclusiveLockLending) {
+            [[NSDistributedNotificationCenter defaultCenter] addObserver:self selector:@selector(_handleNotifications:) name:kHIDRemoteDNHIDRemoteStatus object:nil];
+        } else {
+            [[NSDistributedNotificationCenter defaultCenter] removeObserver:self name:kHIDRemoteDNHIDRemoteStatus object:nil];
 
-			[_waitForReturnByPID release];
-			_waitForReturnByPID = nil;
-		}
-	}
+            [_waitForReturnByPID release];
+            _waitForReturnByPID = nil;
+        }
+    }
 }
 
 - (BOOL)exclusiveLockLendingEnabled
 {
-	return (_exclusiveLockLending);
+    return (_exclusiveLockLending);
 }
 
-#pragma mark -- PRIVATE: Application becomes active / inactive handling for kHIDRemoteModeExclusiveAuto --
-- (void)_appStatusChanged:(NSNotification *)notification
+#pragma mark-- PRIVATE: Application becomes active / inactive handling for kHIDRemoteModeExclusiveAuto --
+- (void)_appStatusChanged:(NSNotification*)notification
 {
-	if (notification)
-	{
-		if (_autoRecoveryTimer)
-		{
-			[_autoRecoveryTimer invalidate];
-			[_autoRecoveryTimer release];
-			_autoRecoveryTimer = nil;
-		}
+    if (notification) {
+        if (_autoRecoveryTimer) {
+            [_autoRecoveryTimer invalidate];
+            [_autoRecoveryTimer release];
+            _autoRecoveryTimer = nil;
+        }
 
-		if ([[notification name] isEqual:NSApplicationDidBecomeActiveNotification])
-		{
-			if (_autoRecover)
-			{
-				// Delay autorecover by 0.1 to avoid race conditions
-				if ((_autoRecoveryTimer = [[NSTimer alloc] initWithFireDate:[NSDate dateWithTimeIntervalSinceNow:0.1] interval:0.1 target:self selector:@selector(_delayedAutoRecovery:) userInfo:nil repeats:NO]) != nil)
-				{
-					// Using CFRunLoopAddTimer instead of [[NSRunLoop currentRunLoop] addTimer:.. for consistency with run loop modes.
-					// The kCFRunLoopCommonModes counterpart NSRunLoopCommonModes is only available in 10.5 and later, whereas this code
-					// is designed to be also compatible with 10.4. CFRunLoopTimerRef is "toll-free-bridged" with NSTimer since 10.0.
-					CFRunLoopAddTimer(CFRunLoopGetCurrent(), (CFRunLoopTimerRef)_autoRecoveryTimer, kCFRunLoopCommonModes);
-				}
-			}
-		}
+        if ([[notification name] isEqual:NSApplicationDidBecomeActiveNotification]) {
+            if (_autoRecover) {
+                // Delay autorecover by 0.1 to avoid race conditions
+                if ((_autoRecoveryTimer = [[NSTimer alloc] initWithFireDate:[NSDate dateWithTimeIntervalSinceNow:0.1] interval:0.1 target:self selector:@selector(_delayedAutoRecovery:) userInfo:nil repeats:NO]) != nil) {
+                    // Using CFRunLoopAddTimer instead of [[NSRunLoop currentRunLoop] addTimer:.. for consistency with run loop modes.
+                    // The kCFRunLoopCommonModes counterpart NSRunLoopCommonModes is only available in 10.5 and later, whereas this code
+                    // is designed to be also compatible with 10.4. CFRunLoopTimerRef is "toll-free-bridged" with NSTimer since 10.0.
+                    CFRunLoopAddTimer(CFRunLoopGetCurrent(), (CFRunLoopTimerRef)_autoRecoveryTimer, kCFRunLoopCommonModes);
+                }
+            }
+        }
 
-		if ([[notification name] isEqual:NSApplicationWillResignActiveNotification])
-		{
-			if (_mode == kHIDRemoteModeExclusiveAuto)
-			{
-				[self stopRemoteControl];
-				_autoRecover = YES;
-			}
-		}
+        if ([[notification name] isEqual:NSApplicationWillResignActiveNotification]) {
+            if (_mode == kHIDRemoteModeExclusiveAuto) {
+                [self stopRemoteControl];
+                _autoRecover = YES;
+            }
+        }
 
-		if ([[notification name] isEqual:NSApplicationWillTerminateNotification])
-		{
-			if ([self isStarted])
-			{
-				[self stopRemoteControl];
-			}
-		}
-	}
+        if ([[notification name] isEqual:NSApplicationWillTerminateNotification]) {
+            if ([self isStarted]) {
+                [self stopRemoteControl];
+            }
+        }
+    }
 }
 
-- (void)_delayedAutoRecovery:(NSTimer *)aTimer
+- (void)_delayedAutoRecovery:(NSTimer*)aTimer
 {
-	[_autoRecoveryTimer invalidate];
-	[_autoRecoveryTimer release];
-	_autoRecoveryTimer = nil;
+    [_autoRecoveryTimer invalidate];
+    [_autoRecoveryTimer release];
+    _autoRecoveryTimer = nil;
 
-	if (_autoRecover)
-	{
-		[self startRemoteControl:kHIDRemoteModeExclusiveAuto];
-		_autoRecover = NO;
-	}
+    if (_autoRecover) {
+        [self startRemoteControl:kHIDRemoteModeExclusiveAuto];
+        _autoRecover = NO;
+    }
 }
 
-
-#pragma mark -- PRIVATE: Distributed notifiations handling --
-- (void)_postStatusWithAction:(NSString *)action
+#pragma mark-- PRIVATE: Distributed notifiations handling --
+- (void)_postStatusWithAction:(NSString*)action
 {
-	[[NSDistributedNotificationCenter defaultCenter] postNotificationName:kHIDRemoteDNHIDRemoteStatus
-								       object:[NSString stringWithFormat:@"%d",getpid()]
-								     userInfo:[NSDictionary dictionaryWithObjectsAndKeys:
-											[NSNumber numberWithInt:1],							kHIDRemoteDNStatusHIDRemoteVersionKey,
-											[NSNumber numberWithUnsignedInt:(unsigned int)getpid()],			kHIDRemoteDNStatusPIDKey,
-											[NSNumber numberWithInt:(int)_mode],						kHIDRemoteDNStatusModeKey,
-											[NSNumber numberWithUnsignedInt:(unsigned int)[self activeRemoteControlCount]], kHIDRemoteDNStatusRemoteControlCountKey,
-											((_unusedButtonCodes!=nil) ? _unusedButtonCodes : [NSArray array]),		kHIDRemoteDNStatusUnusedButtonCodesKey,
-											action,										kHIDRemoteDNStatusActionKey,
-											[[NSBundle mainBundle] bundleIdentifier],					(NSString *)kCFBundleIdentifierKey,
-											_returnToPID,									kHIDRemoteDNStatusReturnToPIDKey,
-									      nil]
-							   deliverImmediately:YES
-	];
+    [[NSDistributedNotificationCenter defaultCenter] postNotificationName:kHIDRemoteDNHIDRemoteStatus
+                                                                   object:[NSString stringWithFormat:@"%d", getpid()]
+                                                                 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:
+                                                                                  [NSNumber numberWithInt:1], kHIDRemoteDNStatusHIDRemoteVersionKey,
+                                                                              [NSNumber numberWithUnsignedInt:(unsigned int)getpid()], kHIDRemoteDNStatusPIDKey,
+                                                                              [NSNumber numberWithInt:(int)_mode], kHIDRemoteDNStatusModeKey,
+                                                                              [NSNumber numberWithUnsignedInt:(unsigned int)[self activeRemoteControlCount]], kHIDRemoteDNStatusRemoteControlCountKey,
+                                                                              ((_unusedButtonCodes != nil) ? _unusedButtonCodes : [NSArray array]), kHIDRemoteDNStatusUnusedButtonCodesKey,
+                                                                              action, kHIDRemoteDNStatusActionKey,
+                                                                              [[NSBundle mainBundle] bundleIdentifier], (NSString*)kCFBundleIdentifierKey,
+                                                                              _returnToPID, kHIDRemoteDNStatusReturnToPIDKey,
+                                                                              nil]
+                                                       deliverImmediately:YES];
 }
 
-- (void)_handleNotifications:(NSNotification *)notification
+- (void)_handleNotifications:(NSNotification*)notification
 {
-	NSString *notificationName;
+    NSString* notificationName;
 
-	if ((notification!=nil) && ((notificationName = [notification name]) != nil))
-	{
-		if ([notificationName isEqual:kHIDRemoteDNHIDRemotePing])
-		{
-			[self _postStatusWithAction:kHIDRemoteDNStatusActionUpdate];
-		}
+    if ((notification != nil) && ((notificationName = [notification name]) != nil)) {
+        if ([notificationName isEqual:kHIDRemoteDNHIDRemotePing]) {
+            [self _postStatusWithAction:kHIDRemoteDNStatusActionUpdate];
+        }
 
-		if ([notificationName isEqual:kHIDRemoteDNHIDRemoteRetry])
-		{
-			if ([self isStarted])
-			{
-				BOOL retry = YES;
+        if ([notificationName isEqual:kHIDRemoteDNHIDRemoteRetry]) {
+            if ([self isStarted]) {
+                BOOL retry = YES;
 
-				if (([self delegate] != nil) &&
-				    ([[self delegate] respondsToSelector:@selector(hidRemote:shouldRetryExclusiveLockWithInfo:)]))
-				{
-					retry = [[self delegate] hidRemote:self shouldRetryExclusiveLockWithInfo:[notification userInfo]];
-				}
+                if (([self delegate] != nil) && ([[self delegate] respondsToSelector:@selector(hidRemote:shouldRetryExclusiveLockWithInfo:)])) {
+                    retry = [[self delegate] hidRemote:self shouldRetryExclusiveLockWithInfo:[notification userInfo]];
+                }
 
-				if (retry)
-				{
-					HIDRemoteMode restartInMode = _mode;
+                if (retry) {
+                    HIDRemoteMode restartInMode = _mode;
 
-					if (restartInMode != kHIDRemoteModeNone)
-					{
-						[self stopRemoteControl];
+                    if (restartInMode != kHIDRemoteModeNone) {
+                        [self stopRemoteControl];
 
-						[_returnToPID release];
-						[self startRemoteControl:restartInMode];
+                        [_returnToPID release];
+                        [self startRemoteControl:restartInMode];
 
-						if (restartInMode != kHIDRemoteModeShared)
-						{
-							_returnToPID = [[[notification userInfo] objectForKey:kHIDRemoteDNStatusPIDKey] retain];
-						}
-					}
-				}
-				else
-				{
-					NSNumber *cacheReturnPID = _returnToPID;
+                        if (restartInMode != kHIDRemoteModeShared) {
+                            _returnToPID = [[[notification userInfo] objectForKey:kHIDRemoteDNStatusPIDKey] retain];
+                        }
+                    }
+                } else {
+                    NSNumber* cacheReturnPID = _returnToPID;
 
-					_returnToPID = [[[notification userInfo] objectForKey:kHIDRemoteDNStatusPIDKey] retain];
-					[self _postStatusWithAction:kHIDRemoteDNStatusActionNoNeed];
-					[_returnToPID release];
+                    _returnToPID = [[[notification userInfo] objectForKey:kHIDRemoteDNStatusPIDKey] retain];
+                    [self _postStatusWithAction:kHIDRemoteDNStatusActionNoNeed];
+                    [_returnToPID release];
 
-					_returnToPID = cacheReturnPID;
-				}
-			}
-		}
+                    _returnToPID = cacheReturnPID;
+                }
+            }
+        }
 
-		if (_exclusiveLockLending)
-		{
-			if ([notificationName isEqual:kHIDRemoteDNHIDRemoteStatus])
-			{
-				NSString *action;
+        if (_exclusiveLockLending) {
+            if ([notificationName isEqual:kHIDRemoteDNHIDRemoteStatus]) {
+                NSString* action;
 
-				if ((action = [[notification userInfo] objectForKey:kHIDRemoteDNStatusActionKey]) != nil)
-				{
-					if ((_mode == kHIDRemoteModeNone) && _waitForReturnByPID)
-					{
-						NSNumber *pidNumber, *returnToPIDNumber;
+                if ((action = [[notification userInfo] objectForKey:kHIDRemoteDNStatusActionKey]) != nil) {
+                    if ((_mode == kHIDRemoteModeNone) && _waitForReturnByPID) {
+                        NSNumber *pidNumber, *returnToPIDNumber;
 
-						if ((pidNumber		= [[notification userInfo] objectForKey:kHIDRemoteDNStatusPIDKey]) != nil)
-						{
-							returnToPIDNumber = [[notification userInfo] objectForKey:kHIDRemoteDNStatusReturnToPIDKey];
+                        if ((pidNumber = [[notification userInfo] objectForKey:kHIDRemoteDNStatusPIDKey]) != nil) {
+                            returnToPIDNumber = [[notification userInfo] objectForKey:kHIDRemoteDNStatusReturnToPIDKey];
 
-							if ([action isEqual:kHIDRemoteDNStatusActionStart])
-							{
-								if ([pidNumber isEqual:_waitForReturnByPID])
-								{
-									NSNumber *startMode;
+                            if ([action isEqual:kHIDRemoteDNStatusActionStart]) {
+                                if ([pidNumber isEqual:_waitForReturnByPID]) {
+                                    NSNumber* startMode;
 
-									 if ((startMode = [[notification userInfo] objectForKey:kHIDRemoteDNStatusModeKey]) != nil)
-									 {
-										if ([startMode intValue] == kHIDRemoteModeShared)
-										{
-											returnToPIDNumber = [NSNumber numberWithInt:getpid()];
-											action = kHIDRemoteDNStatusActionNoNeed;
-										}
-									 }
-								}
-							}
+                                    if ((startMode = [[notification userInfo] objectForKey:kHIDRemoteDNStatusModeKey]) != nil) {
+                                        if ([startMode intValue] == kHIDRemoteModeShared) {
+                                            returnToPIDNumber = [NSNumber numberWithInt:getpid()];
+                                            action = kHIDRemoteDNStatusActionNoNeed;
+                                        }
+                                    }
+                                }
+                            }
 
-							if (returnToPIDNumber != nil)
-							{
-								if ([action isEqual:kHIDRemoteDNStatusActionStop] || [action isEqual:kHIDRemoteDNStatusActionNoNeed])
-								{
-									if ([pidNumber isEqual:_waitForReturnByPID] && ([returnToPIDNumber intValue] == getpid()))
-									{
-										[_waitForReturnByPID release];
-										_waitForReturnByPID = nil;
+                            if (returnToPIDNumber != nil) {
+                                if ([action isEqual:kHIDRemoteDNStatusActionStop] || [action isEqual:kHIDRemoteDNStatusActionNoNeed]) {
+                                    if ([pidNumber isEqual:_waitForReturnByPID] && ([returnToPIDNumber intValue] == getpid())) {
+                                        [_waitForReturnByPID release];
+                                        _waitForReturnByPID = nil;
 
-										if (([self delegate] != nil) &&
-										    ([[self delegate] respondsToSelector:@selector(hidRemote:exclusiveLockReleasedByApplicationWithInfo:)]))
-										{
-											[[self delegate] hidRemote:self exclusiveLockReleasedByApplicationWithInfo:[notification userInfo]];
-										}
-										else
-										{
-											[self startRemoteControl:kHIDRemoteModeExclusive];
-										}
-									}
-								}
-							}
-						}
-					}
+                                        if (([self delegate] != nil) && ([[self delegate] respondsToSelector:@selector(hidRemote:exclusiveLockReleasedByApplicationWithInfo:)])) {
+                                            [[self delegate] hidRemote:self exclusiveLockReleasedByApplicationWithInfo:[notification userInfo]];
+                                        } else {
+                                            [self startRemoteControl:kHIDRemoteModeExclusive];
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
 
-					if (_mode==kHIDRemoteModeExclusive)
-					{
-						if ([action isEqual:kHIDRemoteDNStatusActionStart])
-						{
-							NSNumber *originPID = [[notification userInfo] objectForKey:kHIDRemoteDNStatusPIDKey];
-							BOOL lendLock = YES;
+                    if (_mode == kHIDRemoteModeExclusive) {
+                        if ([action isEqual:kHIDRemoteDNStatusActionStart]) {
+                            NSNumber* originPID = [[notification userInfo] objectForKey:kHIDRemoteDNStatusPIDKey];
+                            BOOL lendLock = YES;
 
-							if ([originPID intValue] != getpid())
-							{
-								if (([self delegate] != nil) &&
-								    ([[self delegate] respondsToSelector:@selector(hidRemote:lendExclusiveLockToApplicationWithInfo:)]))
-								{
-									lendLock = [[self delegate] hidRemote:self lendExclusiveLockToApplicationWithInfo:[notification userInfo]];
-								}
+                            if ([originPID intValue] != getpid()) {
+                                if (([self delegate] != nil) && ([[self delegate] respondsToSelector:@selector(hidRemote:lendExclusiveLockToApplicationWithInfo:)])) {
+                                    lendLock = [[self delegate] hidRemote:self lendExclusiveLockToApplicationWithInfo:[notification userInfo]];
+                                }
 
-								if (lendLock)
-								{
-									[_waitForReturnByPID release];
-									_waitForReturnByPID = [originPID retain];
+                                if (lendLock) {
+                                    [_waitForReturnByPID release];
+                                    _waitForReturnByPID = [originPID retain];
 
-									if (_waitForReturnByPID != nil)
-									{
-										[self stopRemoteControl];
+                                    if (_waitForReturnByPID != nil) {
+                                        [self stopRemoteControl];
 
-										[[NSDistributedNotificationCenter defaultCenter] postNotificationName:kHIDRemoteDNHIDRemoteRetry
-																	       object:[NSString stringWithFormat:@"%d", [_waitForReturnByPID intValue]]
-																	     userInfo:[NSDictionary dictionaryWithObjectsAndKeys:
-																				[NSNumber numberWithUnsignedInt:(unsigned int)getpid()], kHIDRemoteDNStatusPIDKey,
-																				[[NSBundle mainBundle] bundleIdentifier],		 (NSString *)kCFBundleIdentifierKey,
-																		      nil]
-																   deliverImmediately:YES];
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	}
+                                        [[NSDistributedNotificationCenter defaultCenter] postNotificationName:kHIDRemoteDNHIDRemoteRetry
+                                                                                                       object:[NSString stringWithFormat:@"%d", [_waitForReturnByPID intValue]]
+                                                                                                     userInfo:[NSDictionary dictionaryWithObjectsAndKeys:
+                                                                                                                      [NSNumber numberWithUnsignedInt:(unsigned int)getpid()], kHIDRemoteDNStatusPIDKey,
+                                                                                                                  [[NSBundle mainBundle] bundleIdentifier], (NSString*)kCFBundleIdentifierKey,
+                                                                                                                  nil]
+                                                                                           deliverImmediately:YES];
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
-#pragma mark -- PRIVATE: Service setup and destruction --
+#pragma mark-- PRIVATE: Service setup and destruction --
 - (BOOL)_prematchService:(io_object_t)service
 {
-	BOOL serviceMatches = NO;
-	NSString *ioClass;
-	NSNumber *candelairHIDRemoteCompatibilityMask;
+    BOOL serviceMatches = NO;
+    NSString* ioClass;
+    NSNumber* candelairHIDRemoteCompatibilityMask;
 
-	if (service != 0)
-	{
-		// IOClass matching
-		if ((ioClass = (NSString *)IORegistryEntryCreateCFProperty((io_registry_entry_t)service,
-									   CFSTR(kIOClassKey),
-									   kCFAllocatorDefault,
-									   0)) != nil)
-		{
-			// Match on Apple's AppleIRController and old versions of the Remote Buddy IR Controller
-			if ([ioClass isEqual:@"AppleIRController"] || [ioClass isEqual:@"RBIOKitAIREmu"])
-			{
-				CFTypeRef candelairHIDRemoteCompatibilityDevice;
+    if (service != 0) {
+        // IOClass matching
+        if ((ioClass = (NSString*)IORegistryEntryCreateCFProperty((io_registry_entry_t)service,
+                 CFSTR(kIOClassKey),
+                 kCFAllocatorDefault,
+                 0))
+            != nil) {
+            // Match on Apple's AppleIRController and old versions of the Remote Buddy IR Controller
+            if ([ioClass isEqual:@"AppleIRController"] || [ioClass isEqual:@"RBIOKitAIREmu"]) {
+                CFTypeRef candelairHIDRemoteCompatibilityDevice;
 
-				serviceMatches = YES;
+                serviceMatches = YES;
 
-				if ((candelairHIDRemoteCompatibilityDevice = IORegistryEntryCreateCFProperty((io_registry_entry_t)service, CFSTR("CandelairHIDRemoteCompatibilityDevice"), kCFAllocatorDefault, 0)) != NULL)
-				{
-					if (CFEqual(kCFBooleanTrue, candelairHIDRemoteCompatibilityDevice))
-					{
-						serviceMatches = NO;
-					}
+                if ((candelairHIDRemoteCompatibilityDevice = IORegistryEntryCreateCFProperty((io_registry_entry_t)service, CFSTR("CandelairHIDRemoteCompatibilityDevice"), kCFAllocatorDefault, 0)) != NULL) {
+                    if (CFEqual(kCFBooleanTrue, candelairHIDRemoteCompatibilityDevice)) {
+                        serviceMatches = NO;
+                    }
 
-					CFRelease (candelairHIDRemoteCompatibilityDevice);
-				}
-			}
+                    CFRelease(candelairHIDRemoteCompatibilityDevice);
+                }
+            }
 
-			// Match on the virtual IOSPIRIT IR Controller
-			if ([ioClass isEqual:@"IOSPIRITIRController"])
-			{
-				serviceMatches = YES;
-			}
+            // Match on the virtual IOSPIRIT IR Controller
+            if ([ioClass isEqual:@"IOSPIRITIRController"]) {
+                serviceMatches = YES;
+            }
 
-			CFRelease((CFTypeRef)ioClass);
-		}
+            CFRelease((CFTypeRef)ioClass);
+        }
 
-		// Match on services that claim compatibility with the HID Remote class (Candelair or third-party) by having a property of CandelairHIDRemoteCompatibilityMask = 1 <Type: Number>
-		if ((candelairHIDRemoteCompatibilityMask = (NSNumber *)IORegistryEntryCreateCFProperty((io_registry_entry_t)service, CFSTR("CandelairHIDRemoteCompatibilityMask"), kCFAllocatorDefault, 0)) != nil)
-		{
-			if ([candelairHIDRemoteCompatibilityMask isKindOfClass:[NSNumber class]])
-			{
-				if ([candelairHIDRemoteCompatibilityMask unsignedIntValue] & kHIDRemoteCompatibilityFlagsStandardHIDRemoteDevice)
-				{
-					serviceMatches = YES;
-				}
-				else
-				{
-					serviceMatches = NO;
-				}
-			}
+        // Match on services that claim compatibility with the HID Remote class (Candelair or third-party) by having a property of CandelairHIDRemoteCompatibilityMask = 1 <Type: Number>
+        if ((candelairHIDRemoteCompatibilityMask = (NSNumber*)IORegistryEntryCreateCFProperty((io_registry_entry_t)service, CFSTR("CandelairHIDRemoteCompatibilityMask"), kCFAllocatorDefault, 0)) != nil) {
+            if ([candelairHIDRemoteCompatibilityMask isKindOfClass:[NSNumber class]]) {
+                if ([candelairHIDRemoteCompatibilityMask unsignedIntValue] & kHIDRemoteCompatibilityFlagsStandardHIDRemoteDevice) {
+                    serviceMatches = YES;
+                } else {
+                    serviceMatches = NO;
+                }
+            }
 
-			CFRelease((CFTypeRef)candelairHIDRemoteCompatibilityMask);
-		}
-	}
+            CFRelease((CFTypeRef)candelairHIDRemoteCompatibilityMask);
+        }
+    }
 
-	if (([self delegate]!=nil) &&
-	    ([[self delegate] respondsToSelector:@selector(hidRemote:inspectNewHardwareWithService:prematchResult:)]))
-	{
-		serviceMatches = [((NSObject <HIDRemoteDelegate> *)[self delegate]) hidRemote:self inspectNewHardwareWithService:service prematchResult:serviceMatches];
-	}
+    if (([self delegate] != nil) && ([[self delegate] respondsToSelector:@selector(hidRemote:inspectNewHardwareWithService:prematchResult:)])) {
+        serviceMatches = [((NSObject<HIDRemoteDelegate>*)[self delegate]) hidRemote:self inspectNewHardwareWithService:service prematchResult:serviceMatches];
+    }
 
-	return (serviceMatches);
+    return (serviceMatches);
 }
 
 - (HIDRemoteButtonCode)buttonCodeForUsage:(unsigned int)usage usagePage:(unsigned int)usagePage
 {
-	HIDRemoteButtonCode buttonCode = kHIDRemoteButtonCodeNone;
+    HIDRemoteButtonCode buttonCode = kHIDRemoteButtonCodeNone;
 
-	switch (usagePage)
-	{
-		case kHIDPage_Consumer:
-			switch (usage)
-			{
-				case kHIDUsage_Csmr_MenuPick:
-					// Aluminum Remote: Center
-					buttonCode = (kHIDRemoteButtonCodeCenter|kHIDRemoteButtonCodeAluminumMask);
-				break;
+    switch (usagePage) {
+    case kHIDPage_Consumer:
+        switch (usage) {
+        case kHIDUsage_Csmr_MenuPick:
+            // Aluminum Remote: Center
+            buttonCode = (kHIDRemoteButtonCodeCenter | kHIDRemoteButtonCodeAluminumMask);
+            break;
 
-				case kHIDUsage_Csmr_ModeStep:
-					// Aluminium Remote: Center Hold
-					buttonCode = (kHIDRemoteButtonCodeCenterHold|kHIDRemoteButtonCodeAluminumMask);
-				break;
+        case kHIDUsage_Csmr_ModeStep:
+            // Aluminium Remote: Center Hold
+            buttonCode = (kHIDRemoteButtonCodeCenterHold | kHIDRemoteButtonCodeAluminumMask);
+            break;
 
-				case kHIDUsage_Csmr_PlayOrPause:
-					// Aluminum Remote: Play/Pause
-					buttonCode = (kHIDRemoteButtonCodePlay|kHIDRemoteButtonCodeAluminumMask);
-				break;
+        case kHIDUsage_Csmr_PlayOrPause:
+            // Aluminum Remote: Play/Pause
+            buttonCode = (kHIDRemoteButtonCodePlay | kHIDRemoteButtonCodeAluminumMask);
+            break;
 
-				case kHIDUsage_Csmr_Rewind:
-					buttonCode = kHIDRemoteButtonCodeLeftHold;
-				break;
+        case kHIDUsage_Csmr_Rewind:
+            buttonCode = kHIDRemoteButtonCodeLeftHold;
+            break;
 
-				case kHIDUsage_Csmr_FastForward:
-					buttonCode = kHIDRemoteButtonCodeRightHold;
-				break;
+        case kHIDUsage_Csmr_FastForward:
+            buttonCode = kHIDRemoteButtonCodeRightHold;
+            break;
 
-				case kHIDUsage_Csmr_Menu:
-					buttonCode = kHIDRemoteButtonCodeMenuHold;
-				break;
-			}
-		break;
+        case kHIDUsage_Csmr_Menu:
+            buttonCode = kHIDRemoteButtonCodeMenuHold;
+            break;
+        }
+        break;
 
-		case kHIDPage_GenericDesktop:
-			switch (usage)
-			{
-				case kHIDUsage_GD_SystemAppMenu:
-					buttonCode = kHIDRemoteButtonCodeMenu;
-				break;
+    case kHIDPage_GenericDesktop:
+        switch (usage) {
+        case kHIDUsage_GD_SystemAppMenu:
+            buttonCode = kHIDRemoteButtonCodeMenu;
+            break;
 
-				case kHIDUsage_GD_SystemMenu:
-					buttonCode = kHIDRemoteButtonCodeCenter;
-				break;
+        case kHIDUsage_GD_SystemMenu:
+            buttonCode = kHIDRemoteButtonCodeCenter;
+            break;
 
-				case kHIDUsage_GD_SystemMenuRight:
-					buttonCode = kHIDRemoteButtonCodeRight;
-				break;
+        case kHIDUsage_GD_SystemMenuRight:
+            buttonCode = kHIDRemoteButtonCodeRight;
+            break;
 
-				case kHIDUsage_GD_SystemMenuLeft:
-					buttonCode = kHIDRemoteButtonCodeLeft;
-				break;
+        case kHIDUsage_GD_SystemMenuLeft:
+            buttonCode = kHIDRemoteButtonCodeLeft;
+            break;
 
-				case kHIDUsage_GD_SystemMenuUp:
-					buttonCode = kHIDRemoteButtonCodeUp;
-				break;
+        case kHIDUsage_GD_SystemMenuUp:
+            buttonCode = kHIDRemoteButtonCodeUp;
+            break;
 
-				case kHIDUsage_GD_SystemMenuDown:
-					buttonCode = kHIDRemoteButtonCodeDown;
-				break;
-			}
-		break;
+        case kHIDUsage_GD_SystemMenuDown:
+            buttonCode = kHIDRemoteButtonCodeDown;
+            break;
+        }
+        break;
 
-		case 0x06: /* Reserved */
-			switch (usage)
-			{
-				case 0x22:
-					buttonCode = kHIDRemoteButtonCodeIDChanged;
-				break;
-			}
-		break;
+    case 0x06: /* Reserved */
+        switch (usage) {
+        case 0x22:
+            buttonCode = kHIDRemoteButtonCodeIDChanged;
+            break;
+        }
+        break;
 
-		case 0xFF01: /* Vendor specific */
-			switch (usage)
-			{
-				case 0x23:
-					buttonCode = kHIDRemoteButtonCodeCenterHold;
-				break;
+    case 0xFF01: /* Vendor specific */
+        switch (usage) {
+        case 0x23:
+            buttonCode = kHIDRemoteButtonCodeCenterHold;
+            break;
 
-				#ifdef _HIDREMOTE_EXTENSIONS
-					#define _HIDREMOTE_EXTENSIONS_SECTION 2
-					#include "HIDRemoteAdditions.h"
-					#undef _HIDREMOTE_EXTENSIONS_SECTION
-				#endif /* _HIDREMOTE_EXTENSIONS */
-			}
-		break;
-	}
+#ifdef _HIDREMOTE_EXTENSIONS
+#define _HIDREMOTE_EXTENSIONS_SECTION 2
+#include "HIDRemoteAdditions.h"
+#undef _HIDREMOTE_EXTENSIONS_SECTION
+#endif /* _HIDREMOTE_EXTENSIONS */
+        }
+        break;
+    }
 
-	return (buttonCode);
+    return (buttonCode);
 }
 
 - (BOOL)_setupService:(io_object_t)service
 {
-	kern_return_t		 kernResult;
-	IOReturn		 returnCode;
-	HRESULT			 hResult;
-	SInt32			 score;
-	BOOL			 opened = NO, queueStarted = NO;
-	IOHIDDeviceInterface122	 **hidDeviceInterface	= NULL;
-	IOCFPlugInInterface	 **cfPluginInterface	= NULL;
-	IOHIDQueueInterface	 **hidQueueInterface	= NULL;
-	io_object_t		 serviceNotification	= 0;
-	CFRunLoopSourceRef	 queueEventSource	= NULL;
-	NSMutableDictionary	 *hidAttribsDict	= nil;
-	CFArrayRef		 hidElements		= NULL;
-	NSError			 *error			= nil;
-	UInt32			 errorCode		= 0;
-
-	if (![self _prematchService:service])
-	{
-		return (NO);
-	}
-
-	do
-	{
-		// Create a plugin interface ..
-		kernResult = IOCreatePlugInInterfaceForService(	service,
-								kIOHIDDeviceUserClientTypeID,
-								kIOCFPlugInInterfaceID,
-								&cfPluginInterface,
-								&score);
-
-		if (kernResult != kIOReturnSuccess)
-		{
-			error = [NSError errorWithDomain:NSMachErrorDomain code:kernResult userInfo:nil];
-			errorCode = 1;
-			break;
-		}
-
-
-		// .. use it to get the HID interface ..
-		hResult = (*cfPluginInterface)->QueryInterface(	cfPluginInterface,
-								CFUUIDGetUUIDBytes(kIOHIDDeviceInterfaceID122),
-								(LPVOID)&hidDeviceInterface);
-
-		if ((hResult!=S_OK) || (hidDeviceInterface==NULL))
-		{
-			error = [NSError errorWithDomain:NSMachErrorDomain code:hResult userInfo:nil];
-			errorCode = 2;
-			break;
-		}
-
-
-		// .. then open it ..
-		switch (_mode)
-		{
-			case kHIDRemoteModeShared:
-				hResult = (*hidDeviceInterface)->open(hidDeviceInterface, kIOHIDOptionsTypeNone);
-			break;
-
-			case kHIDRemoteModeExclusive:
-			case kHIDRemoteModeExclusiveAuto:
-				hResult = (*hidDeviceInterface)->open(hidDeviceInterface, kIOHIDOptionsTypeSeizeDevice);
-			break;
-
-			default:
-				goto cleanUp; // Ugh! But there are no "double breaks" available in C AFAIK ..
-			break;
-		}
-
-		if (hResult!=S_OK)
-		{
-			error = [NSError errorWithDomain:NSMachErrorDomain code:hResult userInfo:nil];
-			errorCode = 3;
-			break;
-		}
-
-		opened = YES;
-
-		// .. query the HID elements ..
-		returnCode = (*hidDeviceInterface)->copyMatchingElements(hidDeviceInterface,
-									 NULL,
-									 &hidElements);
-		if ((returnCode != kIOReturnSuccess) || (hidElements==NULL))
-		{
-			error = [NSError errorWithDomain:NSMachErrorDomain code:returnCode userInfo:nil];
-			errorCode = 4;
-
-			break;
-		}
-
-		// Setup an event queue for HID events!
-		hidQueueInterface = (*hidDeviceInterface)->allocQueue(hidDeviceInterface);
-		if (hidQueueInterface == NULL)
-		{
-			error = [NSError errorWithDomain:NSMachErrorDomain code:kIOReturnError userInfo:nil];
-			errorCode = 5;
-
-			break;
-		}
-
-		returnCode = (*hidQueueInterface)->create(hidQueueInterface, 0, 32);
-		if ((returnCode != kIOReturnSuccess) || (hidElements==NULL))
-		{
-			error = [NSError errorWithDomain:NSMachErrorDomain code:returnCode userInfo:nil];
-			errorCode = 6;
-
-			break;
-		}
-
-
-		// Setup of attributes stored for this HID device
-		hidAttribsDict = [[NSMutableDictionary alloc] initWithObjectsAndKeys:
-					[NSValue valueWithPointer:(const void *)cfPluginInterface],	kHIDRemoteCFPluginInterface,
-					[NSValue valueWithPointer:(const void *)hidDeviceInterface],	kHIDRemoteHIDDeviceInterface,
-					[NSValue valueWithPointer:(const void *)hidQueueInterface],	kHIDRemoteHIDQueueInterface,
-				 nil];
-
-		{
-			UInt32 i, hidElementCnt = (UInt32)CFArrayGetCount(hidElements);
-			NSMutableDictionary *cookieButtonCodeLUT = [[NSMutableDictionary alloc] init];
-			NSMutableDictionary *cookieCount	= [[NSMutableDictionary alloc] init];
-
-			if ((cookieButtonCodeLUT==nil) || (cookieCount==nil))
-			{
-				[cookieButtonCodeLUT  release];
-				cookieButtonCodeLUT = nil;
-
-				[cookieCount	release];
-				cookieCount = nil;
-
-				error = [NSError errorWithDomain:NSMachErrorDomain code:kIOReturnError userInfo:nil];
-				errorCode = 7;
-
-				break;
-			}
-
-			// Analyze the HID elements and find matching elements
-			for (i=0;i<hidElementCnt;i++)
-			{
-				CFDictionaryRef		hidDict;
-				NSNumber		*usage, *usagePage, *cookie;
-				HIDRemoteButtonCode	buttonCode = kHIDRemoteButtonCodeNone;
-
-				hidDict = CFArrayGetValueAtIndex(hidElements, i);
-
-				usage	  = (NSNumber *) CFDictionaryGetValue(hidDict, CFSTR(kIOHIDElementUsageKey));
-				usagePage = (NSNumber *) CFDictionaryGetValue(hidDict, CFSTR(kIOHIDElementUsagePageKey));
-				cookie    = (NSNumber *) CFDictionaryGetValue(hidDict, CFSTR(kIOHIDElementCookieKey));
-
-				if (usage && usagePage && cookie)
-				{
-					// Find the button codes for the ID combos
-					buttonCode = [self buttonCodeForUsage:[usage unsignedIntValue] usagePage:[usagePage unsignedIntValue]];
-
-					#ifdef _HIDREMOTE_EXTENSIONS
-						// Debug logging code
-						#define _HIDREMOTE_EXTENSIONS_SECTION 3
-						#include "HIDRemoteAdditions.h"
-						#undef _HIDREMOTE_EXTENSIONS_SECTION
-					#endif /* _HIDREMOTE_EXTENSIONS */
-
-					// Did record match?
-					if (buttonCode != kHIDRemoteButtonCodeNone)
-					{
-						NSString *pairString	    = [[NSString alloc] initWithFormat:@"%u_%u", [usagePage unsignedIntValue], [usage unsignedIntValue]];
-						NSNumber *buttonCodeNumber  = [[NSNumber alloc] initWithUnsignedInt:(unsigned int)buttonCode];
-
-						#ifdef _HIDREMOTE_EXTENSIONS
-							// Debug logging code
-							#define _HIDREMOTE_EXTENSIONS_SECTION 4
-							#include "HIDRemoteAdditions.h"
-							#undef _HIDREMOTE_EXTENSIONS_SECTION
-						#endif /* _HIDREMOTE_EXTENSIONS */
-
-						[cookieCount		setObject:buttonCodeNumber forKey:pairString];
-						[cookieButtonCodeLUT	setObject:buttonCodeNumber forKey:cookie];
-
-						(*hidQueueInterface)->addElement(hidQueueInterface,
-										 (IOHIDElementCookie) [cookie unsignedIntValue],
-										 0);
-
-						[buttonCodeNumber release];
-						[pairString release];
-					}
-				}
-			}
-
-			// Compare number of *unique* matches (thus the cookieCount dictionary) with required minimum
-			if ([cookieCount count] < 10)
-			{
-				[cookieButtonCodeLUT  release];
-				cookieButtonCodeLUT = nil;
-
-				[cookieCount	release];
-				cookieCount = nil;
-
-				error = [NSError errorWithDomain:NSMachErrorDomain code:kIOReturnError userInfo:nil];
-				errorCode = 8;
-
-				break;
-			}
-
-			[hidAttribsDict setObject:cookieButtonCodeLUT forKey:kHIDRemoteCookieButtonCodeLUT];
-
-			[cookieButtonCodeLUT  release];
-			cookieButtonCodeLUT = nil;
-
-			[cookieCount	release];
-			cookieCount = nil;
-		}
-
-		// Finish setup of IOHIDQueueInterface with CFRunLoop
-		returnCode = (*hidQueueInterface)->createAsyncEventSource(hidQueueInterface, &queueEventSource);
-		if ((returnCode != kIOReturnSuccess) || (queueEventSource == NULL))
-		{
-			error = [NSError errorWithDomain:NSMachErrorDomain code:returnCode userInfo:nil];
-			errorCode = 9;
-			break;
-		}
-
-		returnCode = (*hidQueueInterface)->setEventCallout(hidQueueInterface, HIDEventCallback, (void *)((intptr_t)service), (void *)self);
-		if (returnCode != kIOReturnSuccess)
-		{
-			error = [NSError errorWithDomain:NSMachErrorDomain code:returnCode userInfo:nil];
-			errorCode = 10;
-			break;
-		}
-
-		CFRunLoopAddSource(	CFRunLoopGetCurrent(),
-					queueEventSource,
-					kCFRunLoopCommonModes);
-		[hidAttribsDict setObject:[NSValue valueWithPointer:(const void *)queueEventSource] forKey:kHIDRemoteCFRunLoopSource];
-
-		returnCode = (*hidQueueInterface)->start(hidQueueInterface);
-		if (returnCode != kIOReturnSuccess)
-		{
-			error = [NSError errorWithDomain:NSMachErrorDomain code:returnCode userInfo:nil];
-			errorCode = 11;
-			break;
-		}
-
-		queueStarted = YES;
-
-		// Setup device notifications
-		returnCode = IOServiceAddInterestNotification(	_notifyPort,
-								service,
-								kIOGeneralInterest,
-								ServiceNotificationCallback,
-								self,
-								&serviceNotification);
-		if ((returnCode != kIOReturnSuccess) || (serviceNotification==0))
-		{
-			error = [NSError errorWithDomain:NSMachErrorDomain code:returnCode userInfo:nil];
-			errorCode = 12;
-			break;
-		}
-
-		[hidAttribsDict setObject:[NSNumber numberWithUnsignedInt:(unsigned int)serviceNotification] forKey:kHIDRemoteServiceNotification];
-
-		// Retain service
-		if (IOObjectRetain(service) != kIOReturnSuccess)
-		{
-			error = [NSError errorWithDomain:NSMachErrorDomain code:kIOReturnError userInfo:nil];
-			errorCode = 13;
-			break;
-		}
-
-		[hidAttribsDict setObject:[NSNumber numberWithUnsignedInt:(unsigned int)service] forKey:kHIDRemoteService];
-
-		// Get some (somewhat optional) infos on the device
-		{
-			CFStringRef product, manufacturer, transport;
-
-			if ((product = IORegistryEntryCreateCFProperty(	(io_registry_entry_t)service,
-									(CFStringRef) @"Product",
-									kCFAllocatorDefault,
-									0)) != NULL)
-			{
-				if (CFGetTypeID(product) == CFStringGetTypeID())
-				{
-					[hidAttribsDict setObject:(NSString *)product forKey:kHIDRemoteProduct];
-				}
-
-				CFRelease(product);
-			}
-
-			if ((manufacturer = IORegistryEntryCreateCFProperty(	(io_registry_entry_t)service,
-										(CFStringRef) @"Manufacturer",
-										kCFAllocatorDefault,
-										0)) != NULL)
-			{
-				if (CFGetTypeID(manufacturer) == CFStringGetTypeID())
-				{
-					[hidAttribsDict setObject:(NSString *)manufacturer forKey:kHIDRemoteManufacturer];
-				}
-
-				CFRelease(manufacturer);
-			}
-
-			if ((transport = IORegistryEntryCreateCFProperty(	(io_registry_entry_t)service,
-										(CFStringRef) @"Transport",
-										kCFAllocatorDefault,
-										0)) != NULL)
-			{
-				if (CFGetTypeID(transport) == CFStringGetTypeID())
-				{
-					[hidAttribsDict setObject:(NSString *)transport forKey:kHIDRemoteTransport];
-				}
-
-				CFRelease(transport);
-			}
-		}
-
-		// Determine Aluminum Remote support
-		{
-			CFNumberRef aluSupport;
-			HIDRemoteAluminumRemoteSupportLevel supportLevel = kHIDRemoteAluminumRemoteSupportLevelNone;
-
-			if ((_mode == kHIDRemoteModeExclusive) || (_mode == kHIDRemoteModeExclusiveAuto))
-			{
-				// Determine if this driver offers on-demand support for the Aluminum Remote (only relevant under OS versions < 10.6.2)
-				if ((aluSupport = IORegistryEntryCreateCFProperty((io_registry_entry_t)service,
-										  (CFStringRef) @"AluminumRemoteSupportLevelOnDemand",
-										  kCFAllocatorDefault,
-										  0)) != nil)
-				{
-					// There is => request the driver to enable it for us
-					if (IORegistryEntrySetCFProperty((io_registry_entry_t)service,
-									 CFSTR("EnableAluminumRemoteSupportForMe"),
-									 [NSDictionary dictionaryWithObjectsAndKeys:
-										[NSNumber numberWithLongLong:(long long)getpid()],	@"pid",
-										[NSNumber numberWithLongLong:(long long)getuid()],	@"uid",
-									 nil]) == kIOReturnSuccess)
-					{
-						if (CFGetTypeID(aluSupport) == CFNumberGetTypeID())
-						{
-							supportLevel = (HIDRemoteAluminumRemoteSupportLevel) [(NSNumber *)aluSupport intValue];
-						}
-
-						[hidAttribsDict setObject:[NSNumber numberWithBool:YES] forKey:kHIDRemoteAluminumRemoteSupportOnDemand];
-					}
-
-					CFRelease(aluSupport);
-				}
-			}
-
-			if (supportLevel == kHIDRemoteAluminumRemoteSupportLevelNone)
-			{
-				if ((aluSupport = IORegistryEntryCreateCFProperty((io_registry_entry_t)service,
-										  (CFStringRef) @"AluminumRemoteSupportLevel",
-										  kCFAllocatorDefault,
-										  0)) != nil)
-				{
-					if (CFGetTypeID(aluSupport) == CFNumberGetTypeID())
-					{
-						supportLevel = (HIDRemoteAluminumRemoteSupportLevel) [(NSNumber *)aluSupport intValue];
-					}
-
-					CFRelease(aluSupport);
-				}
-				else
-				{
-					CFStringRef ioKitClassName;
-
-					if ((ioKitClassName = IORegistryEntryCreateCFProperty(	(io_registry_entry_t)service,
-												CFSTR(kIOClassKey),
-												kCFAllocatorDefault,
-												0)) != nil)
-					{
-						if ([(NSString *)ioKitClassName isEqual:@"AppleIRController"])
-						{
-							SInt32 systemVersion;
-
-							if (Gestalt(gestaltSystemVersion, &systemVersion) == noErr)
-							{
-								if (systemVersion >= 0x1062)
-								{
-									// Support for the Aluminum Remote was added only with OS 10.6.2. Previous versions can not distinguish
-									// between the Center and the new, seperate Play/Pause button. They'll recognize both as presses of the
-									// "Center" button.
-									//
-									// You CAN, however, receive Aluminum Remote button presses even under OS 10.5 when using Remote Buddy's
-									// Virtual Remote. While Remote Buddy does support the Aluminum Remote across all OS releases it runs on,
-									// its Virtual Remote can only emulate Aluminum Remote button presses under OS 10.5 and up in order not to
-									// break compatibility with applications whose IR Remote code relies on driver internals. [13-Nov-09]
-									supportLevel = kHIDRemoteAluminumRemoteSupportLevelNative;
-								}
-							}
-						}
-
-						CFRelease(ioKitClassName);
-					}
-				}
-			}
-
-			[hidAttribsDict setObject:(NSNumber *)[NSNumber numberWithInt:(int)supportLevel] forKey:kHIDRemoteAluminumRemoteSupportLevel];
-		}
-
-		// Add it to the serviceAttribMap
-		[_serviceAttribMap setObject:hidAttribsDict forKey:[NSNumber numberWithUnsignedInt:(unsigned int)service]];
-
-		// And we're done with setup ..
-		if (([self delegate]!=nil) &&
-		    ([[self delegate] respondsToSelector:@selector(hidRemote:foundNewHardwareWithAttributes:)]))
-		{
-			[((NSObject <HIDRemoteDelegate> *)[self delegate]) hidRemote:self foundNewHardwareWithAttributes:hidAttribsDict];
-		}
-
-		[hidAttribsDict release];
-		hidAttribsDict = nil;
-
-		if (hidElements)
-		{
-			CFRelease(hidElements);
-			hidElements = NULL;
-		}
-
-		return(YES);
-
-	}while(0);
-
-	cleanUp:
-
-	if (([self delegate]!=nil) &&
-	    ([[self delegate] respondsToSelector:@selector(hidRemote:failedNewHardwareWithError:)]))
-	{
-		if (error)
-		{
-			error = [NSError errorWithDomain:[error domain]
-						    code:[error code]
-						userInfo:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:errorCode] forKey:@"InternalErrorCode"]
-				];
-		}
-
-		[((NSObject <HIDRemoteDelegate> *)[self delegate]) hidRemote:self failedNewHardwareWithError:error];
-	}
-
-	// An error occured or this device is not of interest .. cleanup ..
-	if (serviceNotification)
-	{
-		IOObjectRelease(serviceNotification);
-		serviceNotification = 0;
-	}
-
-	if (queueEventSource)
-	{
-		CFRunLoopSourceInvalidate(queueEventSource);
-		queueEventSource=NULL;
-	}
-
-	if (hidQueueInterface)
-	{
-		if (queueStarted)
-		{
-			(*hidQueueInterface)->stop(hidQueueInterface);
-		}
-		(*hidQueueInterface)->dispose(hidQueueInterface);
-		(*hidQueueInterface)->Release(hidQueueInterface);
-		hidQueueInterface = NULL;
-	}
-
-	if (hidAttribsDict)
-	{
-		[hidAttribsDict release];
-		hidAttribsDict = nil;
-	}
-
-	if (hidElements)
-	{
-		CFRelease(hidElements);
-		hidElements = NULL;
-	}
-
-	if (hidDeviceInterface)
-	{
-		if (opened)
-		{
-			(*hidDeviceInterface)->close(hidDeviceInterface);
-		}
-		(*hidDeviceInterface)->Release(hidDeviceInterface);
-		// opened = NO;
-		hidDeviceInterface = NULL;
-	}
-
-	if (cfPluginInterface)
-	{
-		IODestroyPlugInInterface(cfPluginInterface);
-		cfPluginInterface = NULL;
-	}
-
-	return (NO);
+    kern_return_t kernResult;
+    IOReturn returnCode;
+    HRESULT hResult;
+    SInt32 score;
+    BOOL opened = NO, queueStarted = NO;
+    IOHIDDeviceInterface122** hidDeviceInterface = NULL;
+    IOCFPlugInInterface** cfPluginInterface = NULL;
+    IOHIDQueueInterface** hidQueueInterface = NULL;
+    io_object_t serviceNotification = 0;
+    CFRunLoopSourceRef queueEventSource = NULL;
+    NSMutableDictionary* hidAttribsDict = nil;
+    CFArrayRef hidElements = NULL;
+    NSError* error = nil;
+    UInt32 errorCode = 0;
+
+    if (![self _prematchService:service]) {
+        return (NO);
+    }
+
+    do {
+        // Create a plugin interface ..
+        kernResult = IOCreatePlugInInterfaceForService(service,
+            kIOHIDDeviceUserClientTypeID,
+            kIOCFPlugInInterfaceID,
+            &cfPluginInterface,
+            &score);
+
+        if (kernResult != kIOReturnSuccess) {
+            error = [NSError errorWithDomain:NSMachErrorDomain code:kernResult userInfo:nil];
+            errorCode = 1;
+            break;
+        }
+
+        // .. use it to get the HID interface ..
+        hResult = (*cfPluginInterface)->QueryInterface(cfPluginInterface, CFUUIDGetUUIDBytes(kIOHIDDeviceInterfaceID122), (LPVOID)&hidDeviceInterface);
+
+        if ((hResult != S_OK) || (hidDeviceInterface == NULL)) {
+            error = [NSError errorWithDomain:NSMachErrorDomain code:hResult userInfo:nil];
+            errorCode = 2;
+            break;
+        }
+
+        // .. then open it ..
+        switch (_mode) {
+        case kHIDRemoteModeShared:
+            hResult = (*hidDeviceInterface)->open(hidDeviceInterface, kIOHIDOptionsTypeNone);
+            break;
+
+        case kHIDRemoteModeExclusive:
+        case kHIDRemoteModeExclusiveAuto:
+            hResult = (*hidDeviceInterface)->open(hidDeviceInterface, kIOHIDOptionsTypeSeizeDevice);
+            break;
+
+        default:
+            goto cleanUp; // Ugh! But there are no "double breaks" available in C AFAIK ..
+            break;
+        }
+
+        if (hResult != S_OK) {
+            error = [NSError errorWithDomain:NSMachErrorDomain code:hResult userInfo:nil];
+            errorCode = 3;
+            break;
+        }
+
+        opened = YES;
+
+        // .. query the HID elements ..
+        returnCode = (*hidDeviceInterface)->copyMatchingElements(hidDeviceInterface, NULL, &hidElements);
+        if ((returnCode != kIOReturnSuccess) || (hidElements == NULL)) {
+            error = [NSError errorWithDomain:NSMachErrorDomain code:returnCode userInfo:nil];
+            errorCode = 4;
+
+            break;
+        }
+
+        // Setup an event queue for HID events!
+        hidQueueInterface = (*hidDeviceInterface)->allocQueue(hidDeviceInterface);
+        if (hidQueueInterface == NULL) {
+            error = [NSError errorWithDomain:NSMachErrorDomain code:kIOReturnError userInfo:nil];
+            errorCode = 5;
+
+            break;
+        }
+
+        returnCode = (*hidQueueInterface)->create(hidQueueInterface, 0, 32);
+        if ((returnCode != kIOReturnSuccess) || (hidElements == NULL)) {
+            error = [NSError errorWithDomain:NSMachErrorDomain code:returnCode userInfo:nil];
+            errorCode = 6;
+
+            break;
+        }
+
+        // Setup of attributes stored for this HID device
+        hidAttribsDict = [[NSMutableDictionary alloc] initWithObjectsAndKeys:
+                [NSValue valueWithPointer:(const void*)cfPluginInterface], kHIDRemoteCFPluginInterface,
+            [NSValue valueWithPointer:(const void*)hidDeviceInterface], kHIDRemoteHIDDeviceInterface,
+            [NSValue valueWithPointer:(const void*)hidQueueInterface], kHIDRemoteHIDQueueInterface,
+            nil];
+
+        {
+            UInt32 i, hidElementCnt = (UInt32)CFArrayGetCount(hidElements);
+            NSMutableDictionary* cookieButtonCodeLUT = [[NSMutableDictionary alloc] init];
+            NSMutableDictionary* cookieCount = [[NSMutableDictionary alloc] init];
+
+            if ((cookieButtonCodeLUT == nil) || (cookieCount == nil)) {
+                [cookieButtonCodeLUT release];
+                cookieButtonCodeLUT = nil;
+
+                [cookieCount release];
+                cookieCount = nil;
+
+                error = [NSError errorWithDomain:NSMachErrorDomain code:kIOReturnError userInfo:nil];
+                errorCode = 7;
+
+                break;
+            }
+
+            // Analyze the HID elements and find matching elements
+            for (i = 0; i < hidElementCnt; i++) {
+                CFDictionaryRef hidDict;
+                NSNumber *usage, *usagePage, *cookie;
+                HIDRemoteButtonCode buttonCode = kHIDRemoteButtonCodeNone;
+
+                hidDict = CFArrayGetValueAtIndex(hidElements, i);
+
+                usage = (NSNumber*)CFDictionaryGetValue(hidDict, CFSTR(kIOHIDElementUsageKey));
+                usagePage = (NSNumber*)CFDictionaryGetValue(hidDict, CFSTR(kIOHIDElementUsagePageKey));
+                cookie = (NSNumber*)CFDictionaryGetValue(hidDict, CFSTR(kIOHIDElementCookieKey));
+
+                if (usage && usagePage && cookie) {
+                    // Find the button codes for the ID combos
+                    buttonCode = [self buttonCodeForUsage:[usage unsignedIntValue] usagePage:[usagePage unsignedIntValue]];
+
+#ifdef _HIDREMOTE_EXTENSIONS
+// Debug logging code
+#define _HIDREMOTE_EXTENSIONS_SECTION 3
+#include "HIDRemoteAdditions.h"
+#undef _HIDREMOTE_EXTENSIONS_SECTION
+#endif /* _HIDREMOTE_EXTENSIONS */
+
+                    // Did record match?
+                    if (buttonCode != kHIDRemoteButtonCodeNone) {
+                        NSString* pairString = [[NSString alloc] initWithFormat:@"%u_%u", [usagePage unsignedIntValue], [usage unsignedIntValue]];
+                        NSNumber* buttonCodeNumber = [[NSNumber alloc] initWithUnsignedInt:(unsigned int)buttonCode];
+
+#ifdef _HIDREMOTE_EXTENSIONS
+// Debug logging code
+#define _HIDREMOTE_EXTENSIONS_SECTION 4
+#include "HIDRemoteAdditions.h"
+#undef _HIDREMOTE_EXTENSIONS_SECTION
+#endif /* _HIDREMOTE_EXTENSIONS */
+
+                        [cookieCount setObject:buttonCodeNumber
+                                        forKey:pairString];
+                        [cookieButtonCodeLUT setObject:buttonCodeNumber forKey:cookie];
+
+                        (*hidQueueInterface)->addElement(hidQueueInterface, (IOHIDElementCookie)[cookie unsignedIntValue], 0);
+
+                        [buttonCodeNumber release];
+                        [pairString release];
+                    }
+                }
+            }
+
+            // Compare number of *unique* matches (thus the cookieCount dictionary) with required minimum
+            if ([cookieCount count] < 10) {
+                [cookieButtonCodeLUT release];
+                cookieButtonCodeLUT = nil;
+
+                [cookieCount release];
+                cookieCount = nil;
+
+                error = [NSError errorWithDomain:NSMachErrorDomain code:kIOReturnError userInfo:nil];
+                errorCode = 8;
+
+                break;
+            }
+
+            [hidAttribsDict setObject:cookieButtonCodeLUT forKey:kHIDRemoteCookieButtonCodeLUT];
+
+            [cookieButtonCodeLUT release];
+            cookieButtonCodeLUT = nil;
+
+            [cookieCount release];
+            cookieCount = nil;
+        }
+
+        // Finish setup of IOHIDQueueInterface with CFRunLoop
+        returnCode = (*hidQueueInterface)->createAsyncEventSource(hidQueueInterface, &queueEventSource);
+        if ((returnCode != kIOReturnSuccess) || (queueEventSource == NULL)) {
+            error = [NSError errorWithDomain:NSMachErrorDomain code:returnCode userInfo:nil];
+            errorCode = 9;
+            break;
+        }
+
+        returnCode = (*hidQueueInterface)->setEventCallout(hidQueueInterface, HIDEventCallback, (void*)((intptr_t)service), (void*)self);
+        if (returnCode != kIOReturnSuccess) {
+            error = [NSError errorWithDomain:NSMachErrorDomain code:returnCode userInfo:nil];
+            errorCode = 10;
+            break;
+        }
+
+        CFRunLoopAddSource(CFRunLoopGetCurrent(),
+            queueEventSource,
+            kCFRunLoopCommonModes);
+        [hidAttribsDict setObject:[NSValue valueWithPointer:(const void*)queueEventSource] forKey:kHIDRemoteCFRunLoopSource];
+
+        returnCode = (*hidQueueInterface)->start(hidQueueInterface);
+        if (returnCode != kIOReturnSuccess) {
+            error = [NSError errorWithDomain:NSMachErrorDomain code:returnCode userInfo:nil];
+            errorCode = 11;
+            break;
+        }
+
+        queueStarted = YES;
+
+        // Setup device notifications
+        returnCode = IOServiceAddInterestNotification(_notifyPort,
+            service,
+            kIOGeneralInterest,
+            ServiceNotificationCallback,
+            self,
+            &serviceNotification);
+        if ((returnCode != kIOReturnSuccess) || (serviceNotification == 0)) {
+            error = [NSError errorWithDomain:NSMachErrorDomain code:returnCode userInfo:nil];
+            errorCode = 12;
+            break;
+        }
+
+        [hidAttribsDict setObject:[NSNumber numberWithUnsignedInt:(unsigned int)serviceNotification] forKey:kHIDRemoteServiceNotification];
+
+        // Retain service
+        if (IOObjectRetain(service) != kIOReturnSuccess) {
+            error = [NSError errorWithDomain:NSMachErrorDomain code:kIOReturnError userInfo:nil];
+            errorCode = 13;
+            break;
+        }
+
+        [hidAttribsDict setObject:[NSNumber numberWithUnsignedInt:(unsigned int)service] forKey:kHIDRemoteService];
+
+        // Get some (somewhat optional) infos on the device
+        {
+            CFStringRef product, manufacturer, transport;
+
+            if ((product = IORegistryEntryCreateCFProperty((io_registry_entry_t)service,
+                     (CFStringRef) @"Product",
+                     kCFAllocatorDefault,
+                     0))
+                != NULL) {
+                if (CFGetTypeID(product) == CFStringGetTypeID()) {
+                    [hidAttribsDict setObject:(NSString*)product forKey:kHIDRemoteProduct];
+                }
+
+                CFRelease(product);
+            }
+
+            if ((manufacturer = IORegistryEntryCreateCFProperty((io_registry_entry_t)service,
+                     (CFStringRef) @"Manufacturer",
+                     kCFAllocatorDefault,
+                     0))
+                != NULL) {
+                if (CFGetTypeID(manufacturer) == CFStringGetTypeID()) {
+                    [hidAttribsDict setObject:(NSString*)manufacturer forKey:kHIDRemoteManufacturer];
+                }
+
+                CFRelease(manufacturer);
+            }
+
+            if ((transport = IORegistryEntryCreateCFProperty((io_registry_entry_t)service,
+                     (CFStringRef) @"Transport",
+                     kCFAllocatorDefault,
+                     0))
+                != NULL) {
+                if (CFGetTypeID(transport) == CFStringGetTypeID()) {
+                    [hidAttribsDict setObject:(NSString*)transport forKey:kHIDRemoteTransport];
+                }
+
+                CFRelease(transport);
+            }
+        }
+
+        // Determine Aluminum Remote support
+        {
+            CFNumberRef aluSupport;
+            HIDRemoteAluminumRemoteSupportLevel supportLevel = kHIDRemoteAluminumRemoteSupportLevelNone;
+
+            if ((_mode == kHIDRemoteModeExclusive) || (_mode == kHIDRemoteModeExclusiveAuto)) {
+                // Determine if this driver offers on-demand support for the Aluminum Remote (only relevant under OS versions < 10.6.2)
+                if ((aluSupport = IORegistryEntryCreateCFProperty((io_registry_entry_t)service,
+                         (CFStringRef) @"AluminumRemoteSupportLevelOnDemand",
+                         kCFAllocatorDefault,
+                         0))
+                    != nil) {
+                    // There is => request the driver to enable it for us
+                    if (IORegistryEntrySetCFProperty((io_registry_entry_t)service,
+                            CFSTR("EnableAluminumRemoteSupportForMe"),
+                            [NSDictionary dictionaryWithObjectsAndKeys:
+                                    [NSNumber numberWithLongLong:(long long)getpid()], @"pid",
+                                [NSNumber numberWithLongLong:(long long)getuid()], @"uid",
+                                nil])
+                        == kIOReturnSuccess) {
+                        if (CFGetTypeID(aluSupport) == CFNumberGetTypeID()) {
+                            supportLevel = (HIDRemoteAluminumRemoteSupportLevel)[(NSNumber*)aluSupport intValue];
+                        }
+
+                        [hidAttribsDict setObject:[NSNumber numberWithBool:YES] forKey:kHIDRemoteAluminumRemoteSupportOnDemand];
+                    }
+
+                    CFRelease(aluSupport);
+                }
+            }
+
+            if (supportLevel == kHIDRemoteAluminumRemoteSupportLevelNone) {
+                if ((aluSupport = IORegistryEntryCreateCFProperty((io_registry_entry_t)service,
+                         (CFStringRef) @"AluminumRemoteSupportLevel",
+                         kCFAllocatorDefault,
+                         0))
+                    != nil) {
+                    if (CFGetTypeID(aluSupport) == CFNumberGetTypeID()) {
+                        supportLevel = (HIDRemoteAluminumRemoteSupportLevel)[(NSNumber*)aluSupport intValue];
+                    }
+
+                    CFRelease(aluSupport);
+                } else {
+                    CFStringRef ioKitClassName;
+
+                    if ((ioKitClassName = IORegistryEntryCreateCFProperty((io_registry_entry_t)service,
+                             CFSTR(kIOClassKey),
+                             kCFAllocatorDefault,
+                             0))
+                        != nil) {
+                        if ([(NSString*)ioKitClassName isEqual:@"AppleIRController"]) {
+                            SInt32 systemVersion;
+
+                            if (Gestalt(gestaltSystemVersion, &systemVersion) == noErr) {
+                                if (systemVersion >= 0x1062) {
+                                    // Support for the Aluminum Remote was added only with OS 10.6.2. Previous versions can not distinguish
+                                    // between the Center and the new, seperate Play/Pause button. They'll recognize both as presses of the
+                                    // "Center" button.
+                                    //
+                                    // You CAN, however, receive Aluminum Remote button presses even under OS 10.5 when using Remote Buddy's
+                                    // Virtual Remote. While Remote Buddy does support the Aluminum Remote across all OS releases it runs on,
+                                    // its Virtual Remote can only emulate Aluminum Remote button presses under OS 10.5 and up in order not to
+                                    // break compatibility with applications whose IR Remote code relies on driver internals. [13-Nov-09]
+                                    supportLevel = kHIDRemoteAluminumRemoteSupportLevelNative;
+                                }
+                            }
+                        }
+
+                        CFRelease(ioKitClassName);
+                    }
+                }
+            }
+
+            [hidAttribsDict setObject:(NSNumber*)[NSNumber numberWithInt:(int)supportLevel] forKey:kHIDRemoteAluminumRemoteSupportLevel];
+        }
+
+        // Add it to the serviceAttribMap
+        [_serviceAttribMap setObject:hidAttribsDict forKey:[NSNumber numberWithUnsignedInt:(unsigned int)service]];
+
+        // And we're done with setup ..
+        if (([self delegate] != nil) && ([[self delegate] respondsToSelector:@selector(hidRemote:foundNewHardwareWithAttributes:)])) {
+            [((NSObject<HIDRemoteDelegate>*)[self delegate]) hidRemote:self foundNewHardwareWithAttributes:hidAttribsDict];
+        }
+
+        [hidAttribsDict release];
+        hidAttribsDict = nil;
+
+        if (hidElements) {
+            CFRelease(hidElements);
+            hidElements = NULL;
+        }
+
+        return (YES);
+
+    } while (0);
+
+cleanUp:
+
+    if (([self delegate] != nil) && ([[self delegate] respondsToSelector:@selector(hidRemote:failedNewHardwareWithError:)])) {
+        if (error) {
+            error = [NSError errorWithDomain:[error domain]
+                                        code:[error code]
+                                    userInfo:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:errorCode] forKey:@"InternalErrorCode"]];
+        }
+
+        [((NSObject<HIDRemoteDelegate>*)[self delegate]) hidRemote:self failedNewHardwareWithError:error];
+    }
+
+    // An error occured or this device is not of interest .. cleanup ..
+    if (serviceNotification) {
+        IOObjectRelease(serviceNotification);
+        serviceNotification = 0;
+    }
+
+    if (queueEventSource) {
+        CFRunLoopSourceInvalidate(queueEventSource);
+        queueEventSource = NULL;
+    }
+
+    if (hidQueueInterface) {
+        if (queueStarted) {
+            (*hidQueueInterface)->stop(hidQueueInterface);
+        }
+        (*hidQueueInterface)->dispose(hidQueueInterface);
+        (*hidQueueInterface)->Release(hidQueueInterface);
+        hidQueueInterface = NULL;
+    }
+
+    if (hidAttribsDict) {
+        [hidAttribsDict release];
+        hidAttribsDict = nil;
+    }
+
+    if (hidElements) {
+        CFRelease(hidElements);
+        hidElements = NULL;
+    }
+
+    if (hidDeviceInterface) {
+        if (opened) {
+            (*hidDeviceInterface)->close(hidDeviceInterface);
+        }
+        (*hidDeviceInterface)->Release(hidDeviceInterface);
+        // opened = NO;
+        hidDeviceInterface = NULL;
+    }
+
+    if (cfPluginInterface) {
+        IODestroyPlugInInterface(cfPluginInterface);
+        cfPluginInterface = NULL;
+    }
+
+    return (NO);
 }
 
 - (void)_destructService:(io_object_t)service
 {
-	NSNumber	    *serviceValue;
-	NSMutableDictionary *serviceDict = NULL;
+    NSNumber* serviceValue;
+    NSMutableDictionary* serviceDict = NULL;
 
-	if ((serviceValue = [NSNumber numberWithUnsignedInt:(unsigned int)service]) == nil)
-	{
-		return;
-	}
+    if ((serviceValue = [NSNumber numberWithUnsignedInt:(unsigned int)service]) == nil) {
+        return;
+    }
 
-	serviceDict  = [_serviceAttribMap objectForKey:serviceValue];
+    serviceDict = [_serviceAttribMap objectForKey:serviceValue];
 
-	if (serviceDict)
-	{
-		IOHIDDeviceInterface122	 **hidDeviceInterface	= NULL;
-		IOCFPlugInInterface	 **cfPluginInterface	= NULL;
-		IOHIDQueueInterface	 **hidQueueInterface	= NULL;
-		io_object_t		 serviceNotification	= 0;
-		CFRunLoopSourceRef	 queueEventSource	= NULL;
-		io_object_t		 theService		= 0;
-		NSMutableDictionary	 *cookieButtonMap	= nil;
-		NSTimer			 *simulateHoldTimer	= nil;
+    if (serviceDict) {
+        IOHIDDeviceInterface122** hidDeviceInterface = NULL;
+        IOCFPlugInInterface** cfPluginInterface = NULL;
+        IOHIDQueueInterface** hidQueueInterface = NULL;
+        io_object_t serviceNotification = 0;
+        CFRunLoopSourceRef queueEventSource = NULL;
+        io_object_t theService = 0;
+        NSMutableDictionary* cookieButtonMap = nil;
+        NSTimer* simulateHoldTimer = nil;
 
-		serviceNotification = (io_object_t)			([serviceDict objectForKey:kHIDRemoteServiceNotification]	? [[serviceDict objectForKey:kHIDRemoteServiceNotification] unsignedIntValue] :   0);
-		theService	    = (io_object_t)			([serviceDict objectForKey:kHIDRemoteService]			? [[serviceDict objectForKey:kHIDRemoteService]		    unsignedIntValue] :   0);
-		queueEventSource    = (CFRunLoopSourceRef)		([serviceDict objectForKey:kHIDRemoteCFRunLoopSource]		? [[serviceDict objectForKey:kHIDRemoteCFRunLoopSource]	    pointerValue]     : NULL);
-		hidQueueInterface   = (IOHIDQueueInterface **)		([serviceDict objectForKey:kHIDRemoteHIDQueueInterface]		? [[serviceDict objectForKey:kHIDRemoteHIDQueueInterface]   pointerValue]     : NULL);
-		hidDeviceInterface  = (IOHIDDeviceInterface122 **)	([serviceDict objectForKey:kHIDRemoteHIDDeviceInterface]	? [[serviceDict objectForKey:kHIDRemoteHIDDeviceInterface]  pointerValue]     : NULL);
-		cfPluginInterface   = (IOCFPlugInInterface **)		([serviceDict objectForKey:kHIDRemoteCFPluginInterface]		? [[serviceDict objectForKey:kHIDRemoteCFPluginInterface]   pointerValue]     : NULL);
-		cookieButtonMap	    = (NSMutableDictionary *)		 [serviceDict objectForKey:kHIDRemoteCookieButtonCodeLUT];
-		simulateHoldTimer   = (NSTimer *)			 [serviceDict objectForKey:kHIDRemoteSimulateHoldEventsTimer];
+        serviceNotification = (io_object_t)([serviceDict objectForKey:kHIDRemoteServiceNotification] ? [[serviceDict objectForKey:kHIDRemoteServiceNotification] unsignedIntValue] : 0);
+        theService = (io_object_t)([serviceDict objectForKey:kHIDRemoteService] ? [[serviceDict objectForKey:kHIDRemoteService] unsignedIntValue] : 0);
+        queueEventSource = (CFRunLoopSourceRef)([serviceDict objectForKey:kHIDRemoteCFRunLoopSource] ? [[serviceDict objectForKey:kHIDRemoteCFRunLoopSource] pointerValue] : NULL);
+        hidQueueInterface = (IOHIDQueueInterface**)([serviceDict objectForKey:kHIDRemoteHIDQueueInterface] ? [[serviceDict objectForKey:kHIDRemoteHIDQueueInterface] pointerValue] : NULL);
+        hidDeviceInterface = (IOHIDDeviceInterface122**)([serviceDict objectForKey:kHIDRemoteHIDDeviceInterface] ? [[serviceDict objectForKey:kHIDRemoteHIDDeviceInterface] pointerValue] : NULL);
+        cfPluginInterface = (IOCFPlugInInterface**)([serviceDict objectForKey:kHIDRemoteCFPluginInterface] ? [[serviceDict objectForKey:kHIDRemoteCFPluginInterface] pointerValue] : NULL);
+        cookieButtonMap = (NSMutableDictionary*)[serviceDict objectForKey:kHIDRemoteCookieButtonCodeLUT];
+        simulateHoldTimer = (NSTimer*)[serviceDict objectForKey:kHIDRemoteSimulateHoldEventsTimer];
 
-		[serviceDict  retain];
-		[_serviceAttribMap removeObjectForKey:serviceValue];
+        [serviceDict retain];
+        [_serviceAttribMap removeObjectForKey:serviceValue];
 
-		if (([serviceDict objectForKey:kHIDRemoteAluminumRemoteSupportOnDemand]!=nil) && [[serviceDict objectForKey:kHIDRemoteAluminumRemoteSupportOnDemand] boolValue] && (theService != 0))
-		{
-			// We previously requested the driver to enable Aluminum Remote support for us. Tell it to turn it off again - now that we no longer need it
-			IORegistryEntrySetCFProperty(	(io_registry_entry_t)theService,
-							CFSTR("DisableAluminumRemoteSupportForMe"),
-							[NSDictionary dictionaryWithObjectsAndKeys:
-								[NSNumber numberWithLongLong:(long long)getpid()],	@"pid",
-								[NSNumber numberWithLongLong:(long long)getuid()],	@"uid",
-							nil]);
-		}
+        if (([serviceDict objectForKey:kHIDRemoteAluminumRemoteSupportOnDemand] != nil) && [[serviceDict objectForKey:kHIDRemoteAluminumRemoteSupportOnDemand] boolValue] && (theService != 0)) {
+            // We previously requested the driver to enable Aluminum Remote support for us. Tell it to turn it off again - now that we no longer need it
+            IORegistryEntrySetCFProperty((io_registry_entry_t)theService,
+                CFSTR("DisableAluminumRemoteSupportForMe"),
+                [NSDictionary dictionaryWithObjectsAndKeys:
+                        [NSNumber numberWithLongLong:(long long)getpid()], @"pid",
+                    [NSNumber numberWithLongLong:(long long)getuid()], @"uid",
+                    nil]);
+        }
 
-		if (([self delegate]!=nil) &&
-		    ([[self delegate] respondsToSelector:@selector(hidRemote:releasedHardwareWithAttributes:)]))
-		{
-			[((NSObject <HIDRemoteDelegate> *)[self delegate]) hidRemote:self releasedHardwareWithAttributes:serviceDict];
-		}
+        if (([self delegate] != nil) && ([[self delegate] respondsToSelector:@selector(hidRemote:releasedHardwareWithAttributes:)])) {
+            [((NSObject<HIDRemoteDelegate>*)[self delegate]) hidRemote:self releasedHardwareWithAttributes:serviceDict];
+        }
 
-		if (simulateHoldTimer)
-		{
-			[simulateHoldTimer invalidate];
-		}
+        if (simulateHoldTimer) {
+            [simulateHoldTimer invalidate];
+        }
 
-		if (serviceNotification)
-		{
-			IOObjectRelease(serviceNotification);
-		}
+        if (serviceNotification) {
+            IOObjectRelease(serviceNotification);
+        }
 
-		if (queueEventSource)
-		{
-			CFRunLoopRemoveSource(	CFRunLoopGetCurrent(),
-						queueEventSource,
-						kCFRunLoopCommonModes);
-		}
+        if (queueEventSource) {
+            CFRunLoopRemoveSource(CFRunLoopGetCurrent(),
+                queueEventSource,
+                kCFRunLoopCommonModes);
+        }
 
-		if (hidQueueInterface && cookieButtonMap)
-		{
-			NSEnumerator *cookieEnum = [cookieButtonMap keyEnumerator];
-			NSNumber *cookie;
+        if (hidQueueInterface && cookieButtonMap) {
+            NSEnumerator* cookieEnum = [cookieButtonMap keyEnumerator];
+            NSNumber* cookie;
 
-			while ((cookie = [cookieEnum nextObject]) != nil)
-			{
-				if ((*hidQueueInterface)->hasElement(hidQueueInterface, (IOHIDElementCookie) [cookie unsignedIntValue]))
-				{
-					(*hidQueueInterface)->removeElement(hidQueueInterface,
-									    (IOHIDElementCookie) [cookie unsignedIntValue]);
-				}
-			};
-		}
+            while ((cookie = [cookieEnum nextObject]) != nil) {
+                if ((*hidQueueInterface)->hasElement(hidQueueInterface, (IOHIDElementCookie)[cookie unsignedIntValue])) {
+                    (*hidQueueInterface)->removeElement(hidQueueInterface, (IOHIDElementCookie)[cookie unsignedIntValue]);
+                }
+            };
+        }
 
-		if (hidQueueInterface)
-		{
-			(*hidQueueInterface)->stop(hidQueueInterface);
-			(*hidQueueInterface)->dispose(hidQueueInterface);
-			(*hidQueueInterface)->Release(hidQueueInterface);
-		}
+        if (hidQueueInterface) {
+            (*hidQueueInterface)->stop(hidQueueInterface);
+            (*hidQueueInterface)->dispose(hidQueueInterface);
+            (*hidQueueInterface)->Release(hidQueueInterface);
+        }
 
-		if (hidDeviceInterface)
-		{
-			(*hidDeviceInterface)->close(hidDeviceInterface);
-			(*hidDeviceInterface)->Release(hidDeviceInterface);
-		}
+        if (hidDeviceInterface) {
+            (*hidDeviceInterface)->close(hidDeviceInterface);
+            (*hidDeviceInterface)->Release(hidDeviceInterface);
+        }
 
-		if (cfPluginInterface)
-		{
-			IODestroyPlugInInterface(cfPluginInterface);
-		}
+        if (cfPluginInterface) {
+            IODestroyPlugInInterface(cfPluginInterface);
+        }
 
-		if (theService)
-		{
-			IOObjectRelease(theService);
-		}
+        if (theService) {
+            IOObjectRelease(theService);
+        }
 
-		[serviceDict release];
-	}
+        [serviceDict release];
+    }
 }
 
-
-#pragma mark -- PRIVATE: HID Event handling --
-- (void)_simulateHoldEvent:(NSTimer *)aTimer
+#pragma mark-- PRIVATE: HID Event handling --
+- (void)_simulateHoldEvent:(NSTimer*)aTimer
 {
-	NSMutableDictionary *hidAttribsDict;
-	NSTimer  *shTimer;
-	NSNumber *shButtonCode;
+    NSMutableDictionary* hidAttribsDict;
+    NSTimer* shTimer;
+    NSNumber* shButtonCode;
 
-	if ((hidAttribsDict = (NSMutableDictionary *)[aTimer userInfo]) != nil)
-	{
-		if (((shTimer	   = [hidAttribsDict objectForKey:kHIDRemoteSimulateHoldEventsTimer]) != nil) &&
-		    ((shButtonCode = [hidAttribsDict objectForKey:kHIDRemoteSimulateHoldEventsOriginButtonCode]) != nil))
-		{
-			[shTimer invalidate];
-			[hidAttribsDict removeObjectForKey:kHIDRemoteSimulateHoldEventsTimer];
+    if ((hidAttribsDict = (NSMutableDictionary*)[aTimer userInfo]) != nil) {
+        if (((shTimer = [hidAttribsDict objectForKey:kHIDRemoteSimulateHoldEventsTimer]) != nil) && ((shButtonCode = [hidAttribsDict objectForKey:kHIDRemoteSimulateHoldEventsOriginButtonCode]) != nil)) {
+            [shTimer invalidate];
+            [hidAttribsDict removeObjectForKey:kHIDRemoteSimulateHoldEventsTimer];
 
-			[self _sendButtonCode:(((HIDRemoteButtonCode)[shButtonCode unsignedIntValue])|kHIDRemoteButtonCodeHoldMask) isPressed:YES hidAttribsDict:hidAttribsDict];
-		}
-	}
+            [self _sendButtonCode:(((HIDRemoteButtonCode)[shButtonCode unsignedIntValue]) | kHIDRemoteButtonCodeHoldMask) isPressed:YES hidAttribsDict:hidAttribsDict];
+        }
+    }
 }
 
-- (void)_handleButtonCode:(HIDRemoteButtonCode)buttonCode isPressed:(BOOL)isPressed hidAttribsDict:(NSMutableDictionary *)hidAttribsDict
+- (void)_handleButtonCode:(HIDRemoteButtonCode)buttonCode isPressed:(BOOL)isPressed hidAttribsDict:(NSMutableDictionary*)hidAttribsDict
 {
-	switch (buttonCode)
-	{
-		case kHIDRemoteButtonCodeIDChanged:
-			// Do nothing, this is handled seperately
-		break;
+    switch (buttonCode) {
+    case kHIDRemoteButtonCodeIDChanged:
+        // Do nothing, this is handled seperately
+        break;
 
-		case kHIDRemoteButtonCodeUp:
-		case kHIDRemoteButtonCodeDown:
-			if (_simulateHoldEvents)
-			{
-				NSTimer  *shTimer = nil;
-				NSNumber *shButtonCode = nil;
+    case kHIDRemoteButtonCodeUp:
+    case kHIDRemoteButtonCodeDown:
+        if (_simulateHoldEvents) {
+            NSTimer* shTimer = nil;
+            NSNumber* shButtonCode = nil;
 
-				[[hidAttribsDict objectForKey:kHIDRemoteSimulateHoldEventsTimer] invalidate];
+            [[hidAttribsDict objectForKey:kHIDRemoteSimulateHoldEventsTimer] invalidate];
 
-				if (isPressed)
-				{
-					[hidAttribsDict setObject:[NSNumber numberWithUnsignedInt:buttonCode] forKey:kHIDRemoteSimulateHoldEventsOriginButtonCode];
+            if (isPressed) {
+                [hidAttribsDict setObject:[NSNumber numberWithUnsignedInt:buttonCode] forKey:kHIDRemoteSimulateHoldEventsOriginButtonCode];
 
-					if ((shTimer = [[NSTimer alloc] initWithFireDate:[NSDate dateWithTimeIntervalSinceNow:0.7] interval:0.1 target:self selector:@selector(_simulateHoldEvent:) userInfo:hidAttribsDict repeats:NO]) != nil)
-					{
-						[hidAttribsDict setObject:shTimer forKey:kHIDRemoteSimulateHoldEventsTimer];
+                if ((shTimer = [[NSTimer alloc] initWithFireDate:[NSDate dateWithTimeIntervalSinceNow:0.7] interval:0.1 target:self selector:@selector(_simulateHoldEvent:) userInfo:hidAttribsDict repeats:NO]) != nil) {
+                    [hidAttribsDict setObject:shTimer forKey:kHIDRemoteSimulateHoldEventsTimer];
 
-						// Using CFRunLoopAddTimer instead of [[NSRunLoop currentRunLoop] addTimer:.. for consistency with run loop modes.
-						// The kCFRunLoopCommonModes counterpart NSRunLoopCommonModes is only available in 10.5 and later, whereas this code
-						// is designed to be also compatible with 10.4. CFRunLoopTimerRef is "toll-free-bridged" with NSTimer since 10.0.
-						CFRunLoopAddTimer(CFRunLoopGetCurrent(), (CFRunLoopTimerRef)shTimer, kCFRunLoopCommonModes);
+                    // Using CFRunLoopAddTimer instead of [[NSRunLoop currentRunLoop] addTimer:.. for consistency with run loop modes.
+                    // The kCFRunLoopCommonModes counterpart NSRunLoopCommonModes is only available in 10.5 and later, whereas this code
+                    // is designed to be also compatible with 10.4. CFRunLoopTimerRef is "toll-free-bridged" with NSTimer since 10.0.
+                    CFRunLoopAddTimer(CFRunLoopGetCurrent(), (CFRunLoopTimerRef)shTimer, kCFRunLoopCommonModes);
 
-						[shTimer release];
+                    [shTimer release];
 
-						break;
-					}
-				}
-				else
-				{
-					shTimer	     = [hidAttribsDict objectForKey:kHIDRemoteSimulateHoldEventsTimer];
-					shButtonCode = [hidAttribsDict objectForKey:kHIDRemoteSimulateHoldEventsOriginButtonCode];
+                    break;
+                }
+            } else {
+                shTimer = [hidAttribsDict objectForKey:kHIDRemoteSimulateHoldEventsTimer];
+                shButtonCode = [hidAttribsDict objectForKey:kHIDRemoteSimulateHoldEventsOriginButtonCode];
 
-					if (shTimer && shButtonCode)
-					{
-						[self _sendButtonCode:(HIDRemoteButtonCode)[shButtonCode unsignedIntValue] isPressed:YES hidAttribsDict:hidAttribsDict];
-						[self _sendButtonCode:(HIDRemoteButtonCode)[shButtonCode unsignedIntValue] isPressed:NO hidAttribsDict:hidAttribsDict];
-					}
-					else
-					{
-						if (shButtonCode)
-						{
-							[self _sendButtonCode:(((HIDRemoteButtonCode)[shButtonCode unsignedIntValue])|kHIDRemoteButtonCodeHoldMask) isPressed:NO hidAttribsDict:hidAttribsDict];
-						}
-					}
-				}
+                if (shTimer && shButtonCode) {
+                    [self _sendButtonCode:(HIDRemoteButtonCode)[shButtonCode unsignedIntValue] isPressed:YES hidAttribsDict:hidAttribsDict];
+                    [self _sendButtonCode:(HIDRemoteButtonCode)[shButtonCode unsignedIntValue] isPressed:NO hidAttribsDict:hidAttribsDict];
+                } else {
+                    if (shButtonCode) {
+                        [self _sendButtonCode:(((HIDRemoteButtonCode)[shButtonCode unsignedIntValue]) | kHIDRemoteButtonCodeHoldMask) isPressed:NO hidAttribsDict:hidAttribsDict];
+                    }
+                }
+            }
 
-				[hidAttribsDict removeObjectForKey:kHIDRemoteSimulateHoldEventsTimer];
-				[hidAttribsDict removeObjectForKey:kHIDRemoteSimulateHoldEventsOriginButtonCode];
+            [hidAttribsDict removeObjectForKey:kHIDRemoteSimulateHoldEventsTimer];
+            [hidAttribsDict removeObjectForKey:kHIDRemoteSimulateHoldEventsOriginButtonCode];
 
-				break;
-			}
+            break;
+        }
 
-		default:
-			[self _sendButtonCode:buttonCode isPressed:isPressed hidAttribsDict:hidAttribsDict];
-		break;
-	}
+    default:
+        [self _sendButtonCode:buttonCode isPressed:isPressed hidAttribsDict:hidAttribsDict];
+        break;
+    }
 }
 
-- (void)_sendButtonCode:(HIDRemoteButtonCode)buttonCode isPressed:(BOOL)isPressed hidAttribsDict:(NSMutableDictionary *)hidAttribsDict
+- (void)_sendButtonCode:(HIDRemoteButtonCode)buttonCode isPressed:(BOOL)isPressed hidAttribsDict:(NSMutableDictionary*)hidAttribsDict
 {
-	if (([self delegate]!=nil) &&
-	    ([[self delegate] respondsToSelector:@selector(hidRemote:eventWithButton:isPressed:fromHardwareWithAttributes:)]))
-	{
-		switch (buttonCode & (~kHIDRemoteButtonCodeAluminumMask))
-		{
-			case kHIDRemoteButtonCodePlay:
-			case kHIDRemoteButtonCodeCenter:
-				if (buttonCode & kHIDRemoteButtonCodeAluminumMask)
-				{
-					_lastSeenModel         = kHIDRemoteModelAluminum;
-					_lastSeenModelRemoteID = _lastSeenRemoteID;
-				}
-				else
-				{
-					switch ((HIDRemoteAluminumRemoteSupportLevel)[[hidAttribsDict objectForKey:kHIDRemoteAluminumRemoteSupportLevel] intValue])
-					{
-						case kHIDRemoteAluminumRemoteSupportLevelNone:
-						case kHIDRemoteAluminumRemoteSupportLevelEmulation:
-							// Remote type can't be determined by just the Center button press
-						break;
+    if (([self delegate] != nil) && ([[self delegate] respondsToSelector:@selector(hidRemote:eventWithButton:isPressed:fromHardwareWithAttributes:)])) {
+        switch (buttonCode & (~kHIDRemoteButtonCodeAluminumMask)) {
+        case kHIDRemoteButtonCodePlay:
+        case kHIDRemoteButtonCodeCenter:
+            if (buttonCode & kHIDRemoteButtonCodeAluminumMask) {
+                _lastSeenModel = kHIDRemoteModelAluminum;
+                _lastSeenModelRemoteID = _lastSeenRemoteID;
+            } else {
+                switch ((HIDRemoteAluminumRemoteSupportLevel)[[hidAttribsDict objectForKey:kHIDRemoteAluminumRemoteSupportLevel] intValue]) {
+                case kHIDRemoteAluminumRemoteSupportLevelNone:
+                case kHIDRemoteAluminumRemoteSupportLevelEmulation:
+                    // Remote type can't be determined by just the Center button press
+                    break;
 
-						case kHIDRemoteAluminumRemoteSupportLevelNative:
-							// Remote type can be safely determined by just the Center button press
-							if (((_lastSeenModel == kHIDRemoteModelAluminum) && (_lastSeenModelRemoteID != _lastSeenRemoteID)) ||
-							     (_lastSeenModel == kHIDRemoteModelUndetermined))
-							{
-								_lastSeenModel = kHIDRemoteModelWhitePlastic;
-							}
-						break;
-					}
-				}
-			break;
-		}
+                case kHIDRemoteAluminumRemoteSupportLevelNative:
+                    // Remote type can be safely determined by just the Center button press
+                    if (((_lastSeenModel == kHIDRemoteModelAluminum) && (_lastSeenModelRemoteID != _lastSeenRemoteID)) || (_lastSeenModel == kHIDRemoteModelUndetermined)) {
+                        _lastSeenModel = kHIDRemoteModelWhitePlastic;
+                    }
+                    break;
+                }
+            }
+            break;
+        }
 
-		// As soon as we have received a code that's unique to the Aluminum Remote, we can tell kHIDRemoteButtonCodePlayHold and kHIDRemoteButtonCodeCenterHold apart.
-		// Prior to that, a long press of the new "Play" button will be submitted as a "kHIDRemoteButtonCodeCenterHold", not a "kHIDRemoteButtonCodePlayHold" code.
-		if ((buttonCode == kHIDRemoteButtonCodeCenterHold) && (_lastSeenModel == kHIDRemoteModelAluminum))
-		{
-			buttonCode = kHIDRemoteButtonCodePlayHold;
-		}
+        // As soon as we have received a code that's unique to the Aluminum Remote, we can tell kHIDRemoteButtonCodePlayHold and kHIDRemoteButtonCodeCenterHold apart.
+        // Prior to that, a long press of the new "Play" button will be submitted as a "kHIDRemoteButtonCodeCenterHold", not a "kHIDRemoteButtonCodePlayHold" code.
+        if ((buttonCode == kHIDRemoteButtonCodeCenterHold) && (_lastSeenModel == kHIDRemoteModelAluminum)) {
+            buttonCode = kHIDRemoteButtonCodePlayHold;
+        }
 
-		[((NSObject <HIDRemoteDelegate> *)[self delegate]) hidRemote:self eventWithButton:(buttonCode & (~kHIDRemoteButtonCodeAluminumMask)) isPressed:isPressed fromHardwareWithAttributes:hidAttribsDict];
-	}
+        [((NSObject<HIDRemoteDelegate>*)[self delegate]) hidRemote:self eventWithButton:(buttonCode & (~kHIDRemoteButtonCodeAluminumMask)) isPressed:isPressed fromHardwareWithAttributes:hidAttribsDict];
+    }
 }
 
-- (void)_hidEventFor:(io_service_t)hidDevice from:(IOHIDQueueInterface **)interface withResult:(IOReturn)result
+- (void)_hidEventFor:(io_service_t)hidDevice from:(IOHIDQueueInterface**)interface withResult:(IOReturn)result
 {
-	NSMutableDictionary *hidAttribsDict = [_serviceAttribMap objectForKey:[NSNumber numberWithUnsignedInt:(unsigned int)hidDevice]];
+    NSMutableDictionary* hidAttribsDict = [_serviceAttribMap objectForKey:[NSNumber numberWithUnsignedInt:(unsigned int)hidDevice]];
 
-	if (hidAttribsDict)
-	{
-		IOHIDQueueInterface **queueInterface  = NULL;
+    if (hidAttribsDict) {
+        IOHIDQueueInterface** queueInterface = NULL;
 
-		queueInterface  = [[hidAttribsDict objectForKey:kHIDRemoteHIDQueueInterface] pointerValue];
+        queueInterface = [[hidAttribsDict objectForKey:kHIDRemoteHIDQueueInterface] pointerValue];
 
-		if (interface == queueInterface)
-		{
-			NSNumber	    *lastButtonPressedNumber = nil;
-			HIDRemoteButtonCode  lastButtonPressed = kHIDRemoteButtonCodeNone;
-			NSMutableDictionary *cookieButtonMap = nil;
+        if (interface == queueInterface) {
+            NSNumber* lastButtonPressedNumber = nil;
+            HIDRemoteButtonCode lastButtonPressed = kHIDRemoteButtonCodeNone;
+            NSMutableDictionary* cookieButtonMap = nil;
 
-			cookieButtonMap  = [hidAttribsDict objectForKey:kHIDRemoteCookieButtonCodeLUT];
+            cookieButtonMap = [hidAttribsDict objectForKey:kHIDRemoteCookieButtonCodeLUT];
 
-			if ((lastButtonPressedNumber = [hidAttribsDict objectForKey:kHIDRemoteLastButtonPressed]) != nil)
-			{
-				lastButtonPressed = [lastButtonPressedNumber unsignedIntValue];
-			}
+            if ((lastButtonPressedNumber = [hidAttribsDict objectForKey:kHIDRemoteLastButtonPressed]) != nil) {
+                lastButtonPressed = [lastButtonPressedNumber unsignedIntValue];
+            }
 
-			while (result == kIOReturnSuccess)
-			{
-				IOHIDEventStruct hidEvent;
-				AbsoluteTime supportedTime = { 0,0 };
+            while (result == kIOReturnSuccess) {
+                IOHIDEventStruct hidEvent;
+                AbsoluteTime supportedTime = { 0, 0 };
 
-				result = (*queueInterface)->getNextEvent(	queueInterface,
-										&hidEvent,
-										supportedTime,
-										0);
+                result = (*queueInterface)->getNextEvent(queueInterface, &hidEvent, supportedTime, 0);
 
-				if (result == kIOReturnSuccess)
-				{
-					NSNumber *buttonCodeNumber = [cookieButtonMap objectForKey:[NSNumber numberWithUnsignedInt:(unsigned int) hidEvent.elementCookie]];
+                if (result == kIOReturnSuccess) {
+                    NSNumber* buttonCodeNumber = [cookieButtonMap objectForKey:[NSNumber numberWithUnsignedInt:(unsigned int)hidEvent.elementCookie]];
 
-					#ifdef _HIDREMOTE_EXTENSIONS
-						// Debug logging code
-						#define _HIDREMOTE_EXTENSIONS_SECTION 5
-						#include "HIDRemoteAdditions.h"
-						#undef _HIDREMOTE_EXTENSIONS_SECTION
-					#endif /* _HIDREMOTE_EXTENSIONS */
+#ifdef _HIDREMOTE_EXTENSIONS
+// Debug logging code
+#define _HIDREMOTE_EXTENSIONS_SECTION 5
+#include "HIDRemoteAdditions.h"
+#undef _HIDREMOTE_EXTENSIONS_SECTION
+#endif /* _HIDREMOTE_EXTENSIONS */
 
-					if (buttonCodeNumber)
-					{
-						HIDRemoteButtonCode buttonCode = [buttonCodeNumber unsignedIntValue];
+                    if (buttonCodeNumber) {
+                        HIDRemoteButtonCode buttonCode = [buttonCodeNumber unsignedIntValue];
 
-						if (hidEvent.value == 0)
-						{
-							if (buttonCode == lastButtonPressed)
-							{
-								[self _handleButtonCode:lastButtonPressed isPressed:NO hidAttribsDict:hidAttribsDict];
-								lastButtonPressed = kHIDRemoteButtonCodeNone;
-							}
-						}
+                        if (hidEvent.value == 0) {
+                            if (buttonCode == lastButtonPressed) {
+                                [self _handleButtonCode:lastButtonPressed isPressed:NO hidAttribsDict:hidAttribsDict];
+                                lastButtonPressed = kHIDRemoteButtonCodeNone;
+                            }
+                        }
 
-						if (hidEvent.value != 0)
-						{
-							if (lastButtonPressed != kHIDRemoteButtonCodeNone)
-							{
-								[self _handleButtonCode:lastButtonPressed isPressed:NO hidAttribsDict:hidAttribsDict];
-								// lastButtonPressed = kHIDRemoteButtonCodeNone;
-							}
+                        if (hidEvent.value != 0) {
+                            if (lastButtonPressed != kHIDRemoteButtonCodeNone) {
+                                [self _handleButtonCode:lastButtonPressed isPressed:NO hidAttribsDict:hidAttribsDict];
+                                // lastButtonPressed = kHIDRemoteButtonCodeNone;
+                            }
 
-							if (buttonCode == kHIDRemoteButtonCodeIDChanged)
-							{
-								if (([self delegate]!=nil) &&
-								    ([[self delegate] respondsToSelector:@selector(hidRemote:remoteIDChangedOldID:newID:forHardwareWithAttributes:)]))
-								{
-									[((NSObject <HIDRemoteDelegate> *)[self delegate]) hidRemote:self remoteIDChangedOldID:_lastSeenRemoteID newID:hidEvent.value forHardwareWithAttributes:hidAttribsDict];
-								}
+                            if (buttonCode == kHIDRemoteButtonCodeIDChanged) {
+                                if (([self delegate] != nil) && ([[self delegate] respondsToSelector:@selector(hidRemote:remoteIDChangedOldID:newID:forHardwareWithAttributes:)])) {
+                                    [((NSObject<HIDRemoteDelegate>*)[self delegate]) hidRemote:self remoteIDChangedOldID:_lastSeenRemoteID newID:hidEvent.value forHardwareWithAttributes:hidAttribsDict];
+                                }
 
-								_lastSeenRemoteID = hidEvent.value;
-								_lastSeenModel	  = kHIDRemoteModelUndetermined;
-							}
+                                _lastSeenRemoteID = hidEvent.value;
+                                _lastSeenModel = kHIDRemoteModelUndetermined;
+                            }
 
-							[self _handleButtonCode:buttonCode isPressed:YES hidAttribsDict:hidAttribsDict];
-							lastButtonPressed = buttonCode;
-						}
-					}
-				}
-			};
+                            [self _handleButtonCode:buttonCode isPressed:YES hidAttribsDict:hidAttribsDict];
+                            lastButtonPressed = buttonCode;
+                        }
+                    }
+                }
+            };
 
-			[hidAttribsDict setObject:[NSNumber numberWithUnsignedInt:lastButtonPressed] forKey:kHIDRemoteLastButtonPressed];
-		}
+            [hidAttribsDict setObject:[NSNumber numberWithUnsignedInt:lastButtonPressed] forKey:kHIDRemoteLastButtonPressed];
+        }
 
-		#ifdef _HIDREMOTE_EXTENSIONS
-			// Debug logging code
-			#define _HIDREMOTE_EXTENSIONS_SECTION 6
-			#include "HIDRemoteAdditions.h"
-			#undef _HIDREMOTE_EXTENSIONS_SECTION
-		#endif /* _HIDREMOTE_EXTENSIONS */
-	}
+#ifdef _HIDREMOTE_EXTENSIONS
+// Debug logging code
+#define _HIDREMOTE_EXTENSIONS_SECTION 6
+#include "HIDRemoteAdditions.h"
+#undef _HIDREMOTE_EXTENSIONS_SECTION
+#endif /* _HIDREMOTE_EXTENSIONS */
+    }
 }
 
-#pragma mark -- PRIVATE: Notification handling --
+#pragma mark-- PRIVATE: Notification handling --
 - (void)_serviceMatching:(io_iterator_t)iterator
 {
-	io_object_t matchingService = 0;
+    io_object_t matchingService = 0;
 
-	while ((matchingService = IOIteratorNext(iterator)) != 0)
-	{
-		[self _setupService:matchingService];
+    while ((matchingService = IOIteratorNext(iterator)) != 0) {
+        [self _setupService:matchingService];
 
-		IOObjectRelease(matchingService);
-	};
+        IOObjectRelease(matchingService);
+    };
 }
 
-- (void)_serviceNotificationFor:(io_service_t)service messageType:(natural_t)messageType messageArgument:(void *)messageArgument
+- (void)_serviceNotificationFor:(io_service_t)service messageType:(natural_t)messageType messageArgument:(void*)messageArgument
 {
-	if (messageType == kIOMessageServiceIsTerminated)
-	{
-		[self _destructService:service];
-	}
+    if (messageType == kIOMessageServiceIsTerminated) {
+        [self _destructService:service];
+    }
 }
 
 - (void)_updateSessionInformation
 {
-	NSArray *consoleUsersArray;
-	io_service_t rootService;
+    NSArray* consoleUsersArray;
+    io_service_t rootService;
 
-	if ((rootService = IORegistryGetRootEntry(_masterPort)) != 0)
-	{
-		if ((consoleUsersArray = (NSArray *)IORegistryEntryCreateCFProperty((io_registry_entry_t)rootService, CFSTR("IOConsoleUsers"), kCFAllocatorDefault, 0)) != nil)
-		{
-			if ([consoleUsersArray isKindOfClass:[NSArray class]])	// Be careful - ensure this really is an array
-			{
-				NSEnumerator *consoleUsersEnum; // I *love* Obj-C2's fast enumerators, but we need to stay compatible with 10.4 :-/
+    if ((rootService = IORegistryGetRootEntry(_masterPort)) != 0) {
+        if ((consoleUsersArray = (NSArray*)IORegistryEntryCreateCFProperty((io_registry_entry_t)rootService, CFSTR("IOConsoleUsers"), kCFAllocatorDefault, 0)) != nil) {
+            if ([consoleUsersArray isKindOfClass:[NSArray class]]) // Be careful - ensure this really is an array
+            {
+                NSEnumerator* consoleUsersEnum; // I *love* Obj-C2's fast enumerators, but we need to stay compatible with 10.4 :-/
 
-				if ((consoleUsersEnum = [consoleUsersArray objectEnumerator]) != nil)
-				{
-					UInt64 secureEventInputPIDSum = 0;
-					uid_t frontUserSession = 0;
-					NSDictionary *consoleUserDict;
+                if ((consoleUsersEnum = [consoleUsersArray objectEnumerator]) != nil) {
+                    UInt64 secureEventInputPIDSum = 0;
+                    uid_t frontUserSession = 0;
+                    NSDictionary* consoleUserDict;
 
-					while ((consoleUserDict = [consoleUsersEnum nextObject]) != nil)
-					{
-						if ([consoleUserDict isKindOfClass:[NSDictionary class]]) // Be careful - ensure this really is a dictionary
-						{
-							NSNumber *secureInputPID;
-							NSNumber *onConsole;
-							NSNumber *userID;
+                    while ((consoleUserDict = [consoleUsersEnum nextObject]) != nil) {
+                        if ([consoleUserDict isKindOfClass:[NSDictionary class]]) // Be careful - ensure this really is a dictionary
+                        {
+                            NSNumber* secureInputPID;
+                            NSNumber* onConsole;
+                            NSNumber* userID;
 
-							if ((secureInputPID = [consoleUserDict objectForKey:@"kCGSSessionSecureInputPID"]) != nil)
-							{
-								if ([secureInputPID isKindOfClass:[NSNumber class]])
-								{
-									secureEventInputPIDSum += ((UInt64) [secureInputPID intValue]);
-								}
-							}
+                            if ((secureInputPID = [consoleUserDict objectForKey:@"kCGSSessionSecureInputPID"]) != nil) {
+                                if ([secureInputPID isKindOfClass:[NSNumber class]]) {
+                                    secureEventInputPIDSum += ((UInt64)[secureInputPID intValue]);
+                                }
+                            }
 
-							if (((onConsole = [consoleUserDict objectForKey:@"kCGSSessionOnConsoleKey"]) != nil) &&
-							    ((userID    = [consoleUserDict objectForKey:@"kCGSSessionUserIDKey"]) != nil))
-							{
-								if ([onConsole isKindOfClass:[NSNumber class]] && [userID isKindOfClass:[NSNumber class]])
-								{
-									if ([onConsole boolValue])
-									{
-										frontUserSession = (uid_t) [userID intValue];
-									}
-								}
-							}
-						}
-					}
+                            if (((onConsole = [consoleUserDict objectForKey:@"kCGSSessionOnConsoleKey"]) != nil) && ((userID = [consoleUserDict objectForKey:@"kCGSSessionUserIDKey"]) != nil)) {
+                                if ([onConsole isKindOfClass:[NSNumber class]] && [userID isKindOfClass:[NSNumber class]]) {
+                                    if ([onConsole boolValue]) {
+                                        frontUserSession = (uid_t)[userID intValue];
+                                    }
+                                }
+                            }
+                        }
+                    }
 
-					_lastSecureEventInputPIDSum = secureEventInputPIDSum;
-					_lastFrontUserSession	    = frontUserSession;
-				}
-			}
+                    _lastSecureEventInputPIDSum = secureEventInputPIDSum;
+                    _lastFrontUserSession = frontUserSession;
+                }
+            }
 
-			CFRelease((CFTypeRef)consoleUsersArray);
-		}
+            CFRelease((CFTypeRef)consoleUsersArray);
+        }
 
-		IOObjectRelease((io_object_t) rootService);
-	}
+        IOObjectRelease((io_object_t)rootService);
+    }
 }
 
-- (void)_secureInputNotificationFor:(io_service_t)service messageType:(natural_t)messageType messageArgument:(void *)messageArgument
+- (void)_secureInputNotificationFor:(io_service_t)service messageType:(natural_t)messageType messageArgument:(void*)messageArgument
 {
-	if (messageType == kIOMessageServiceBusyStateChange)
-	{
-		UInt64 old_lastSecureEventInputPIDSum = _lastSecureEventInputPIDSum;
-		uid_t  old_lastFrontUserSession = _lastFrontUserSession;
+    if (messageType == kIOMessageServiceBusyStateChange) {
+        UInt64 old_lastSecureEventInputPIDSum = _lastSecureEventInputPIDSum;
+        uid_t old_lastFrontUserSession = _lastFrontUserSession;
 
-		[self _updateSessionInformation];
+        [self _updateSessionInformation];
 
-		if (((old_lastSecureEventInputPIDSum != _lastSecureEventInputPIDSum) || (old_lastFrontUserSession != _lastFrontUserSession)) && _secureEventInputWorkAround)
-		{
-			if ((_mode == kHIDRemoteModeExclusive) || (_mode == kHIDRemoteModeExclusiveAuto))
-			{
-				HIDRemoteMode restartInMode = _mode;
+        if (((old_lastSecureEventInputPIDSum != _lastSecureEventInputPIDSum) || (old_lastFrontUserSession != _lastFrontUserSession)) && _secureEventInputWorkAround) {
+            if ((_mode == kHIDRemoteModeExclusive) || (_mode == kHIDRemoteModeExclusiveAuto)) {
+                HIDRemoteMode restartInMode = _mode;
 
-				[self stopRemoteControl];
-				[self startRemoteControl:restartInMode];
-			}
-		}
-	}
+                [self stopRemoteControl];
+                [self startRemoteControl:restartInMode];
+            }
+        }
+    }
 }
 
 @end
 
-#pragma mark -- PRIVATE: IOKitLib Callbacks --
+#pragma mark-- PRIVATE: IOKitLib Callbacks --
 
-static void HIDEventCallback(	void * target,
-				IOReturn result,
-				void * refCon,
-				void * sender)
+static void HIDEventCallback(void* target,
+    IOReturn result,
+    void* refCon,
+    void* sender)
 {
-	HIDRemote		*hidRemote = (HIDRemote *)refCon;
-	NSAutoreleasePool	*pool	   = [[NSAutoreleasePool alloc] init];
+    HIDRemote* hidRemote = (HIDRemote*)refCon;
+    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 
-	[hidRemote _hidEventFor:(io_service_t)((intptr_t)target) from:(IOHIDQueueInterface**)sender withResult:(IOReturn)result];
+    [hidRemote _hidEventFor:(io_service_t)((intptr_t)target) from:(IOHIDQueueInterface**)sender withResult:(IOReturn)result];
 
-	[pool release];
+    [pool release];
 }
 
-
-static void ServiceMatchingCallback(	void *refCon,
-					io_iterator_t iterator)
+static void ServiceMatchingCallback(void* refCon,
+    io_iterator_t iterator)
 {
-	HIDRemote		*hidRemote = (HIDRemote *)refCon;
-	NSAutoreleasePool	*pool	   = [[NSAutoreleasePool alloc] init];
+    HIDRemote* hidRemote = (HIDRemote*)refCon;
+    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 
-	[hidRemote _serviceMatching:iterator];
+    [hidRemote _serviceMatching:iterator];
 
-	[pool release];
+    [pool release];
 }
 
-static void ServiceNotificationCallback(void *		refCon,
-					io_service_t 	service,
-					natural_t 	messageType,
-					void *		messageArgument)
+static void ServiceNotificationCallback(void* refCon,
+    io_service_t service,
+    natural_t messageType,
+    void* messageArgument)
 {
-	HIDRemote		*hidRemote = (HIDRemote *)refCon;
-	NSAutoreleasePool	*pool     = [[NSAutoreleasePool alloc] init];
+    HIDRemote* hidRemote = (HIDRemote*)refCon;
+    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 
-	[hidRemote _serviceNotificationFor:service
-			       messageType:messageType
-			   messageArgument:messageArgument];
+    [hidRemote _serviceNotificationFor:service
+                           messageType:messageType
+                       messageArgument:messageArgument];
 
-	[pool release];
+    [pool release];
 }
 
-static void SecureInputNotificationCallback(	void *		refCon,
-						io_service_t 	service,
-						natural_t 	messageType,
-						void *		messageArgument)
+static void SecureInputNotificationCallback(void* refCon,
+    io_service_t service,
+    natural_t messageType,
+    void* messageArgument)
 {
-	HIDRemote		*hidRemote = (HIDRemote *)refCon;
-	NSAutoreleasePool	*pool     = [[NSAutoreleasePool alloc] init];
+    HIDRemote* hidRemote = (HIDRemote*)refCon;
+    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 
-	[hidRemote _secureInputNotificationFor:service
-				   messageType:messageType
-			       messageArgument:messageArgument];
+    [hidRemote _secureInputNotificationFor:service
+                               messageType:messageType
+                           messageArgument:messageArgument];
 
-	[pool release];
+    [pool release];
 }
 
 // Attribute dictionary keys
-NSString *kHIDRemoteCFPluginInterface			= @"CFPluginInterface";
-NSString *kHIDRemoteHIDDeviceInterface			= @"HIDDeviceInterface";
-NSString *kHIDRemoteCookieButtonCodeLUT			= @"CookieButtonCodeLUT";
-NSString *kHIDRemoteHIDQueueInterface			= @"HIDQueueInterface";
-NSString *kHIDRemoteServiceNotification			= @"ServiceNotification";
-NSString *kHIDRemoteCFRunLoopSource			= @"CFRunLoopSource";
-NSString *kHIDRemoteLastButtonPressed			= @"LastButtonPressed";
-NSString *kHIDRemoteService				= @"Service";
-NSString *kHIDRemoteSimulateHoldEventsTimer		= @"SimulateHoldEventsTimer";
-NSString *kHIDRemoteSimulateHoldEventsOriginButtonCode	= @"SimulateHoldEventsOriginButtonCode";
-NSString *kHIDRemoteAluminumRemoteSupportLevel		= @"AluminumRemoteSupportLevel";
-NSString *kHIDRemoteAluminumRemoteSupportOnDemand	= @"AluminumRemoteSupportLevelOnDemand";
+NSString* kHIDRemoteCFPluginInterface = @"CFPluginInterface";
+NSString* kHIDRemoteHIDDeviceInterface = @"HIDDeviceInterface";
+NSString* kHIDRemoteCookieButtonCodeLUT = @"CookieButtonCodeLUT";
+NSString* kHIDRemoteHIDQueueInterface = @"HIDQueueInterface";
+NSString* kHIDRemoteServiceNotification = @"ServiceNotification";
+NSString* kHIDRemoteCFRunLoopSource = @"CFRunLoopSource";
+NSString* kHIDRemoteLastButtonPressed = @"LastButtonPressed";
+NSString* kHIDRemoteService = @"Service";
+NSString* kHIDRemoteSimulateHoldEventsTimer = @"SimulateHoldEventsTimer";
+NSString* kHIDRemoteSimulateHoldEventsOriginButtonCode = @"SimulateHoldEventsOriginButtonCode";
+NSString* kHIDRemoteAluminumRemoteSupportLevel = @"AluminumRemoteSupportLevel";
+NSString* kHIDRemoteAluminumRemoteSupportOnDemand = @"AluminumRemoteSupportLevelOnDemand";
 
-NSString *kHIDRemoteManufacturer			= @"Manufacturer";
-NSString *kHIDRemoteProduct				= @"Product";
-NSString *kHIDRemoteTransport				= @"Transport";
+NSString* kHIDRemoteManufacturer = @"Manufacturer";
+NSString* kHIDRemoteProduct = @"Product";
+NSString* kHIDRemoteTransport = @"Transport";
 
 // Distributed notifications
-NSString *kHIDRemoteDNHIDRemotePing			= @"com.candelair.ping";
-NSString *kHIDRemoteDNHIDRemoteRetry			= @"com.candelair.retry";
-NSString *kHIDRemoteDNHIDRemoteStatus			= @"com.candelair.status";
+NSString* kHIDRemoteDNHIDRemotePing = @"com.candelair.ping";
+NSString* kHIDRemoteDNHIDRemoteRetry = @"com.candelair.retry";
+NSString* kHIDRemoteDNHIDRemoteStatus = @"com.candelair.status";
 
 // Distributed notifications userInfo keys and values
-NSString *kHIDRemoteDNStatusHIDRemoteVersionKey		= @"HIDRemoteVersion";
-NSString *kHIDRemoteDNStatusPIDKey			= @"PID";
-NSString *kHIDRemoteDNStatusModeKey			= @"Mode";
-NSString *kHIDRemoteDNStatusUnusedButtonCodesKey	= @"UnusedButtonCodes";
-NSString *kHIDRemoteDNStatusActionKey			= @"Action";
-NSString *kHIDRemoteDNStatusRemoteControlCountKey	= @"RemoteControlCount";
-NSString *kHIDRemoteDNStatusReturnToPIDKey		= @"ReturnToPID";
-NSString *kHIDRemoteDNStatusActionStart			= @"start";
-NSString *kHIDRemoteDNStatusActionStop			= @"stop";
-NSString *kHIDRemoteDNStatusActionUpdate		= @"update";
-NSString *kHIDRemoteDNStatusActionNoNeed		= @"noneed";
+NSString* kHIDRemoteDNStatusHIDRemoteVersionKey = @"HIDRemoteVersion";
+NSString* kHIDRemoteDNStatusPIDKey = @"PID";
+NSString* kHIDRemoteDNStatusModeKey = @"Mode";
+NSString* kHIDRemoteDNStatusUnusedButtonCodesKey = @"UnusedButtonCodes";
+NSString* kHIDRemoteDNStatusActionKey = @"Action";
+NSString* kHIDRemoteDNStatusRemoteControlCountKey = @"RemoteControlCount";
+NSString* kHIDRemoteDNStatusReturnToPIDKey = @"ReturnToPID";
+NSString* kHIDRemoteDNStatusActionStart = @"start";
+NSString* kHIDRemoteDNStatusActionStop = @"stop";
+NSString* kHIDRemoteDNStatusActionUpdate = @"update";
+NSString* kHIDRemoteDNStatusActionNoNeed = @"noneed";

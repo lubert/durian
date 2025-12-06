@@ -1,37 +1,15 @@
-/*
- AudioOutput.h
-
- This file is part of Durian.
-
- Durian is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
-
- Durian is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with Durian.  If not, see <http://www.gnu.org/licenses/>.
-
- Original code written by Damien Plisson 08/2010
- */
-
+#include <AudioToolbox/AudioToolbox.h>
 #import <Cocoa/Cocoa.h>
 #include <CoreAudio/CoreAudio.h>
-#include <AudioToolbox/AudioToolbox.h>
 
-@interface AudioStreamDescription : NSObject
-{
-	AudioStreamRangedDescription *mPhysicalFormats;
-	AudioStreamRangedDescription *mVirtualFormats;
-	UInt32 mCountPhysicalFormats;
-	UInt32 mCountVirtualFormats;
-	UInt32 streamID;
-	UInt32 startingChannel;
-	UInt32 numChannels;
+@interface AudioStreamDescription : NSObject {
+    AudioStreamRangedDescription* mPhysicalFormats;
+    AudioStreamRangedDescription* mVirtualFormats;
+    UInt32 mCountPhysicalFormats;
+    UInt32 mCountVirtualFormats;
+    UInt32 streamID;
+    UInt32 startingChannel;
+    UInt32 numChannels;
 }
 @property UInt32 streamID;
 @property UInt32 startingChannel;
@@ -46,35 +24,32 @@
 - (Float64)maxSampleRateforFormat:(AudioStreamBasicDescription*)streamFormat;
 @end
 
-
 /*Lookup structure for audio channel mapping
  taking into account the multiple streams devices
  e.g. multiple mono streams */
 typedef struct {
-	AudioStreamID streamID;
-	UInt32 stream;
-	UInt32 channel;
+    AudioStreamID streamID;
+    UInt32 stream;
+    UInt32 channel;
 } AudioChannelMapping;
 
-
 /* This object is not thread safe and should be accessed only from the main thread */
-@interface AudioDeviceDescription : NSObject
-{
-	AudioValueRange* mAvailableSampleRates;
-	NSString *name;
-	NSString *UID;
-	NSMutableArray *streams;
-	AudioValueRange mAudioBufferFrameSizeRange;
-	AudioDeviceID audioDevID;
-	UInt32 mPreferredChannelStereo[2];
-	UInt32 mCountAvailableSampleRates;
-	UInt32 availableVolumeControls;
+@interface AudioDeviceDescription : NSObject {
+    AudioValueRange* mAvailableSampleRates;
+    NSString* name;
+    NSString* UID;
+    NSMutableArray* streams;
+    AudioValueRange mAudioBufferFrameSizeRange;
+    AudioDeviceID audioDevID;
+    UInt32 mPreferredChannelStereo[2];
+    UInt32 mCountAvailableSampleRates;
+    UInt32 availableVolumeControls;
 }
 @property AudioDeviceID audioDevID;
-@property (copy) NSString *name;
-@property (copy) NSString *UID;
+@property (copy) NSString* name;
+@property (copy) NSString* UID;
 @property UInt32 availableVolumeControls;
-@property (retain) NSMutableArray *streams;
+@property (retain) NSMutableArray* streams;
 
 - (void)setBufferFrameSizeRange:(Float64)minSize maxFrameSize:(Float64)maxSize;
 - (Float64)maximumBufferFrameSize;
@@ -90,23 +65,21 @@ typedef struct {
 @class AppController;
 @class AudioFileLoader;
 
-
 /*data alignment optimized order */
 typedef struct {
-	Float64 sampleRate;
-	SInt64 firstFrameOffset; //Number of frames in the audio track before the first one of this buffer
-	SInt64 currentPlayingFrame;
-	SInt64 lengthFrames;
-	SInt64 loadedFrames;
-	SInt64 inputFileNextPosition;
-	UInt64 dataSizeInBytes;
-	void *data;
-	AudioFileLoader *inputFileLoader;
-	UInt32 inputFileLoadStatus;
-	UInt32 bytesPerFrame;
-	UInt32 currentPlayingTimeInSeconds;
+    Float64 sampleRate;
+    SInt64 firstFrameOffset; // Number of frames in the audio track before the first one of this buffer
+    SInt64 currentPlayingFrame;
+    SInt64 lengthFrames;
+    SInt64 loadedFrames;
+    SInt64 inputFileNextPosition;
+    UInt64 dataSizeInBytes;
+    void* data;
+    AudioFileLoader* inputFileLoader;
+    UInt32 inputFileLoadStatus;
+    UInt32 bytesPerFrame;
+    UInt32 currentPlayingTimeInSeconds;
 } AudioBufferItem;
-
 
 @class AudioOutput;
 
@@ -117,49 +90,48 @@ typedef struct {
  Atomic read/writes on Intel processors is ensured through the correct data alignment
  */
 struct _AudioOutputBufferData {
-	AudioBufferItem buffers[2];
-	AppController *appController;
-	AudioOutput	*audioOut;
-	AudioChannelMapping channelMap[2]; //stereo
-	AudioStreamBasicDescription integerModeStreamFormat;
-	AudioStreamBasicDescription integerModeStreamFormatToBe;
+    AudioBufferItem buffers[2];
+    AppController* appController;
+    AudioOutput* audioOut;
+    AudioChannelMapping channelMap[2]; // stereo
+    AudioStreamBasicDescription integerModeStreamFormat;
+    AudioStreamBasicDescription integerModeStreamFormatToBe;
     AudioStreamBasicDescription buffersStreamFormat;
-	SInt32 playingAudioBuffer;
-	SInt32 bufferIndexForNextChunkToLoad; //Split loading: next chunk load is enqueued, will be launch at end of current chunk load
-	UInt32 ditheringMode;
-	AudioDeviceID selectedAudioDeviceID;
+    SInt32 playingAudioBuffer;
+    SInt32 bufferIndexForNextChunkToLoad; // Split loading: next chunk load is enqueued, will be launch at end of current chunk load
+    UInt32 ditheringMode;
+    AudioDeviceID selectedAudioDeviceID;
 
-	UInt32 isIOPaused;
-	UInt32 playbackStartPhase;
+    UInt32 isIOPaused;
+    UInt32 playbackStartPhase;
 
-	bool isIntegerModeOn;
-	bool isHoggingDevice;
-	bool willChangePlayingBuffer;
-	bool isSimpleStereoDevice;
+    bool isIntegerModeOn;
+    bool isHoggingDevice;
+    bool willChangePlayingBuffer;
+    bool isSimpleStereoDevice;
 };
 
 typedef struct _AudioOutputBufferData AudioOutputBufferData;
 
 @interface AudioOutput : NSObject {
-	AudioStreamBasicDescription originalStreamFormat;
-	AudioOutputBufferData mBufferData;
-	AudioDeviceIOProcID audioOutIOProcID;
-	NSMutableArray *audioDevicesList;
+    AudioStreamBasicDescription originalStreamFormat;
+    AudioOutputBufferData mBufferData;
+    AudioDeviceIOProcID audioOutIOProcID;
+    NSMutableArray* audioDevicesList;
 
-	Float64 audioDeviceCurrentNominalSampleRate;
-	UInt32 audioDeviceCurrentPhysicalBitDepth;
-	UInt32 audioDeviceInitialIOBufferFrameSize;
+    Float64 audioDeviceCurrentNominalSampleRate;
+    UInt32 audioDeviceCurrentPhysicalBitDepth;
+    UInt32 audioDeviceInitialIOBufferFrameSize;
 
-	SInt32 selectedAudioDeviceIndex;
+    SInt32 selectedAudioDeviceIndex;
 
-	bool isPlaying;
+    bool isPlaying;
 }
-@property (readonly) NSMutableArray *audioDevicesList;
+@property (readonly) NSMutableArray* audioDevicesList;
 @property (readonly) SInt32 selectedAudioDeviceIndex;
 @property (readonly) bool isPlaying;
 @property (readonly) Float64 audioDeviceCurrentNominalSampleRate;
 @property (readonly) UInt32 audioDeviceCurrentPhysicalBitDepth;
-
 
 - (id)initWithController:(AppController*)controller;
 - (void)rebuildDevicesList;
@@ -228,46 +200,43 @@ typedef struct _AudioOutputBufferData AudioOutputBufferData;
 
 @end
 
-
 /*
  Audio I/O Proc pause conditions flags
  */
 enum {
-	kAudioIOProcPause = 1,
-	kAudioIOProcSampleRateChanging = 2,
-	kAudioIOProcAudioBufferSizeChanging = 4
+    kAudioIOProcPause = 1,
+    kAudioIOProcSampleRateChanging = 2,
+    kAudioIOProcAudioBufferSizeChanging = 4
 };
 
 /*
  Playback start phases
  */
 enum {
-	kAudioPlaybackNotInStartingPhase = 0,
-	kAudioPlaybackStartHoggingDevice = 1,
-	kAudioPlaybackStartDeviceHogged = 2,
-	kAudioPlaybackStartChangingStreamFormat = 3,
-	kAudioPlaybackStartFinishingDeviceInitialization = 4,
-	kAudioPlaybackSwitchingBackToFloatMode = 5
+    kAudioPlaybackNotInStartingPhase = 0,
+    kAudioPlaybackStartHoggingDevice = 1,
+    kAudioPlaybackStartDeviceHogged = 2,
+    kAudioPlaybackStartChangingStreamFormat = 3,
+    kAudioPlaybackStartFinishingDeviceInitialization = 4,
+    kAudioPlaybackSwitchingBackToFloatMode = 5
 };
 
 /*
  Device volume control flags
  */
-enum
-{
-	kAudioVolumePhysicalControl = 1,
-	kAudioVolumeVirtualControl = 2
+enum {
+    kAudioVolumePhysicalControl = 1,
+    kAudioVolumeVirtualControl = 2
 };
 
 /*
  Dithering modes
  */
-enum
-{
-	kAudioNoDithering = 0,
-	kAudioDitheringLinear = 1,
-	kAudioDitheringTriangle = 2,
-	kAudioDitheringNoiseShaping = 3,
+enum {
+    kAudioNoDithering = 0,
+    kAudioDitheringLinear = 1,
+    kAudioDitheringTriangle = 2,
+    kAudioDitheringNoiseShaping = 3,
 
-	kAudioDither16bit = 0x100
+    kAudioDither16bit = 0x100
 };
