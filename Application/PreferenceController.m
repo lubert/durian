@@ -28,6 +28,7 @@
 
 #pragma mark User preference keys & notifications
 
+NSString * const AUDAppearanceMode = @"AppearanceMode";
 NSString * const AUDUISkinTheme = @"UISkinTheme";
 NSString * const AUDUseAppleRemote = @"UseAppleRemote";
 NSString * const AUDUseMediaKeys = @"UseMediaKeys";
@@ -119,6 +120,16 @@ NSString * const AUDMediaKeysUseChangeNotification = @"AUDMediaKeysUseChangeNoti
 	[preferenceTabs selectTabViewItemAtIndex:0];
 
 	activeDeviceMaxSplRate = 192000; //Default that should be overriden by the setActiveDeviceDesc call
+
+	// Set sample rate indicator colors for dark mode support
+	NSColor *supportedColor = [NSColor systemGreenColor];
+	[splRate44_1kHz setTextColor:supportedColor];
+	[splRate48kHz setTextColor:supportedColor];
+	[splRate88_2kHz setTextColor:supportedColor];
+	[splRate96kHz setTextColor:supportedColor];
+	[splRate176_4kHz setTextColor:supportedColor];
+	[splRate192kHz setTextColor:supportedColor];
+	[splRateHigherThan192kHz setTextColor:supportedColor];
 }
 
 
@@ -149,20 +160,21 @@ NSString * const AUDMediaKeysUseChangeNotification = @"AUDMediaKeysUseChangeNoti
 
 - (void)setActiveDeviceDesc:(AudioDeviceDescription*)audioDevDesc
 {
-	NSColor *darkGreen = [NSColor colorWithCalibratedRed:0.0f green:0.4f blue:0.0f alpha:1.0f];
-	[splRate44_1kHz setTextColor:([audioDevDesc isSampleRateHandled:44100.0 withLimit:NO]?darkGreen:[NSColor lightGrayColor])];
-	[splRate48kHz setTextColor:([audioDevDesc isSampleRateHandled:48000.0 withLimit:NO]?darkGreen:[NSColor lightGrayColor])];
-	[splRate88_2kHz setTextColor:([audioDevDesc isSampleRateHandled:88200.0 withLimit:NO]?darkGreen:[NSColor lightGrayColor])];
-	[splRate96kHz setTextColor:([audioDevDesc isSampleRateHandled:96000.0 withLimit:NO]?darkGreen:[NSColor lightGrayColor])];
-	[splRate176_4kHz setTextColor:([audioDevDesc isSampleRateHandled:176400.0 withLimit:NO]?darkGreen:[NSColor lightGrayColor])];
-	[splRate192kHz setTextColor:([audioDevDesc isSampleRateHandled:192000.0 withLimit:NO]?darkGreen:[NSColor lightGrayColor])];
+	NSColor *supportedColor = [NSColor systemGreenColor];
+	NSColor *unsupportedColor = [NSColor secondaryLabelColor];
+	[splRate44_1kHz setTextColor:([audioDevDesc isSampleRateHandled:44100.0 withLimit:NO]?supportedColor:unsupportedColor)];
+	[splRate48kHz setTextColor:([audioDevDesc isSampleRateHandled:48000.0 withLimit:NO]?supportedColor:unsupportedColor)];
+	[splRate88_2kHz setTextColor:([audioDevDesc isSampleRateHandled:88200.0 withLimit:NO]?supportedColor:unsupportedColor)];
+	[splRate96kHz setTextColor:([audioDevDesc isSampleRateHandled:96000.0 withLimit:NO]?supportedColor:unsupportedColor)];
+	[splRate176_4kHz setTextColor:([audioDevDesc isSampleRateHandled:176400.0 withLimit:NO]?supportedColor:unsupportedColor)];
+	[splRate192kHz setTextColor:([audioDevDesc isSampleRateHandled:192000.0 withLimit:NO]?supportedColor:unsupportedColor)];
 
 	[activeAudioDevice setStringValue:audioDevDesc.name];
 
 	activeDeviceMaxSplRate = (NSUInteger)[audioDevDesc maxSampleRate];
 
 	if (activeDeviceMaxSplRate > 192000) {
-		[splRateHigherThan192kHz setTextColor:darkGreen];
+		[splRateHigherThan192kHz setTextColor:supportedColor];
 		if ((activeDeviceMaxSplRate%1000) != 0)
 			[splRateHigherThan192kHz setStringValue:[NSString stringWithFormat:@"%.0f",(float)activeDeviceMaxSplRate/1000]];
 		else
@@ -261,6 +273,12 @@ NSString * const AUDMediaKeysUseChangeNotification = @"AUDMediaKeysUseChangeNoti
 }
 
 #pragma mark General tab settings
+
+- (IBAction)changeAppearanceMode:(id)sender
+{
+	[[NSUserDefaults standardUserDefaults] setInteger:[appearanceMode selectedRow] forKey:AUDAppearanceMode];
+	[[NSNotificationCenter defaultCenter] postNotificationName:AUDAppearanceMode object:self];
+}
 
 - (IBAction)changeUISkinTheme:(id)sender
 {

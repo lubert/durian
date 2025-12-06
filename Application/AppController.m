@@ -39,6 +39,7 @@
 - (void)handleStartPlaybackNotification:(NSNotification*)notification;
 - (void)handleUpdateRepeatStatus:(NSNotification*)notification;
 - (void)handleUpdateShuffleStatus:(NSNotification*)notification;
+- (void)handleUpdateAppearanceMode:(NSNotification*)notification;
 - (void)handleUpdateUISkinTheme:(NSNotification*)notification;
 - (void)handleUpdateAppleRemoteUse:(NSNotification*)notification;
 - (void)handleUpdateMediaKeysUse:(NSNotification*)notification;
@@ -47,10 +48,51 @@
 
 @interface AppController (OtherPrivate)
 - (BOOL)startStopAppleRemoteUse:(BOOL)isToStart;
+- (NSInteger)effectiveSkinTheme;
 @end
 
 
 @implementation AppController
+
+// Helper method to get effective skin theme (resolves kAUDUISystemTheme to actual theme)
+- (NSInteger)effectiveSkinTheme
+{
+	NSInteger skinTheme = [[NSUserDefaults standardUserDefaults] integerForKey:AUDUISkinTheme];
+
+	// If System theme is selected, determine which theme to use based on appearance
+	if (skinTheme == kAUDUISystemTheme) {
+		if (@available(macOS 10.14, *)) {
+			NSAppearance *effectiveAppearance = [NSApp effectiveAppearance];
+			NSAppearanceName appearanceName = [effectiveAppearance bestMatchFromAppearancesWithNames:@[
+				NSAppearanceNameAqua,
+				NSAppearanceNameDarkAqua
+			]];
+
+			BOOL isDarkMode = [appearanceName isEqualToString:NSAppearanceNameDarkAqua];
+
+			if (isDarkMode) {
+				return kAUDUIBlackTheme;
+			} else {
+				// Check accent color
+				NSColor *accentColor = [NSColor controlAccentColor];
+				NSColor *convertedColor = [accentColor colorUsingColorSpace:[NSColorSpace genericRGBColorSpace]];
+
+				CGFloat red = [convertedColor redComponent];
+				CGFloat green = [convertedColor greenComponent];
+				CGFloat blue = [convertedColor blueComponent];
+				CGFloat maxDiff = MAX(MAX(fabs(red - green), fabs(green - blue)), fabs(blue - red));
+
+				if (maxDiff < 0.15) {
+					return kAUDUIBlackTheme; // Graphite
+				} else {
+					return kAUDUISilverTheme; // Blue/Silver
+				}
+			}
+		}
+	}
+
+	return skinTheme;
+}
 
 + (void)initialize
 {
@@ -60,6 +102,7 @@
 	NSMutableDictionary *defaultValues = [NSMutableDictionary dictionary];
 
 	//Register default values for user preferences
+	[defaultValues setObject:[NSNumber numberWithInt:kAUDAppearanceSystem] forKey:AUDAppearanceMode];
 	[defaultValues setObject:[NSNumber numberWithInt:kAUDUISilverTheme] forKey:AUDUISkinTheme];
 	[defaultValues setObject:[NSNumber numberWithBool:YES] forKey:AUDHogMode];
 	[defaultValues setObject:[NSNumber numberWithBool:YES] forKey:AUDIntegerMode];
@@ -322,6 +365,8 @@
 	//And UI pref changes
 	[nc addObserver:self selector:@selector(handleDeviceChange:)
 			   name:AUDPreferredDeviceChangeNotification object:nil];
+	[nc addObserver:self selector:@selector(handleUpdateAppearanceMode:)
+			   name:AUDAppearanceMode object:nil];
 	[nc addObserver:self selector:@selector(handleUpdateUISkinTheme:)
 			   name:AUDUISkinTheme object:nil];
 	[nc addObserver:self selector:@selector(handleUpdateAppleRemoteUse:)
@@ -329,6 +374,7 @@
 	[nc addObserver:self selector:@selector(handleUpdateMediaKeysUse:)
 			   name:AUDMediaKeysUseChangeNotification object:nil];
 
+	[self handleUpdateAppearanceMode:nil];
 	[self handleUpdateUISkinTheme:nil];
 }
 
@@ -462,7 +508,7 @@
 	}
 
     [self updateCurrentPlayingTime];
-	if ([[NSUserDefaults standardUserDefaults] integerForKey:AUDUISkinTheme] == kAUDUISilverTheme) {
+	if ([self effectiveSkinTheme] == kAUDUISilverTheme) {
 		[playPauseButton setImage:[NSImage imageNamed:@"Silver_PlayerWin_pause_on.png"]];
 		[playPauseButton setAlternateImage:[NSImage imageNamed:@"Silver_PlayerWin_pause_pressed.png"]];
 	}
@@ -486,7 +532,7 @@
     mPlaybackInitiating = NO;
 
 	[audioOut closeBuffers];
-	if ([[NSUserDefaults standardUserDefaults] integerForKey:AUDUISkinTheme] == kAUDUISilverTheme) {
+	if ([self effectiveSkinTheme] == kAUDUISilverTheme) {
 		[playPauseButton setImage:[NSImage imageNamed:@"Silver_PlayerWin_play_on.png"]];
 		[playPauseButton setAlternateImage:[NSImage imageNamed:@"Silver_PlayerWin_play_pressed.png"]];
 	}
@@ -541,7 +587,7 @@
 			if ([audioOut isPaused]) {
 				//Un-Pause
 				[audioOut pause:NO];
-				if ([[NSUserDefaults standardUserDefaults] integerForKey:AUDUISkinTheme] == kAUDUISilverTheme) {
+				if ([self effectiveSkinTheme] == kAUDUISilverTheme) {
 					[playPauseButton setImage:[NSImage imageNamed:@"Silver_PlayerWin_pause_on.png"]];
 					[playPauseButton setAlternateImage:[NSImage imageNamed:@"Silver_PlayerWin_pause_pressed.png"]];
 				}
@@ -552,7 +598,7 @@
 			} else {
 				//Pause
 				[audioOut pause:YES];
-				if ([[NSUserDefaults standardUserDefaults] integerForKey:AUDUISkinTheme] == kAUDUISilverTheme) {
+				if ([self effectiveSkinTheme] == kAUDUISilverTheme) {
 					[playPauseButton setImage:[NSImage imageNamed:@"Silver_PlayerWin_play_on.png"]];
 					[playPauseButton setAlternateImage:[NSImage imageNamed:@"Silver_PlayerWin_play_pressed.png"]];
 				}
@@ -1684,9 +1730,72 @@
     }
 }
 
+- (void)handleUpdateAppearanceMode:(NSNotification*)notification
+{
+	NSInteger appearanceMode = [[NSUserDefaults standardUserDefaults] integerForKey:AUDAppearanceMode];
+
+	switch (appearanceMode) {
+		case kAUDAppearanceLight:
+			if (@available(macOS 10.14, *)) {
+				[NSApp setAppearance:[NSAppearance appearanceNamed:NSAppearanceNameAqua]];
+			}
+			break;
+		case kAUDAppearanceDark:
+			if (@available(macOS 10.14, *)) {
+				[NSApp setAppearance:[NSAppearance appearanceNamed:NSAppearanceNameDarkAqua]];
+			}
+			break;
+		case kAUDAppearanceSystem:
+		default:
+			if (@available(macOS 10.14, *)) {
+				[NSApp setAppearance:nil]; // nil means follow system appearance
+			}
+			break;
+	}
+}
+
 - (void)handleUpdateUISkinTheme:(NSNotification*)notification
 {
-	switch ([[NSUserDefaults standardUserDefaults] integerForKey:AUDUISkinTheme]) {
+	NSInteger skinTheme = [[NSUserDefaults standardUserDefaults] integerForKey:AUDUISkinTheme];
+
+	// Handle System theme - detect system appearance and accent color
+	if (skinTheme == kAUDUISystemTheme) {
+		if (@available(macOS 10.14, *)) {
+			// Check if the effective appearance is dark
+			NSAppearance *effectiveAppearance = [NSApp effectiveAppearance];
+			NSAppearanceName appearanceName = [effectiveAppearance bestMatchFromAppearancesWithNames:@[
+				NSAppearanceNameAqua,
+				NSAppearanceNameDarkAqua
+			]];
+
+			BOOL isDarkMode = [appearanceName isEqualToString:NSAppearanceNameDarkAqua];
+
+			if (isDarkMode) {
+				// In dark mode, always use Graphite/Black skin
+				skinTheme = kAUDUIBlackTheme;
+			} else {
+				// In light mode, check accent color preference
+				NSColor *accentColor = [NSColor controlAccentColor];
+				NSColor *convertedColor = [accentColor colorUsingColorSpace:[NSColorSpace genericRGBColorSpace]];
+
+				// Simple heuristic: if the color is close to gray, it's Graphite, otherwise Silver
+				CGFloat red = [convertedColor redComponent];
+				CGFloat green = [convertedColor greenComponent];
+				CGFloat blue = [convertedColor blueComponent];
+				CGFloat maxDiff = MAX(MAX(fabs(red - green), fabs(green - blue)), fabs(blue - red));
+
+				if (maxDiff < 0.15) {
+					skinTheme = kAUDUIBlackTheme; // Graphite accent
+				} else {
+					skinTheme = kAUDUISilverTheme; // Blue/Silver accent
+				}
+			}
+		} else {
+			skinTheme = kAUDUISilverTheme; // Default to Silver on older systems
+		}
+	}
+
+	switch (skinTheme) {
 		case kAUDUIBlackTheme:
 		{
 			[parentWindow setBackgroundColor:[NSColor clearColor]];

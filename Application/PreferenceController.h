@@ -22,6 +22,7 @@
 #import <Cocoa/Cocoa.h>
 
 //User preference keys
+extern NSString * const AUDAppearanceMode;
 extern NSString * const AUDUISkinTheme;
 extern NSString * const AUDUseAppleRemote;
 extern NSString * const AUDUseMediaKeys;
@@ -77,11 +78,21 @@ enum {
 };
 
 /*
+ Appearance Modes
+ */
+enum {
+	kAUDAppearanceLight = 0,
+	kAUDAppearanceDark = 1,
+	kAUDAppearanceSystem = 2
+};
+
+/*
  UI Skin Themes
  */
 enum {
 	kAUDUISilverTheme = 0,
-	kAUDUIBlackTheme = 1
+	kAUDUIBlackTheme = 1,
+	kAUDUISystemTheme = 2
 };
 
 /*
@@ -139,6 +150,7 @@ enum {
 	IBOutlet NSTextField *maxTrackLengthAt44_1;
 	IBOutlet NSTextField *maxTrackLengthAt192;
 
+	IBOutlet NSMatrix *appearanceMode;
 	IBOutlet NSMatrix *uiSkinTheme;
 	IBOutlet NSButton *useAppleRemote;
     IBOutlet NSButton *useKbdMediaKeys;
@@ -159,6 +171,7 @@ enum {
 - (IBAction)changeIntegerMode:(id)sender;
 - (IBAction)changeHogMode:(id)sender;
 - (IBAction)changeMaxAudioBufferSize:(id)sender;
+- (IBAction)changeAppearanceMode:(id)sender;
 - (IBAction)changeUISkinTheme:(id)sender;
 - (IBAction)changeUseAppleRemote:(id)sender;
 - (IBAction)changeUseKbdMediaKeys:(id)sender;
