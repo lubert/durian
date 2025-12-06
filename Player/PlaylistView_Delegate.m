@@ -31,19 +31,28 @@
 
 -(NSCell *)tableView:(NSTableView *)tableView dataCellForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
 	NSTextFieldCell *cell = [tableColumn dataCell];
+	CGFloat systemFontSize = [NSFont systemFontSize];
+	BOOL isSelected = [tableView isRowSelected:row];
+
 	if(document) {
-		if (row == [document playingTrackIndex]) {
-			[cell setTextColor: [NSColor colorWithCalibratedRed:0.0f green:0.0f blue:0.4f alpha:1.0f]];
-			[cell setFont:[NSFont boldSystemFontOfSize:10.0f]];
-		} else if (row == [document loadedTrackIndex]) {
-			[cell setTextColor: [NSColor colorWithCalibratedRed:0.0f green:0.4f blue:0.0f alpha:1.0f]];
-			[cell setFont:[NSFont systemFontOfSize:10.0f]];
+		// Set text color based on selection state
+		if (isSelected) {
+			// Use system color for selected text (white on blue highlight)
+			[cell setTextColor: [NSColor selectedTextColor]];
+		} else if (row == [document playingTrackIndex]) {
+			[cell setTextColor: [NSColor systemBlueColor]];
 		} else {
-			[cell setTextColor: [NSColor blackColor]];
-			[cell setFont:[NSFont systemFontOfSize:10.0f]];
+			[cell setTextColor: [NSColor labelColor]];
+		}
+
+		// Set font based on playing state
+		if (row == [document playingTrackIndex]) {
+			[cell setFont:[NSFont boldSystemFontOfSize:systemFontSize]];
+		} else {
+			[cell setFont:[NSFont systemFontOfSize:systemFontSize]];
 		}
 	}
-	else [cell setTextColor: [NSColor blackColor]];
+	else [cell setTextColor: [NSColor labelColor]];
 
 	return cell;
 }

@@ -32,6 +32,8 @@ extern NSString * const iTunesPBoardType;
 	IBOutlet PlaylistView* mPlaylistView;
 	IBOutlet NSButton* repeatButton;
     IBOutlet NSButton* shuffleButton;
+	IBOutlet NSButton* addButton;
+	IBOutlet NSButton* removeButton;
 }
 - (void)setPlaylistDocument:(PlaylistDocument*)playlistdoc;
 - (IBAction)trackSeek:(id)sender;

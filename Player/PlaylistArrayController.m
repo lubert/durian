@@ -38,6 +38,34 @@ NSString * const iTunesPBoardType = @"CorePasteboardFlavorType 0x6974756E";
 	[mPlaylistView setDoubleAction:@selector(trackSeek:)];
 	[mPlaylistView setTarget:self];
 
+	// Set SF Symbol images for buttons (dark mode compatible)
+	if (@available(macOS 11.0, *)) {
+		// Create symbol configuration for medium size
+		NSImageSymbolConfiguration *config = [NSImageSymbolConfiguration configurationWithPointSize:13 weight:NSFontWeightRegular scale:NSImageSymbolScaleMedium];
+
+		// Add button
+		NSImage *plusImage = [NSImage imageWithSystemSymbolName:@"plus" accessibilityDescription:@"Add"];
+		plusImage = [plusImage imageWithSymbolConfiguration:config];
+		[addButton setImage:plusImage];
+
+		// Remove button
+		NSImage *minusImage = [NSImage imageWithSystemSymbolName:@"minus" accessibilityDescription:@"Remove"];
+		minusImage = [minusImage imageWithSymbolConfiguration:config];
+		[removeButton setImage:minusImage];
+
+		// Shuffle button
+		NSImage *shuffleImage = [NSImage imageWithSystemSymbolName:@"shuffle" accessibilityDescription:@"Shuffle"];
+		shuffleImage = [shuffleImage imageWithSymbolConfiguration:config];
+		[shuffleButton setImage:shuffleImage];
+		[shuffleButton setAlternateImage:shuffleImage];
+
+		// Repeat button
+		NSImage *repeatImage = [NSImage imageWithSystemSymbolName:@"repeat" accessibilityDescription:@"Repeat"];
+		repeatImage = [repeatImage imageWithSymbolConfiguration:config];
+		[repeatButton setImage:repeatImage];
+		[repeatButton setAlternateImage:repeatImage];
+	}
+
 	//Add playlist changes listeners
 	NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
 	[nc addObserver:self selector:@selector(handleUpdateRepeatStatus:)
@@ -55,6 +83,46 @@ NSString * const iTunesPBoardType = @"CorePasteboardFlavorType 0x6974756E";
 - (void)setPlaylistDocument:(PlaylistDocument*)playlistdoc
 {
 	mDocument = playlistdoc;
+}
+
+#pragma mark Table view data source methods for track number with status
+
+- (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row
+{
+	// Handle the track number column - add green bullet for loaded track
+	if ([[tableColumn identifier] isEqualToString:@"trackNumber"]) {
+		// Safety check
+		if (row < 0 || row >= [[self arrangedObjects] count]) {
+			return @"";
+		}
+
+		id trackObject = [[self arrangedObjects] objectAtIndex:row];
+		if (!trackObject) {
+			return @"";
+		}
+
+		NSNumber *number = [trackObject valueForKey:@"trackNumber"];
+		if (!number) {
+			return @"";
+		}
+
+		if (mDocument && row == [mDocument loadedTrackIndex] && row != [mDocument playingTrackIndex]) {
+			// Add green bullet after track number with colored bullet
+			NSString *text = [NSString stringWithFormat:@"%@ ●", number];
+			NSMutableAttributedString *attrString = [[NSMutableAttributedString alloc] initWithString:text];
+
+			// Color just the bullet green
+			NSRange bulletRange = NSMakeRange([text length] - 1, 1);
+			[attrString addAttribute:NSForegroundColorAttributeName
+							   value:[NSColor systemGreenColor]
+							   range:bulletRange];
+
+			return [attrString autorelease];
+		}
+		return number;
+	}
+	// For other columns, return nil to let bindings handle it
+	return nil;
 }
 
 - (void)setSortDescriptors:(NSArray *)array
