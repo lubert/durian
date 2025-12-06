@@ -577,7 +577,6 @@
 				8D11072E0486CEB800E47090 /* Frameworks */,
 				6D4AB81D1299B27D00E92F02 /* CopyFiles */,
 				6D8B06C5131972C100D72BDC /* CopyFiles */,
-				8BED24CC0FC54ED49C9B3FFC /* Strip Extended Attributes */,
 			);
 			buildRules = (
 			);
@@ -697,26 +696,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		8BED24CC0FC54ED49C9B3FFC /* Strip Extended Attributes */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Strip Extended Attributes";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/bash;
-			shellScript = "# Strip extended attributes from build output to prevent codesign issues\n# This removes com.apple.provenance, resource forks, and other extended attributes\n\nAPP_PATH=\"${BUILT_PRODUCTS_DIR}/${FULL_PRODUCT_NAME}\"\n\nif [ -d \"$APP_PATH\" ]; then\n    echo \"Stripping extended attributes from: $APP_PATH\"\n    \n    # Strip all extended attributes recursively\n    xattr -cr \"$APP_PATH\" 2>/dev/null || true\n    \n    # Remove Icon file if it has resource forks (these cause codesign failures)\n    if [ -f \"$APP_PATH/Icon\"$'\\r' ]; then\n        echo \"Removing Icon file with resource fork\"\n        rm -f \"$APP_PATH/Icon\"$'\\r' 2>/dev/null || true\n    fi\n    \n    # Double-check for any remaining resource forks\n    find \"$APP_PATH\" -type f -exec xattr -d com.apple.ResourceFork {} \\; 2>/dev/null || true\n    find \"$APP_PATH\" -type f -exec xattr -d com.apple.FinderInfo {} \\; 2>/dev/null || true\n    \n    echo \"✓ Extended attributes and resource forks removed\"\nelse\n    echo \"App bundle not found at: $APP_PATH (first build - skipping)\"\nfi\n";
-			showEnvVarsInLog = 0;
-		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
