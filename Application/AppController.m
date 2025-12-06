@@ -1152,6 +1152,34 @@
         [masterDeviceVolumeMinus setHidden:YES];
     }
 
+    NSAttributedString* buttonText = [[NSAttributedString alloc] initWithString:@"POWER" attributes:volumeStringAttributes];
+    [powerText setAttributedStringValue:buttonText];
+    [buttonText release];
+
+    buttonText = [[NSAttributedString alloc] initWithString:@"DISPLAY\nOFF" attributes:volumeStringAttributes];
+    [displayOffText setAttributedStringValue:buttonText];
+    [buttonText release];
+
+    buttonText = [[NSAttributedString alloc] initWithString:@"PLAYLIST" attributes:volumeStringAttributes];
+    [playlistText setAttributedStringValue:buttonText];
+    [buttonText release];
+
+    buttonText = [[NSAttributedString alloc] initWithString:@"PREV" attributes:volumeStringAttributes];
+    [prevText setAttributedStringValue:buttonText];
+    [buttonText release];
+
+    buttonText = [[NSAttributedString alloc] initWithString:@"PLAY" attributes:volumeStringAttributes];
+    [playText setAttributedStringValue:buttonText];
+    [buttonText release];
+
+    buttonText = [[NSAttributedString alloc] initWithString:@"STOP" attributes:volumeStringAttributes];
+    [stopText setAttributedStringValue:buttonText];
+    [buttonText release];
+
+    buttonText = [[NSAttributedString alloc] initWithString:@"NEXT" attributes:volumeStringAttributes];
+    [nextText setAttributedStringValue:buttonText];
+    [buttonText release];
+
     [volumeStringAttributes release];
     [plusMinusStringAttributes release];
 }
@@ -1803,7 +1831,10 @@
     case kAUDUIBlackTheme: {
         [parentWindow setBackgroundColor:[NSColor clearColor]];
         [[parentWindow contentView] setWantsLayer:YES];
-        [[parentWindow contentView] layer].contents = [NSImage imageNamed:@"Black_PlayerWin_mainWindowBackground.png"];
+        NSImage* bgImage = [NSImage imageNamed:@"Black_PlayerWin_mainWindowBackground"];
+        CGImageRef cgImage = [bgImage CGImageForProposedRect:NULL context:nil hints:nil];
+        [[parentWindow contentView] layer].contents = (__bridge id)cgImage;
+        [[parentWindow contentView] layer].contentsScale = [parentWindow backingScaleFactor];
 
         NSImage* iconImage = [NSImage imageNamed:@"DurianBlackAppIcon"];
         [NSApp setApplicationIconImage:iconImage];
@@ -1874,7 +1905,10 @@
     default: {
         [parentWindow setBackgroundColor:[NSColor clearColor]];
         [[parentWindow contentView] setWantsLayer:YES];
-        [[parentWindow contentView] layer].contents = [NSImage imageNamed:@"Silver_PlayerWin_mainWindowBackground.png"];
+        NSImage* bgImage = [NSImage imageNamed:@"Silver_PlayerWin_mainWindowBackground"];
+        CGImageRef cgImage = [bgImage CGImageForProposedRect:NULL context:nil hints:nil];
+        [[parentWindow contentView] layer].contents = (__bridge id)cgImage;
+        [[parentWindow contentView] layer].contentsScale = [parentWindow backingScaleFactor];
 
         NSImage* iconImage = [NSImage imageNamed:@"DurianAppIcon"];
         [NSApp setApplicationIconImage:iconImage];

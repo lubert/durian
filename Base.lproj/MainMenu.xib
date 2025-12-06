@@ -49,7 +49,7 @@
                         </connections>
                     </button>
                     <imageView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="573">
-                        <rect key="frame" x="197" y="64" width="133" height="133"/>
+                        <rect key="frame" x="197" y="64" width="132" height="133"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES"/>
                         <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyUpOrDown" id="574"/>
                     </imageView>
@@ -174,7 +174,7 @@
                             <textField focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="556">
                                 <rect key="frame" x="-6" y="92" width="291" height="22"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
-                                <textFieldCell key="cell" lineBreakMode="truncatingTail" allowsUndo="NO" sendsActionOnEndEditing="YES" state="on" usesSingleLineMode="YES" truncatesLastVisibleLine="YES" id="557">
+                                <textFieldCell key="cell" lineBreakMode="truncatingTail" truncatesLastVisibleLine="YES" allowsUndo="NO" sendsActionOnEndEditing="YES" state="on" usesSingleLineMode="YES" id="557">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
@@ -290,6 +290,69 @@
                             <action selector="toggleShuffle:" target="533" id="842"/>
                         </connections>
                     </button>
+                    <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" preferredMaxLayoutWidth="58" translatesAutoresizingMaskIntoConstraints="NO" id="844">
+                        <rect key="frame" x="702" y="49" width="62" height="28"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" allowsUndo="NO" sendsActionOnEndEditing="YES" alignment="center" title="Prev" id="845">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" preferredMaxLayoutWidth="58" translatesAutoresizingMaskIntoConstraints="NO" id="849">
+                        <rect key="frame" x="758" y="126" width="62" height="28"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" allowsUndo="NO" sendsActionOnEndEditing="YES" alignment="center" title="Stop" id="850">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" preferredMaxLayoutWidth="58" translatesAutoresizingMaskIntoConstraints="NO" id="851">
+                        <rect key="frame" x="758" y="49" width="62" height="28"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" allowsUndo="NO" sendsActionOnEndEditing="YES" alignment="center" title="Next" id="852">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" preferredMaxLayoutWidth="58" translatesAutoresizingMaskIntoConstraints="NO" id="847">
+                        <rect key="frame" x="702" y="126" width="62" height="28"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" allowsUndo="NO" sendsActionOnEndEditing="YES" alignment="center" title="Play" id="848">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" preferredMaxLayoutWidth="58" translatesAutoresizingMaskIntoConstraints="NO" id="856">
+                        <rect key="frame" x="17" y="126" width="62" height="28"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" allowsUndo="NO" sendsActionOnEndEditing="YES" alignment="center" title="Power" id="857">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" preferredMaxLayoutWidth="58" translatesAutoresizingMaskIntoConstraints="NO" id="860">
+                        <rect key="frame" x="118" y="48" width="62" height="28"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" allowsUndo="NO" sendsActionOnEndEditing="YES" alignment="center" title="Playlist" id="861">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" preferredMaxLayoutWidth="58" translatesAutoresizingMaskIntoConstraints="NO" id="858">
+                        <rect key="frame" x="17" y="48" width="62" height="28"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" allowsUndo="NO" sendsActionOnEndEditing="YES" alignment="center" title="Display Off" id="859">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
                 </subviews>
             </view>
             <connections>
@@ -504,6 +567,7 @@
             <connections>
                 <outlet property="currentDACSampleRate" destination="531" id="814"/>
                 <outlet property="displayOffButton" destination="774" id="825"/>
+                <outlet property="displayOffText" destination="858" id="862"/>
                 <outlet property="displayOverload" destination="743" id="745"/>
                 <outlet property="integerModeStatus" destination="821" id="823"/>
                 <outlet property="masterDeviceVolume" destination="756" id="759"/>
@@ -512,12 +576,17 @@
                 <outlet property="masterDeviceVolumeText" destination="782" id="784"/>
                 <outlet property="masterDeviceVolumeValue" destination="805" id="807"/>
                 <outlet property="nextButton" destination="711" id="828"/>
+                <outlet property="nextText" destination="851" id="853"/>
                 <outlet property="parentWindow" destination="21" id="543"/>
                 <outlet property="playPauseButton" destination="552" id="554"/>
                 <outlet property="playRepeatButton" destination="768" id="771"/>
                 <outlet property="playShuffleButton" destination="839" id="843"/>
+                <outlet property="playText" destination="847" id="854"/>
+                <outlet property="playlistText" destination="860" id="863"/>
                 <outlet property="powerButton" destination="722" id="824"/>
+                <outlet property="powerText" destination="856" id="864"/>
                 <outlet property="prevButton" destination="708" id="827"/>
+                <outlet property="prevText" destination="844" id="846"/>
                 <outlet property="songAlbum" destination="568" id="572"/>
                 <outlet property="songArtist" destination="564" id="570"/>
                 <outlet property="songBitDepth" destination="817" id="820"/>
@@ -531,6 +600,7 @@
                 <outlet property="songTextView" destination="772" id="773"/>
                 <outlet property="songTitle" destination="556" id="563"/>
                 <outlet property="stopButton" destination="716" id="826"/>
+                <outlet property="stopText" destination="849" id="855"/>
                 <outlet property="togglePlaylistButton" destination="587" id="781"/>
             </connections>
         </customObject>
