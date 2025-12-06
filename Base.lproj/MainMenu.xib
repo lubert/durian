@@ -329,12 +329,6 @@
                                     <action selector="showPreferencePanel:" target="533" id="728"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Check for Updates..." id="791">
-                                <modifierMask key="keyEquivalentModifierMask"/>
-                                <connections>
-                                    <action selector="checkForUpdates:" target="790" id="792"/>
-                                </connections>
-                            </menuItem>
                             <menuItem isSeparatorItem="YES" id="143">
                                 <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                             </menuItem>
@@ -540,7 +534,6 @@
                 <outlet property="togglePlaylistButton" destination="587" id="781"/>
             </connections>
         </customObject>
-        <customObject id="790" customClass="SUUpdater"/>
     </objects>
     <resources>
         <image name="Silver_PlayerWin_WindowModel" width="882" height="259"/>
