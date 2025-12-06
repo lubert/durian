@@ -668,21 +668,21 @@ Note that the fastest setting uses a linear algorithm ultra-fast, but very noisy
             </view>
             <toolbar key="toolbar" implicitIdentifier="F26B6827-0C29-4E13-B728-82B396004BDC" autosavesConfiguration="NO" allowsUserCustomization="NO" showsBaselineSeparator="NO" displayMode="iconAndLabel" sizeMode="regular" id="85">
                 <allowedToolbarItems>
-                    <toolbarItem implicitItemIdentifier="6A0F4E02-7A73-498F-B828-9C83EED464DC" explicitItemIdentifier="General" label="General" paletteLabel="General" tag="-1" image="UserPrefsGeneral" selectable="YES" id="93">
+                    <toolbarItem implicitItemIdentifier="6A0F4E02-7A73-498F-B828-9C83EED464DC" explicitItemIdentifier="General" label="General" paletteLabel="General" tag="-1" selectable="YES" id="93">
                         <size key="minSize" width="22" height="22"/>
                         <size key="maxSize" width="22" height="22"/>
                         <connections>
                             <action selector="selectGeneralTab:" target="-2" id="168"/>
                         </connections>
                     </toolbarItem>
-                    <toolbarItem implicitItemIdentifier="9C9DC059-65E9-4926-A7B8-6606A0942169" explicitItemIdentifier="AudioSystem" label="Audio System" paletteLabel="Audio System" tag="-1" image="UserPrefsAudioSystem" selectable="YES" id="94">
+                    <toolbarItem implicitItemIdentifier="9C9DC059-65E9-4926-A7B8-6606A0942169" explicitItemIdentifier="AudioSystem" label="Audio System" paletteLabel="Audio System" tag="-1" selectable="YES" id="94">
                         <size key="minSize" width="22" height="22"/>
                         <size key="maxSize" width="22" height="22"/>
                         <connections>
                             <action selector="selectAudioDeviceTab:" target="-2" id="166"/>
                         </connections>
                     </toolbarItem>
-                    <toolbarItem implicitItemIdentifier="79FCA91B-0A6A-4133-985C-3930A23DA750" explicitItemIdentifier="AudioFilters" label="Upsampling" paletteLabel="Upsampling" tag="-1" image="UserPrefsAudioFilters" selectable="YES" id="261">
+                    <toolbarItem implicitItemIdentifier="79FCA91B-0A6A-4133-985C-3930A23DA750" explicitItemIdentifier="AudioFilters" label="Upsampling" paletteLabel="Upsampling" tag="-1" selectable="YES" id="261">
                         <size key="minSize" width="22" height="22"/>
                         <size key="maxSize" width="22" height="22"/>
                         <connections>
@@ -763,8 +763,5 @@ Gw
         </window>
     </objects>
     <resources>
-        <image name="UserPrefsAudioFilters" width="32" height="32"/>
-        <image name="UserPrefsAudioSystem" width="32" height="32"/>
-        <image name="UserPrefsGeneral" width="32" height="32"/>
     </resources>
 </document>

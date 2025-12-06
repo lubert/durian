@@ -93,7 +93,29 @@ NSString* const AUDMediaKeysUseChangeNotification = @"AUDMediaKeysUseChangeNotif
         [useKbdMediaKeysForVolumeControl setState:NO];
     }
 
-    [[[self window] toolbar] setSelectedItemIdentifier:@"General"];
+    NSToolbar* toolbar = [[self window] toolbar];
+    NSArray* allItems = [toolbar items];
+    for (NSToolbarItem* item in allItems) {
+        NSImage* icon = nil;
+        NSString* identifier = [item itemIdentifier];
+
+        if ([identifier isEqualToString:@"General"]) {
+            icon = [NSImage imageWithSystemSymbolName:@"gearshape" accessibilityDescription:@"General"];
+        } else if ([identifier isEqualToString:@"AudioSystem"]) {
+            icon = [NSImage imageWithSystemSymbolName:@"hifispeaker" accessibilityDescription:@"Audio System"];
+        } else if ([identifier isEqualToString:@"AudioFilters"]) {
+            icon = [NSImage imageWithSystemSymbolName:@"waveform" accessibilityDescription:@"Upsampling"];
+        }
+
+        if (icon) {
+            // Configure the icon size for toolbar
+            NSImageSymbolConfiguration* config = [NSImageSymbolConfiguration configurationWithPointSize:22.0 weight:NSFontWeightRegular scale:NSImageSymbolScaleMedium];
+            icon = [icon imageWithSymbolConfiguration:config];
+            [item setImage:icon];
+        }
+    }
+
+    [toolbar setSelectedItemIdentifier:@"General"];
     [preferenceTabs selectTabViewItemAtIndex:0];
 
     activeDeviceMaxSplRate = 192000; // Default that should be overriden by the setActiveDeviceDesc call
