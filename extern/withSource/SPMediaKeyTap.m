@@ -80,22 +80,27 @@ static CGEventRef tapEventCallback(CGEventTapProxy proxy, CGEventType type, CGEv
             NSLog(@"Media key support requires Accessibility permissions.");
             NSLog(@"Please grant access in System Settings > Privacy & Security > Accessibility");
 
-            // Show a user-friendly alert (non-blocking)
-            dispatch_async(dispatch_get_main_queue(), ^{
-                NSAlert* alert = [[NSAlert alloc] init];
-                [alert setMessageText:@"Accessibility Permission Required"];
-                [alert setInformativeText:@"Durian needs Accessibility permission to support media keys (play/pause, etc.).\n\nYou can grant permission in System Settings > Privacy & Security > Accessibility.\n\nThe app will work normally, but media key support will be disabled."];
-                [alert addButtonWithTitle:@"Open System Settings"];
-                [alert addButtonWithTitle:@"Continue Without Media Keys"];
-                [alert setAlertStyle:NSAlertStyleWarning];
+            // Check if running in Xcode Previews/Playground mode - don't show alert
+            BOOL isPreviewMode = [[NSProcessInfo processInfo].environment[@"XCODE_RUNNING_FOR_PLAYGROUNDS"] isEqualToString:@"1"];
 
-                NSModalResponse response = [alert runModal];
-                if (response == NSAlertFirstButtonReturn) {
-                    // Open System Settings to Accessibility pane
-                    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility"]];
-                }
-                [alert release];
-            });
+            if (!isPreviewMode) {
+                // Show a user-friendly alert (non-blocking)
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    NSAlert* alert = [[NSAlert alloc] init];
+                    [alert setMessageText:@"Accessibility Permission Required"];
+                    [alert setInformativeText:@"Durian needs Accessibility permission to support media keys (play/pause, etc.).\n\nYou can grant permission in System Settings > Privacy & Security > Accessibility.\n\nThe app will work normally, but media key support will be disabled."];
+                    [alert addButtonWithTitle:@"Open System Settings"];
+                    [alert addButtonWithTitle:@"Continue Without Media Keys"];
+                    [alert setAlertStyle:NSAlertStyleWarning];
+
+                    NSModalResponse response = [alert runModal];
+                    if (response == NSAlertFirstButtonReturn) {
+                        // Open System Settings to Accessibility pane
+                        [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility"]];
+                    }
+                    [alert release];
+                });
+            }
 
             return; // Gracefully skip media key setup
         }
