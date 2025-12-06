@@ -117,6 +117,7 @@ NSString* const AUDMediaKeysUseChangeNotification = @"AUDMediaKeysUseChangeNotif
 
     [toolbar setSelectedItemIdentifier:@"General"];
     [preferenceTabs selectTabViewItemAtIndex:0];
+    [[self window] setTitle:@"General"];
 
     activeDeviceMaxSplRate = 192000; // Default that should be overriden by the setActiveDeviceDesc call
 
@@ -198,16 +199,19 @@ NSString* const AUDMediaKeysUseChangeNotification = @"AUDMediaKeysUseChangeNotif
 - (IBAction)selectGeneralTab:(id)sender
 {
     [preferenceTabs selectTabViewItemAtIndex:0];
+    [[self window] setTitle:@"General"];
 }
 
 - (IBAction)selectAudioDeviceTab:(id)sender
 {
     [preferenceTabs selectTabViewItemAtIndex:1];
+    [[self window] setTitle:@"Audio System"];
 }
 
 - (IBAction)selectAudioFiltersTab:(id)sender
 {
     [preferenceTabs selectTabViewItemAtIndex:2];
+    [[self window] setTitle:@"Upsampling"];
 }
 
 #pragma mark Preferred device change
