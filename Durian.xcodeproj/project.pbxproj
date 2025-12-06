@@ -12,7 +12,6 @@
 		6D0C9A47136C398E00E1759B /* Playlist.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6D0C9A49136C398E00E1759B /* Playlist.xib */; };
 		6D1028461286C184006391A4 /* DurianAppIcon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 6D1028451286C184006391A4 /* DurianAppIcon.icns */; };
 		6D17CCDF136478A800740C02 /* AudioOutput.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DBA9BB2123D04550083B20D /* AudioOutput.m */; };
-		6D17CCE2136478F100740C02 /* libAudioOutputLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D17CCD61364784100740C02 /* libAudioOutputLib.a */; };
 		6D198F86120DB867006313FC /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D198F85120DB867006313FC /* AudioToolbox.framework */; };
 		6D2AA7BE131AD20000F4D2B0 /* DurianBlackAppIcon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 6D2AA7BD131AD20000F4D2B0 /* DurianBlackAppIcon.icns */; };
 		6D54ECB8123D73AE009E146F /* PlaylistView_Delegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D54ECB7123D73AE009E146F /* PlaylistView_Delegate.m */; };
@@ -105,16 +104,6 @@
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXContainerItemProxy section */
-		6D17CCE0136478E800740C02 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 6D17CCD51364784100740C02;
-			remoteInfo = AudioOutputLib;
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXCopyFilesBuildPhase section */
 		6D4AB81D1299B27D00E92F02 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
@@ -151,9 +140,7 @@
 		6D06C3D31260575B00A51557 /* AudioFileFLACLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AudioFileFLACLoader.h; path = AudioFileUtils/AudioFileFLACLoader.h; sourceTree = "<group>"; };
 		6D06C3D41260575B00A51557 /* AudioFileFLACLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AudioFileFLACLoader.m; path = AudioFileUtils/AudioFileFLACLoader.m; sourceTree = "<group>"; };
 		6D1028451286C184006391A4 /* DurianAppIcon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = DurianAppIcon.icns; path = Images/DurianAppIcon.icns; sourceTree = "<group>"; };
-		6D17CCD61364784100740C02 /* libAudioOutputLib.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libAudioOutputLib.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		6D17CCD71364784100740C02 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
-		6D17CCDB1364784200740C02 /* AudioOutputLib-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AudioOutputLib-Prefix.pch"; sourceTree = "<group>"; };
 		6D198F85120DB867006313FC /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = /System/Library/Frameworks/AudioToolbox.framework; sourceTree = "<absolute>"; };
 		6D2AA7BD131AD20000F4D2B0 /* DurianBlackAppIcon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = DurianBlackAppIcon.icns; sourceTree = "<group>"; };
 		6D54ECB6123D73AE009E146F /* PlaylistView_Delegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PlaylistView_Delegate.h; path = Player/PlaylistView_Delegate.h; sourceTree = "<group>"; };
@@ -271,18 +258,10 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		6D17CCD31364784100740C02 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		8D11072E0486CEB800E47090 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6D17CCE2136478F100740C02 /* libAudioOutputLib.a in Frameworks */,
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
 				6D7A5D1812085DC900007F5D /* CoreAudio.framework in Frameworks */,
 				6D198F86120DB867006313FC /* AudioToolbox.framework in Frameworks */,
@@ -331,7 +310,6 @@
 				7756732906782D8800D1FEB8 /* Models */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
-				6D17CCD91364784100740C02 /* AudioOutputLib */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 				6DB104B51221512200864AE5 /* LICENSE */,
@@ -370,7 +348,6 @@
 			isa = PBXGroup;
 			children = (
 				6DFFED8D136CB29200D0B454 /* Carbon.framework */,
-				6D17CCD61364784100740C02 /* libAudioOutputLib.a */,
 				6D198F85120DB867006313FC /* AudioToolbox.framework */,
 				6D7A5D1712085DC900007F5D /* CoreAudio.framework */,
 				6DF4A027123B523F00191768 /* extern */,
@@ -380,22 +357,6 @@
 				6D6001E112902125006B4701 /* IOKit.framework */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		6D17CCD91364784100740C02 /* AudioOutputLib */ = {
-			isa = PBXGroup;
-			children = (
-				6D17CCDA1364784200740C02 /* Supporting Files */,
-			);
-			path = AudioOutputLib;
-			sourceTree = "<group>";
-		};
-		6D17CCDA1364784200740C02 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				6D17CCDB1364784200740C02 /* AudioOutputLib-Prefix.pch */,
-			);
-			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 		6D5D20131229015600D16D29 /* AudioUtils */ = {
@@ -604,34 +565,7 @@
 		};
 /* End PBXGroup section */
 
-/* Begin PBXHeadersBuildPhase section */
-		6D17CCD41364784100740C02 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXHeadersBuildPhase section */
-
 /* Begin PBXNativeTarget section */
-		6D17CCD51364784100740C02 /* AudioOutputLib */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 6D17CCDC1364784200740C02 /* Build configuration list for PBXNativeTarget "AudioOutputLib" */;
-			buildPhases = (
-				6D17CCD21364784100740C02 /* Sources */,
-				6D17CCD31364784100740C02 /* Frameworks */,
-				6D17CCD41364784100740C02 /* Headers */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = AudioOutputLib;
-			productName = AudioOutputLib;
-			productReference = 6D17CCD61364784100740C02 /* libAudioOutputLib.a */;
-			productType = "com.apple.product-type.library.static";
-		};
 		8D1107260486CEB800E47090 /* Durian */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 26FC0A840875C7B200E6366F /* Build configuration list for PBXNativeTarget "Durian" */;
@@ -645,8 +579,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				6D17CCE1136478E800740C02 /* PBXTargetDependency */,
-			);
+				);
 			name = Durian;
 			productInstallPath = "$(HOME)/Applications";
 			productName = TrueAudioPlayer;
@@ -677,7 +610,6 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				6D17CCD51364784100740C02 /* AudioOutputLib */,
 				8D1107260486CEB800E47090 /* Durian */,
 			);
 		};
@@ -760,14 +692,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		6D17CCD21364784100740C02 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				6D17CCDF136478A800740C02 /* AudioOutput.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		8D11072C0486CEB800E47090 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -776,6 +700,7 @@
 				77C8280E06725ACE000B614F /* AppDelegate.m in Sources */,
 				770B37ED0679A11B001EADE2 /* Durian_DataModel.xcdatamodel in Sources */,
 				6D7A5CD51208569300007F5D /* AppController.m in Sources */,
+				6D17CCDF136478A800740C02 /* AudioOutput.m in Sources */,
 				6D5D2028122905B300D16D29 /* AudioFileCoreAudioLoader.mm in Sources */,
 				6D5D203C12290C4000D16D29 /* AudioFileLoader.m in Sources */,
 				6DF49FE3123B50FC00191768 /* AudioFileSndFileLoader.mm in Sources */,
@@ -797,14 +722,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		6D17CCE1136478E800740C02 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 6D17CCD51364784100740C02 /* AudioOutputLib */;
-			targetProxy = 6D17CCE0136478E800740C02 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		089C165CFE840E0CC02AAC07 /* InfoPlist.strings */ = {
@@ -1063,69 +980,6 @@
 			};
 			name = Release;
 		};
-		6D17CCDD1364784200740C02 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				COPY_PHASE_STRIP = NO;
-				DEAD_CODE_STRIPPING = YES;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PRECOMPILE_PREFIX_HEADER = NO;
-				GCC_PREFIX_HEADER = "";
-				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				OTHER_LDFLAGS = (
-					"-lFLAC",
-					"-logg",
-					"-lvorbis",
-					"-lvorbisenc",
-					"-lvorbisfile",
-					"-lsamplerate",
-					"-lsndfile",
-					"-ltag",
-					"-ltag_c",
-					"-lz",
-					"-lopus",
-				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
-			};
-			name = Debug;
-		};
-		6D17CCDE1364784200740C02 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				COPY_PHASE_STRIP = YES;
-				DEAD_CODE_STRIPPING = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_PRECOMPILE_PREFIX_HEADER = NO;
-				GCC_PREFIX_HEADER = "";
-				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				OTHER_LDFLAGS = (
-					"-lFLAC",
-					"-logg",
-					"-lvorbis",
-					"-lvorbisenc",
-					"-lvorbisfile",
-					"-lsamplerate",
-					"-lsndfile",
-					"-ltag",
-					"-ltag_c",
-					"-lz",
-					"-lopus",
-				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1143,15 +997,6 @@
 			buildConfigurations = (
 				26FC0A890875C7B200E6366F /* Debug */,
 				26FC0A8A0875C7B200E6366F /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		6D17CCDC1364784200740C02 /* Build configuration list for PBXNativeTarget "AudioOutputLib" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				6D17CCDD1364784200740C02 /* Debug */,
-				6D17CCDE1364784200740C02 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
