@@ -90,10 +90,28 @@ NSString* const iTunesPBoardType = @"CorePasteboardFlavorType 0x6974756E";
             return @"";
         }
 
+        // Determine text color based on row state
+        NSColor* textColor;
+        BOOL isSelected = [tableView isRowSelected:row];
+
+        if (isSelected) {
+            textColor = [NSColor selectedTextColor];
+        } else if (mDocument && row == [mDocument playingTrackIndex]) {
+            textColor = [NSColor systemBlueColor];
+        } else {
+            textColor = [NSColor labelColor];
+        }
+
         if (mDocument && row == [mDocument loadedTrackIndex] && row != [mDocument playingTrackIndex]) {
             // Add green bullet after track number with colored bullet
             NSString* text = [NSString stringWithFormat:@"%@ ●", number];
             NSMutableAttributedString* attrString = [[NSMutableAttributedString alloc] initWithString:text];
+
+            // Color the track number with appropriate text color
+            NSRange numberRange = NSMakeRange(0, [text length] - 2);
+            [attrString addAttribute:NSForegroundColorAttributeName
+                               value:textColor
+                               range:numberRange];
 
             // Color just the bullet green
             NSRange bulletRange = NSMakeRange([text length] - 1, 1);
@@ -103,7 +121,12 @@ NSString* const iTunesPBoardType = @"CorePasteboardFlavorType 0x6974756E";
 
             return [attrString autorelease];
         }
-        return number;
+
+        // Return attributed string with proper color for dark mode support
+        NSString* text = [number stringValue];
+        NSAttributedString* attrString = [[NSAttributedString alloc] initWithString:text
+                                                                         attributes:@{ NSForegroundColorAttributeName : textColor }];
+        return [attrString autorelease];
     }
     // For other columns, return nil to let bindings handle it
     return nil;

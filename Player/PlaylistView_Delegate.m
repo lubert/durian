@@ -41,6 +41,13 @@
 {
     NSTableView* tableView = [aNotification object];
 
+    // Reload track number column to update colors based on selection
+    NSInteger trackNumberColumnIndex = [tableView columnWithIdentifier:@"trackNumber"];
+    if (trackNumberColumnIndex >= 0) {
+        [tableView reloadDataForRowIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [tableView numberOfRows])]
+                             columnIndexes:[NSIndexSet indexSetWithIndex:trackNumberColumnIndex]];
+    }
+
     NSDictionary* plTrackDict = [NSDictionary dictionaryWithObject:[NSNumber numberWithLong:[tableView selectedRow]] forKey:@"index"];
     [[NSNotificationCenter defaultCenter] postNotificationName:AUDPlaylistSelectionCursorChangedNotification
                                                         object:self
