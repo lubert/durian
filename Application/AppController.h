@@ -40,6 +40,9 @@ typedef struct {
     IBOutlet NSButton* powerButton;
     IBOutlet NSButton* displayOffButton;
     IBOutlet NSButton* togglePlaylistButton;
+    IBOutlet NSTextField* powerText;
+    IBOutlet NSTextField* displayOffText;
+    IBOutlet NSTextField* playlistText;
 
     IBOutlet NSTextField* songCurrentPlayingTime;
     IBOutlet NSSlider* songCurrentPlayingPosition;
@@ -55,6 +58,10 @@ typedef struct {
     IBOutlet NSButton* stopButton;
     IBOutlet NSButton* prevButton;
     IBOutlet NSButton* nextButton;
+    IBOutlet NSTextField* playText;
+    IBOutlet NSTextField* stopText;
+    IBOutlet NSTextField* prevText;
+    IBOutlet NSTextField* nextText;
 
     IBOutlet NSButton* playRepeatButton;
     IBOutlet NSButton* playShuffleButton;
