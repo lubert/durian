@@ -15,9 +15,6 @@
 		6D17CCE2136478F100740C02 /* libAudioOutputLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D17CCD61364784100740C02 /* libAudioOutputLib.a */; };
 		6D198F86120DB867006313FC /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D198F85120DB867006313FC /* AudioToolbox.framework */; };
 		6D2AA7BE131AD20000F4D2B0 /* DurianBlackAppIcon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 6D2AA7BD131AD20000F4D2B0 /* DurianBlackAppIcon.icns */; };
-		6D4AB80F1299B22F00E92F02 /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D4AB80E1299B22F00E92F02 /* Sparkle.framework */; };
-		6D4AB81E1299B2B800E92F02 /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6D4AB80E1299B22F00E92F02 /* Sparkle.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
-		6D4AB8431299B66600E92F02 /* dsa_pub.pem in Resources */ = {isa = PBXBuildFile; fileRef = 6D4AB8421299B66600E92F02 /* dsa_pub.pem */; };
 		6D54ECB8123D73AE009E146F /* PlaylistView_Delegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D54ECB7123D73AE009E146F /* PlaylistView_Delegate.m */; };
 		6D5D2028122905B300D16D29 /* AudioFileCoreAudioLoader.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6D5D2027122905B300D16D29 /* AudioFileCoreAudioLoader.mm */; };
 		6D5D203C12290C4000D16D29 /* AudioFileLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D5D203B12290C4000D16D29 /* AudioFileLoader.m */; };
@@ -125,7 +122,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				6D4AB81E1299B2B800E92F02 /* Sparkle.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -164,8 +160,6 @@
 		6D17CCDB1364784200740C02 /* AudioOutputLib-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AudioOutputLib-Prefix.pch"; sourceTree = "<group>"; };
 		6D198F85120DB867006313FC /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = /System/Library/Frameworks/AudioToolbox.framework; sourceTree = "<absolute>"; };
 		6D2AA7BD131AD20000F4D2B0 /* DurianBlackAppIcon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = DurianBlackAppIcon.icns; sourceTree = "<group>"; };
-		6D4AB80E1299B22F00E92F02 /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Sparkle.framework; path = extern/Sparkle.framework; sourceTree = "<group>"; };
-		6D4AB8421299B66600E92F02 /* dsa_pub.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = dsa_pub.pem; sourceTree = "<group>"; };
 		6D54ECB6123D73AE009E146F /* PlaylistView_Delegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PlaylistView_Delegate.h; path = Player/PlaylistView_Delegate.h; sourceTree = "<group>"; };
 		6D54ECB7123D73AE009E146F /* PlaylistView_Delegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PlaylistView_Delegate.m; path = Player/PlaylistView_Delegate.m; sourceTree = "<group>"; };
 		6D5D2026122905B300D16D29 /* AudioFileCoreAudioLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AudioFileCoreAudioLoader.h; path = AudioFileUtils/AudioFileCoreAudioLoader.h; sourceTree = "<group>"; };
@@ -301,7 +295,6 @@
 				6D7A5D1812085DC900007F5D /* CoreAudio.framework in Frameworks */,
 				6D198F86120DB867006313FC /* AudioToolbox.framework in Frameworks */,
 				6D6001E212902125006B4701 /* IOKit.framework in Frameworks */,
-				6D4AB80F1299B22F00E92F02 /* Sparkle.framework in Frameworks */,
 				6DFFED8E136CB29200D0B454 /* Carbon.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -370,7 +363,6 @@
 				6D7F6493136C3DA5000F1C27 /* Localizable.strings */,
 				6D73A31A12C5562A00088378 /* Credits.rtfd */,
 				6DC8D37912A0110600B9628C /* appcast.xml */,
-				6D4AB8421299B66600E92F02 /* dsa_pub.pem */,
 				6D6EEA2112747AAB00873D3C /* Images */,
 				8D1107310486CEB800E47090 /* Info.plist */,
 				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
@@ -394,7 +386,6 @@
 				6D17CCD71364784100740C02 /* Cocoa.framework */,
 				1058C7A2FEA54F0111CA2CBB /* Other Frameworks */,
 				6D6001E112902125006B4701 /* IOKit.framework */,
-				6D4AB80E1299B22F00E92F02 /* Sparkle.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -714,7 +705,6 @@
 				6DF17B3D1269857800051593 /* Preferences.xib in Resources */,
 				6D1028461286C184006391A4 /* DurianAppIcon.icns in Resources */,
 				6DA2DFD112992FBD00F29798 /* Debug.xib in Resources */,
-				6D4AB8431299B66600E92F02 /* dsa_pub.pem in Resources */,
 				6D73A31C12C5562A00088378 /* Credits.rtfd in Resources */,
 				6D8BC406131954200090B9A5 /* Silver_PlayerWin_displayoff_on.png in Resources */,
 				6D8BC407131954200090B9A5 /* Silver_PlayerWin_displayoff_pressed.png in Resources */,
