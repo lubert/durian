@@ -1,7 +1,7 @@
 # Makefile for Durian audio player
 # Manages vcpkg dependencies and Xcode builds
 
-.PHONY: all deps verify build clean rebuild run help debug release
+.PHONY: all deps verify build clean rebuild run help debug release lint
 
 # Default configuration
 CONFIGURATION ?= Release
@@ -30,6 +30,7 @@ help:
 	@echo "  make run        - Build and run the application"
 	@echo "  make debug      - Build debug configuration"
 	@echo "  make release    - Build release configuration (default)"
+	@echo "  make lint       - Format all Objective-C source files"
 	@echo "  make all        - Install deps and build (default)"
 	@echo ""
 	@echo "$(COLOR_GREEN)Examples:$(COLOR_RESET)"
@@ -91,6 +92,19 @@ debug:
 
 release:
 	@$(MAKE) build CONFIGURATION=Release
+
+lint:
+	@echo "$(COLOR_BLUE)Formatting Objective-C source files with clang-format (WebKit style)...$(COLOR_RESET)"
+	@if ! command -v clang-format >/dev/null 2>&1; then \
+		echo "$(COLOR_YELLOW)Error: clang-format not found in PATH$(COLOR_RESET)"; \
+		exit 1; \
+	fi
+	@echo "✓ clang-format found: $$(clang-format --version | head -1)"
+	@FILES=$$(find . -name "*.m" -o -name "*.mm" -o -name "*.h" | grep -v vcpkg | grep -v build); \
+	COUNT=$$(echo "$$FILES" | wc -l | tr -d ' '); \
+	echo "Formatting $$COUNT files..."; \
+	echo "$$FILES" | xargs clang-format -i -style=WebKit
+	@echo "$(COLOR_GREEN)✓ Formatting complete!$(COLOR_RESET)"
 
 # Info targets for debugging
 info:

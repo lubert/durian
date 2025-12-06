@@ -1,106 +1,86 @@
-/*
- AppController.h
- This file is part of Durian.
-
- Durian is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
-
- Durian is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with Durian.  If not, see <http://www.gnu.org/licenses/>.
-
- Original code written by Damien Plisson 08/2010
- */
-
+#import "AudioOutput.h"
 #import <Cocoa/Cocoa.h>
 #import <HIDRemote.h>
 #import <SPMediaKeyTap.h>
-#import "AudioOutput.h"
 
 @class PlaylistDocument;
 @class PreferenceController;
 @class DebugController;
 
 typedef struct {
-	UInt64 firstLoadedFrame;
-	UInt64 lastLoadedFrame;
-	UInt64 lastFrameToLoad;
-	UInt64 trackTotalLengthinFrames;
-	bool loadCompleted;
+    UInt64 firstLoadedFrame;
+    UInt64 lastLoadedFrame;
+    UInt64 lastFrameToLoad;
+    UInt64 trackTotalLengthinFrames;
+    bool loadCompleted;
 } AUDBufferLoadStatus;
 
 @interface AppController : NSObject <HIDRemoteDelegate> {
-	AudioOutput *audioOut;
-	PreferenceController *preferenceController;
-	DebugController *debugController;
-    SPMediaKeyTap *mKeyTap;
+    AudioOutput* audioOut;
+    PreferenceController* preferenceController;
+    DebugController* debugController;
+    SPMediaKeyTap* mKeyTap;
 
-	AUDBufferLoadStatus mAudioBuffersLoadStatus[2];
+    AUDBufferLoadStatus mAudioBuffersLoadStatus[2];
 
-	IBOutlet NSWindow *parentWindow;
-	IBOutlet NSTextField *currentDACSampleRate;
-	IBOutlet NSImageView *integerModeStatus;
+    IBOutlet NSWindow* parentWindow;
+    IBOutlet NSTextField* currentDACSampleRate;
+    IBOutlet NSImageView* integerModeStatus;
 
-	IBOutlet NSView *songTextView;
-	IBOutlet NSTextField *songTitle;
-	IBOutlet NSTextField *songAlbum;
-	IBOutlet NSTextField *songComposer;
-	IBOutlet NSTextField *songArtist;
-	IBOutlet NSTextField *songDuration;
-	IBOutlet NSImageView *songCoverImage;
-	IBOutlet NSTextField *songSampleRate;
-	IBOutlet NSTextField *songBitDepth;
+    IBOutlet NSView* songTextView;
+    IBOutlet NSTextField* songTitle;
+    IBOutlet NSTextField* songAlbum;
+    IBOutlet NSTextField* songComposer;
+    IBOutlet NSTextField* songArtist;
+    IBOutlet NSTextField* songDuration;
+    IBOutlet NSImageView* songCoverImage;
+    IBOutlet NSTextField* songSampleRate;
+    IBOutlet NSTextField* songBitDepth;
 
-	IBOutlet NSButton *powerButton;
-	IBOutlet NSButton *displayOffButton;
-	IBOutlet NSButton *togglePlaylistButton;
+    IBOutlet NSButton* powerButton;
+    IBOutlet NSButton* displayOffButton;
+    IBOutlet NSButton* togglePlaylistButton;
 
-	IBOutlet NSTextField *songCurrentPlayingTime;
-	IBOutlet NSSlider *songCurrentPlayingPosition;
-	IBOutlet NSImageView *songLoadStatus;
+    IBOutlet NSTextField* songCurrentPlayingTime;
+    IBOutlet NSSlider* songCurrentPlayingPosition;
+    IBOutlet NSImageView* songLoadStatus;
 
-	IBOutlet NSSlider *masterDeviceVolume;
-	IBOutlet NSTextField *masterDeviceVolumeText;
-	IBOutlet NSTextField *masterDeviceVolumeValue;
-	IBOutlet NSTextField *masterDeviceVolumePlus;
-	IBOutlet NSTextField *masterDeviceVolumeMinus;
+    IBOutlet NSSlider* masterDeviceVolume;
+    IBOutlet NSTextField* masterDeviceVolumeText;
+    IBOutlet NSTextField* masterDeviceVolumeValue;
+    IBOutlet NSTextField* masterDeviceVolumePlus;
+    IBOutlet NSTextField* masterDeviceVolumeMinus;
 
-	IBOutlet NSButton *playPauseButton;
-	IBOutlet NSButton *stopButton;
-	IBOutlet NSButton *prevButton;
-	IBOutlet NSButton *nextButton;
+    IBOutlet NSButton* playPauseButton;
+    IBOutlet NSButton* stopButton;
+    IBOutlet NSButton* prevButton;
+    IBOutlet NSButton* nextButton;
 
-	IBOutlet NSButton *playRepeatButton;
-	IBOutlet NSButton *playShuffleButton;
+    IBOutlet NSButton* playRepeatButton;
+    IBOutlet NSButton* playShuffleButton;
 
-	IBOutlet NSTextField *displayOverload;
+    IBOutlet NSTextField* displayOverload;
 
-	PlaylistDocument *mPlaylistDoc;
+    PlaylistDocument* mPlaylistDoc;
 
-	NSURL *mFirstFileToPlay; //Used during playback start process
+    NSURL* mFirstFileToPlay; // Used during playback start process
 
-	bool mSongSliderPositionGrabbed; //Used by the slider control
+    bool mSongSliderPositionGrabbed; // Used by the slider control
     bool mPlaybackStarting;
     bool mPlaybackInitiating;
     bool mIsAudioMute;
 
-	// String attributes, defined at object level, and not local for performance optimization
-	// (limit malloc/free) operations
-	NSDictionary* mSRCStringAttributes;
-	NSDictionary* mLCDSelectedStringAttributes;
-	NSDictionary* mLCDStringAttributes;
-	NSDictionary* mSongTitleStringAttributes;
-	NSDictionary* mSongInfoStringAttributes;
-	NSDictionary* mDockStringAttributes;
+    // String attributes, defined at object level, and not local for performance optimization
+    // (limit malloc/free) operations
+    NSDictionary* mSRCStringAttributes;
+    NSDictionary* mLCDSelectedStringAttributes;
+    NSDictionary* mLCDStringAttributes;
+    NSDictionary* mSongTitleStringAttributes;
+    NSDictionary* mSongInfoStringAttributes;
+    NSDictionary* mDockStringAttributes;
 }
 
-- (IBAction)togglePlaylistDrawer: (id)sender;
+- (IBAction)togglePlaylistDrawer:(id)sender;
 - (IBAction)showPreferencePanel:(id)sender;
 - (IBAction)showDebugPanel:(id)sender;
 - (IBAction)openDonationPage:(id)sender;
@@ -111,18 +91,18 @@ typedef struct {
 - (IBAction)deletePlaylistItem:(id)sender;
 - (IBAction)prunePlaylist:(id)sender;
 
-- (IBAction)playPause: (id)sender;
+- (IBAction)playPause:(id)sender;
 - (void)startPlaying;
 - (void)startPlayingPhase2;
 - (void)startPlayingPhase3;
 - (void)abortPlayingStart:(NSError*)error;
-- (IBAction)stop: (id)sender;
+- (IBAction)stop:(id)sender;
 
-- (IBAction)seekPrevious: (id)sender;
-- (IBAction)seekNext: (id)sender;
+- (IBAction)seekPrevious:(id)sender;
+- (IBAction)seekNext:(id)sender;
 
-- (IBAction)positionSliderMoved: (id)sender;
-- (void)seekPosition: (id)sender;
+- (IBAction)positionSliderMoved:(id)sender;
+- (void)seekPosition:(id)sender;
 
 - (IBAction)toggleRepeat:(id)sender;
 - (IBAction)toggleShuffle:(id)sender;
@@ -131,29 +111,29 @@ typedef struct {
 - (void)setVolumeControl:(UInt32)availVolumeControls;
 
 - (void)updateMetadataDisplay:(NSString*)title
-						album:(NSString*)album_name
-					   artist:(NSString*)artist_name
-					 composer:(NSString*)composer_name
-				   coverImage:(NSImage*)cover_image
-					 duration:(Float64)duration_seconds
-				  integerMode:(BOOL)isIntegerModeOn
-					 bitDepth:(UInt32)bitsPerFrame
-			   fileSampleRate:(Float64)fileSampleRateInHz
-			playingSampleRate:(Float64)playingSampleRateInHz;
+                        album:(NSString*)album_name
+                       artist:(NSString*)artist_name
+                     composer:(NSString*)composer_name
+                   coverImage:(NSImage*)cover_image
+                     duration:(Float64)duration_seconds
+                  integerMode:(BOOL)isIntegerModeOn
+                     bitDepth:(UInt32)bitsPerFrame
+               fileSampleRate:(Float64)fileSampleRateInHz
+            playingSampleRate:(Float64)playingSampleRateInHz;
 
 - (void)updateCurrentTrackTotalLength:(UInt64)totalFrames
-							 duration:(Float64)duration_seconds
-							forBuffer:(int)bufferIdx; //Used when initial duration is only approximate, and definitive comes at end of file read
+                             duration:(Float64)duration_seconds
+                            forBuffer:(int)bufferIdx; // Used when initial duration is only approximate, and definitive comes at end of file read
 - (void)updateCurrentPlayingTime;
 - (void)updateLoadStatus:(UInt64)firstLoadedFrame
-					  to:(UInt64)lastLoadedFrame
-					upTo:(UInt64)lastFrameToLoad
-			   forBuffer:(int)bufferLoading
-			   completed:(BOOL)isComplete
+                      to:(UInt64)lastLoadedFrame
+                    upTo:(UInt64)lastFrameToLoad
+               forBuffer:(int)bufferLoading
+               completed:(BOOL)isComplete
                    reset:(BOOL)isReset;
 - (void)resetLoadStatus:(BOOL)onlyForNonPlaying;
 
-//Audio HAL notifications
+// Audio HAL notifications
 - (void)notifyProcessorOverload;
 - (void)clearProcessorOverload;
 - (void)notifyDeviceRemoved;
@@ -167,4 +147,4 @@ typedef struct {
 @end
 
 #define NSLocalizedStringWithDefault(key, default) \
-[[NSBundle mainBundle] localizedStringForKey:(key) value:(default) table:nil]
+    [[NSBundle mainBundle] localizedStringForKey:(key) value:(default)table:nil]

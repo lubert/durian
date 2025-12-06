@@ -1,39 +1,19 @@
-/*
- PlaylistArrayController.h
-
- This file is part of Durian.
-
- Durian is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
-
- Durian is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with Durian.  If not, see <http://www.gnu.org/licenses/>.
-
- Original code written by Damien Plisson 10/2010 */
-
 #import <Cocoa/Cocoa.h>
 
 /* Playlist item PasteBoard type, mainly used for reordering drag and drop operations */
-extern NSString * const AUDPlaylistItemPBoardType;
+extern NSString* const AUDPlaylistItemPBoardType;
 /* Undocumented in Cocoa : iTunes item */
-extern NSString * const iTunesPBoardType;
+extern NSString* const iTunesPBoardType;
 
-@class PlaylistDocument,PlaylistView;
+@class PlaylistDocument, PlaylistView;
 
 @interface PlaylistArrayController : NSArrayController {
-	PlaylistDocument* mDocument;
-	IBOutlet PlaylistView* mPlaylistView;
-	IBOutlet NSButton* repeatButton;
+    PlaylistDocument* mDocument;
+    IBOutlet PlaylistView* mPlaylistView;
+    IBOutlet NSButton* repeatButton;
     IBOutlet NSButton* shuffleButton;
-	IBOutlet NSButton* addButton;
-	IBOutlet NSButton* removeButton;
+    IBOutlet NSButton* addButton;
+    IBOutlet NSButton* removeButton;
 }
 - (void)setPlaylistDocument:(PlaylistDocument*)playlistdoc;
 - (IBAction)trackSeek:(id)sender;
