@@ -134,6 +134,59 @@ NSString* const AUDMediaKeysUseChangeNotification = @"AUDMediaKeysUseChangeNotif
     [splRate176_4kHz setTextColor:supportedColor];
     [splRate192kHz setTextColor:supportedColor];
     [splRateHigherThan192kHz setTextColor:supportedColor];
+
+    // Set the tab view delegate for handling tab changes
+    [preferenceTabs setDelegate:self];
+
+    // Set initial window size for the first tab
+    [self resizeWindowForTabIndex:0 animate:NO];
+}
+
+#pragma mark NSTabViewDelegate
+
+- (void)resizeWindowForTabIndex:(NSInteger)tabIndex animate:(BOOL)animate
+{
+    NSWindow* window = [self window];
+    NSRect windowFrame = [window frame];
+    NSRect contentRect = [[window contentView] frame];
+
+    // Calculate the window chrome height (difference between window and content height)
+    CGFloat chromeHeight = NSHeight(windowFrame) - NSHeight(contentRect);
+
+    // Determine the desired content height based on the selected tab
+    CGFloat desiredContentHeight;
+
+    switch (tabIndex) {
+    case 0: // General tab
+        desiredContentHeight = 330.0;
+        break;
+    case 1: // Audio System tab
+        desiredContentHeight = 420.0;
+        break;
+    case 2: // Upsampling tab
+        desiredContentHeight = 280.0;
+        break;
+    default:
+        desiredContentHeight = 420.0;
+        break;
+    }
+
+    // Calculate the new window height
+    CGFloat newWindowHeight = desiredContentHeight + chromeHeight;
+
+    // Calculate the new frame, maintaining the top-left corner position
+    NSRect newFrame = windowFrame;
+    newFrame.origin.y += NSHeight(windowFrame) - newWindowHeight;
+    newFrame.size.height = newWindowHeight;
+
+    // Resize the window
+    [window setFrame:newFrame display:YES animate:animate];
+}
+
+- (void)tabView:(NSTabView*)tabView didSelectTabViewItem:(NSTabViewItem*)tabViewItem
+{
+    NSInteger tabIndex = [tabView indexOfTabViewItem:tabViewItem];
+    [self resizeWindowForTabIndex:tabIndex animate:YES];
 }
 
 #pragma mark User preferences external updates
