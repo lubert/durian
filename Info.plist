@@ -229,5 +229,7 @@
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>Display track info and enable playback control in Now Playing (Control Center, lock screen, etc.).</string>
 </dict>
 </plist>

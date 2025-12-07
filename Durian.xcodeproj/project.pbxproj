@@ -10,6 +10,7 @@
 		2F7446990DB6B7EA00F9684A /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2F7446970DB6B7EA00F9684A /* MainMenu.xib */; };
 		2FB775D82EE15AD900EE9A0B /* Silver_PlayerWin_mainWindowBackground@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2FB775D72EE15AD900EE9A0B /* Silver_PlayerWin_mainWindowBackground@2x.png */; };
 		2FB775DA2EE15AEE00EE9A0B /* Black_PlayerWin_mainWindowBackground@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2FB775D92EE15AEE00EE9A0B /* Black_PlayerWin_mainWindowBackground@2x.png */; };
+		2FEDB6942EE3DF78006B81CE /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FEDB6932EE3DF78006B81CE /* MediaPlayer.framework */; };
 		6D06C3D51260575B00A51557 /* AudioFileFLACLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D06C3D41260575B00A51557 /* AudioFileFLACLoader.m */; };
 		6D0C9A47136C398E00E1759B /* Playlist.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6D0C9A49136C398E00E1759B /* Playlist.xib */; };
 		6D1028461286C184006391A4 /* DurianAppIcon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 6D1028451286C184006391A4 /* DurianAppIcon.icns */; };
@@ -138,6 +139,7 @@
 		2F7446980DB6B7EA00F9684A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		2FB775D72EE15AD900EE9A0B /* Silver_PlayerWin_mainWindowBackground@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Silver_PlayerWin_mainWindowBackground@2x.png"; sourceTree = "<group>"; };
 		2FB775D92EE15AEE00EE9A0B /* Black_PlayerWin_mainWindowBackground@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Black_PlayerWin_mainWindowBackground@2x.png"; sourceTree = "<group>"; };
+		2FEDB6932EE3DF78006B81CE /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		32CA4F630368D1EE00C91783 /* Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Prefix.pch; sourceTree = "<group>"; };
 		6D016B23136C202C00555E24 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		6D016B24136C202C00555E24 /* fr */ = {isa = PBXFileReference; lastKnownFileType = wrapper.rtfd; name = fr; path = fr.lproj/Credits.rtfd; sourceTree = "<group>"; };
@@ -264,6 +266,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2FEDB6942EE3DF78006B81CE /* MediaPlayer.framework in Frameworks */,
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
 				6D7A5D1812085DC900007F5D /* CoreAudio.framework in Frameworks */,
 				6D198F86120DB867006313FC /* AudioToolbox.framework in Frameworks */,
@@ -347,6 +350,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2FEDB6932EE3DF78006B81CE /* MediaPlayer.framework */,
 				6DFFED8D136CB29200D0B454 /* Carbon.framework */,
 				6D198F85120DB867006313FC /* AudioToolbox.framework */,
 				6D7A5D1712085DC900007F5D /* CoreAudio.framework */,
@@ -694,9 +698,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		8D11072C0486CEB800E47090 /* Sources */ = {

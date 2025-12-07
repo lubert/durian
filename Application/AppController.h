@@ -1,6 +1,7 @@
 #import "AudioOutput.h"
 #import <Cocoa/Cocoa.h>
 #import <HIDRemote.h>
+#import <MediaPlayer/MediaPlayer.h>
 #import <SPMediaKeyTap.h>
 
 @class PlaylistDocument;
@@ -22,6 +23,14 @@ typedef struct {
     SPMediaKeyTap* mKeyTap;
 
     AUDBufferLoadStatus mAudioBuffersLoadStatus[2];
+
+    BOOL mNowPlayingEnabled;
+    BOOL mNowPlayingIntegrationSetUp;
+    id mPlayCommandTarget;
+    id mPauseCommandTarget;
+    id mNextTrackCommandTarget;
+    id mPreviousTrackCommandTarget;
+    id mChangePlaybackPositionCommandTarget;
 
     IBOutlet NSWindow* parentWindow;
     IBOutlet NSTextField* currentDACSampleRate;
@@ -149,6 +158,13 @@ typedef struct {
 - (void)notifyBufferPlayed:(UInt32)bufferDirty;
 
 - (bool)fillBufferWithNext:(int)bufferToFill;
+
+// Now Playing integration
+- (void)setupNowPlayingIntegration;
+- (void)tearDownNowPlayingIntegration;
+- (void)updateNowPlayingInfo;
+- (void)clearNowPlayingInfo;
+- (void)getCurrentPlaybackPosition:(Float64*)outPosition duration:(Float64*)outDuration;
 @end
 
 #define NSLocalizedStringWithDefault(key, default) \
