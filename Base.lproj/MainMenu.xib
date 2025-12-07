@@ -476,7 +476,7 @@
                                     <action selector="deletePlaylistItem:" target="533" id="812"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Prune playlist" id="793">
+                            <menuItem title="Clear Playlist" id="793">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="prunePlaylist:" target="533" id="794"/>
@@ -495,12 +495,12 @@
                                     <action selector="playPause:" target="533" id="738"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Previous track" keyEquivalent="" id="736">
+                            <menuItem title="Previous Track" keyEquivalent="" id="736">
                                 <connections>
                                     <action selector="seekPrevious:" target="533" id="739"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Next track" keyEquivalent="" id="737">
+                            <menuItem title="Next Track" keyEquivalent="" id="737">
                                 <connections>
                                     <action selector="seekNext:" target="533" id="740"/>
                                 </connections>
@@ -556,6 +556,7 @@
                     </menu>
                 </menuItem>
             </items>
+            <point key="canvasLocation" x="-296" y="362"/>
         </menu>
         <customObject id="205" userLabel="AppDelegate" customClass="AppDelegate">
             <connections>
