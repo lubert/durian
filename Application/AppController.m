@@ -148,6 +148,7 @@
 
     [parentWindow setStyleMask:NSWindowStyleMaskBorderless | NSWindowStyleMaskMiniaturizable];
     [parentWindow setOpaque:NO];
+    [parentWindow setMovableByWindowBackground:YES];
 
     audioOut = [[AudioOutput alloc] initWithController:self];
 
