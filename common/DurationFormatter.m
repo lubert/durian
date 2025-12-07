@@ -13,9 +13,9 @@
 
     if (duration < 0) {
         duration = -duration;
-        return [NSString stringWithFormat:@"-%02i:%02i", duration / 60, duration % 60];
+        return [NSString stringWithFormat:@"-%02lli:%02lli", duration / 60, duration % 60];
     } else
-        return [NSString stringWithFormat:@"%02i:%02i", duration / 60, duration % 60];
+        return [NSString stringWithFormat:@"%02lli:%02lli", duration / 60, duration % 60];
 }
 
 - (NSAttributedString*)attributedStringForObjectValue:(id)anObject withDefaultAttributes:(NSDictionary*)attributes

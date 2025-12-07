@@ -134,7 +134,7 @@
     mPlaybackStarting = NO;
     mPlaybackInitiating = NO;
 
-    [parentWindow setStyleMask:NSBorderlessWindowMask | NSMiniaturizableWindowMask];
+    [parentWindow setStyleMask:NSWindowStyleMaskBorderless | NSWindowStyleMaskMiniaturizable];
     [parentWindow setOpaque:NO];
 
     audioOut = [[AudioOutput alloc] initWithController:self];
@@ -152,7 +152,7 @@
 
     // Display DAC info string
     NSMutableParagraphStyle* styledParagraphStyle = [[NSMutableParagraphStyle alloc] init];
-    [styledParagraphStyle setAlignment:NSCenterTextAlignment];
+    [styledParagraphStyle setAlignment:NSTextAlignmentCenter];
     NSFont* greyscaleFont = [NSFont fontWithName:@"GreyscaleBasic" size:11.0f];
     if (!greyscaleFont)
         greyscaleFont = [NSFont labelFontOfSize:11.0f];
@@ -187,7 +187,7 @@
     if (!lcdFont)
         lcdFont = [NSFont labelFontOfSize:12.0f];
     styledParagraphStyle = [[NSMutableParagraphStyle alloc] init];
-    [styledParagraphStyle setAlignment:NSRightTextAlignment];
+    [styledParagraphStyle setAlignment:NSTextAlignmentRight];
     mLCDStringAttributes = [[NSDictionary alloc] initWithObjects:[NSArray arrayWithObjects:lcdFont,
                                                                      lcdColor,
                                                                      [NSNumber numberWithFloat:1.0f],
@@ -257,7 +257,7 @@
 
     // Dock icon display string attributes
     NSMutableParagraphStyle* dockParagraphStyle = [[NSMutableParagraphStyle alloc] init];
-    [dockParagraphStyle setAlignment:NSCenterTextAlignment];
+    [dockParagraphStyle setAlignment:NSTextAlignmentCenter];
     [dockParagraphStyle setParagraphSpacingBefore:0.0f];
     [dockParagraphStyle setMinimumLineHeight:32.0f];
     [dockParagraphStyle setMaximumLineHeight:32.0f];

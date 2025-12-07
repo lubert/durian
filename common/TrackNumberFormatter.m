@@ -11,7 +11,7 @@
     SInt64 trackNumber = [anObject intValue];
 
     if (trackNumber != 0)
-        return [NSString stringWithFormat:@"%i", trackNumber];
+        return [NSString stringWithFormat:@"%lli", trackNumber];
     else
         return @"";
 }

@@ -69,7 +69,7 @@
     NSManagedObjectModel* mom = [self managedObjectModel];
     if (!mom) {
         NSAssert(NO, @"Managed object model is nil");
-        NSLog(@"%@:%s No model to generate a store from", [self class], _cmd);
+        NSLog(@"%@:%@ No model to generate a store from", [self class], NSStringFromSelector(_cmd));
         return nil;
     }
 
@@ -93,7 +93,8 @@
                                                         options:nil
                                                           error:&error]) {
         [[NSApplication sharedApplication] presentError:error];
-        [persistentStoreCoordinator release], persistentStoreCoordinator = nil;
+        [persistentStoreCoordinator release];
+        persistentStoreCoordinator = nil;
         return nil;
     }
 
@@ -120,7 +121,7 @@
         [[NSApplication sharedApplication] presentError:error];
         return nil;
     }
-    managedObjectContext = [[NSManagedObjectContext alloc] init];
+    managedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
     [managedObjectContext setPersistentStoreCoordinator:coordinator];
 
     return managedObjectContext;
@@ -148,14 +149,13 @@
     NSError* error = nil;
 
     if (![[self managedObjectContext] commitEditing]) {
-        NSLog(@"%@:%s unable to commit editing before saving", [self class], _cmd);
+        NSLog(@"%@:%@ unable to commit editing before saving", [self class], NSStringFromSelector(_cmd));
     }
 
     if (![[self managedObjectContext] save:&error]) {
         [[NSApplication sharedApplication] presentError:error];
     }
 }
-
 /**
     Implementation of the applicationShouldTerminate: method, used here to
     handle the saving of changes in the application managed object context
@@ -197,7 +197,7 @@
         return NSTerminateNow;
 
     if (![managedObjectContext commitEditing]) {
-        NSLog(@"%@:%s unable to commit editing to terminate", [self class], _cmd);
+        NSLog(@"%@:%@ unable to commit editing to terminate", [self class], NSStringFromSelector(_cmd));
         return NSTerminateCancel;
     }
 
@@ -234,7 +234,7 @@
         [alert release];
         alert = nil;
 
-        if (answer == NSAlertAlternateReturn)
+        if (answer == NSAlertSecondButtonReturn)
             return NSTerminateCancel;
     }
 
