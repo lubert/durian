@@ -128,8 +128,8 @@ enum {
     IBOutlet NSTextField* maxTrackLengthAt44_1;
     IBOutlet NSTextField* maxTrackLengthAt192;
 
-    IBOutlet NSMatrix* appearanceMode;
-    IBOutlet NSMatrix* uiSkinTheme;
+    IBOutlet NSPopUpButton* appearanceMode;
+    IBOutlet NSPopUpButton* uiSkinTheme;
     IBOutlet NSButton* useAppleRemote;
     IBOutlet NSButton* useKbdMediaKeys;
     IBOutlet NSButton* useKbdMediaKeysForVolumeControl;
