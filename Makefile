@@ -100,7 +100,7 @@ lint:
 		exit 1; \
 	fi
 	@echo "✓ clang-format found: $$(clang-format --version | head -1)"
-	@FILES=$$(find . -name "*.m" -o -name "*.mm" -o -name "*.h" | grep -v vcpkg | grep -v build); \
+	@FILES=$$(find . -name "*.m" -o -name "*.mm" -o -name "*.h" | grep -v vcpkg | grep -v build | grep -v extern); \
 	COUNT=$$(echo "$$FILES" | wc -l | tr -d ' '); \
 	echo "Formatting $$COUNT files..."; \
 	echo "$$FILES" | xargs clang-format -i -style=WebKit
