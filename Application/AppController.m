@@ -29,6 +29,7 @@
 @interface AppController (OtherPrivate)
 - (BOOL)startStopAppleRemoteUse:(BOOL)isToStart;
 - (NSInteger)effectiveSkinTheme;
+- (void)drawThemeAppIcon;
 @end
 
 @implementation AppController
@@ -71,6 +72,17 @@
     }
 
     return skinTheme;
+}
+
+- (void)drawThemeAppIcon
+{
+    NSImage* iconImage;
+    if ([[NSUserDefaults standardUserDefaults] integerForKey:AUDUISkinTheme] == kAUDUISilverTheme)
+        iconImage = [NSImage imageNamed:@"NSApplicationIcon"];
+    else
+        iconImage = [NSImage imageNamed:@"DurianBlackAppIcon"];
+
+    [iconImage drawAtPoint:NSZeroPoint fromRect:NSZeroRect operation:NSCompositingOperationSourceOver fraction:1.0f];
 }
 
 + (void)initialize
@@ -612,10 +624,7 @@
 
         NSImage* dockIcon = [[NSImage alloc] initWithSize:NSMakeSize(128, 128)];
         [dockIcon lockFocus];
-        if ([[NSUserDefaults standardUserDefaults] integerForKey:AUDUISkinTheme] == kAUDUISilverTheme)
-            [[NSImage imageNamed:@"NSApplicationIcon"] dissolveToPoint:NSZeroPoint fraction:1.0f];
-        else
-            [[NSImage imageNamed:@"DurianBlackAppIcon"] dissolveToPoint:NSZeroPoint fraction:1.0f];
+        [self drawThemeAppIcon];
         [dockIcon unlockFocus];
         [NSApp setApplicationIconImage:dockIcon];
         [dockIcon release];
@@ -1260,10 +1269,7 @@
     NSRect timeBox = { { 4, 64 }, { 120, 64 } };
     NSRect textBox = { { 4, 60 }, { 120, 64 } };
 
-    if ([[NSUserDefaults standardUserDefaults] integerForKey:AUDUISkinTheme] == kAUDUISilverTheme)
-        [[NSImage imageNamed:@"NSApplicationIcon"] dissolveToPoint:NSZeroPoint fraction:1.0f];
-    else
-        [[NSImage imageNamed:@"DurianBlackAppIcon"] dissolveToPoint:NSZeroPoint fraction:1.0f];
+    [self drawThemeAppIcon];
 
     // Background
     [[NSColor colorWithCalibratedHue:0.0f saturation:0.0f brightness:0.1f alpha:0.7f] setFill];
