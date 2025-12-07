@@ -155,24 +155,16 @@
     NSFont* greyscaleFont = [NSFont fontWithName:@"GreyscaleBasic" size:11.0f];
     if (!greyscaleFont)
         greyscaleFont = [NSFont labelFontOfSize:11.0f];
-    NSShadow* shadow = [[NSShadow alloc] init];
-    if (uiSkinTheme == kAUDUISilverTheme) {
-        [shadow setShadowOffset:NSMakeSize(1.0f, -1.0f)];
-        [shadow setShadowColor:[NSColor whiteColor]];
-    }
     mSRCStringAttributes = [[NSDictionary alloc] initWithObjects:[NSArray arrayWithObjects:greyscaleFont,
                                                                      styledParagraphStyle,
                                                                      [NSColor colorWithCalibratedRed:100.0f / 255.0f
                                                                                                green:100.0f / 255.0f
                                                                                                 blue:100.0f / 255.0f
-                                                                                               alpha:1.0f],
-                                                                     shadow, nil]
+                                                                                               alpha:1.0f], nil]
                                                          forKeys:[NSArray arrayWithObjects:NSFontAttributeName,
                                                                      NSParagraphStyleAttributeName,
-                                                                     NSForegroundColorAttributeName,
-                                                                     NSShadowAttributeName, nil]];
+                                                                     NSForegroundColorAttributeName, nil]];
     [styledParagraphStyle release];
-    [shadow release];
 
     deviceMaxSplRate = [[[audioOut audioDevicesList] objectAtIndex:[audioOut selectedAudioDeviceIndex]] maxSampleRate];
     if ((int)deviceMaxSplRate % 1000)
@@ -1879,22 +1871,16 @@
         NSFont* greyscaleFont = [NSFont fontWithName:@"GreyscaleBasic" size:11.0f];
         if (!greyscaleFont)
             greyscaleFont = [NSFont labelFontOfSize:11.0f];
-        NSShadow* shadow = [[NSShadow alloc] init];
-        [shadow setShadowOffset:NSMakeSize(1.0f, -1.0f)];
-        [shadow setShadowColor:[NSColor whiteColor]];
         mSRCStringAttributes = [[NSDictionary alloc] initWithObjects:[NSArray arrayWithObjects:greyscaleFont,
                                                                          styledParagraphStyle,
                                                                          [NSColor colorWithCalibratedRed:100.0f / 255.0f
                                                                                                    green:100.0f / 255.0f
                                                                                                     blue:100.0f / 255.0f
-                                                                                                   alpha:1.0f],
-                                                                         shadow, nil]
+                                                                                                   alpha:1.0f], nil]
                                                              forKeys:[NSArray arrayWithObjects:NSFontAttributeName,
                                                                          NSParagraphStyleAttributeName,
-                                                                         NSForegroundColorAttributeName,
-                                                                         NSShadowAttributeName, nil]];
+                                                                         NSForegroundColorAttributeName, nil]];
         [styledParagraphStyle release];
-        [shadow release];
         NSAttributedString* dacSplRateStr = [[NSAttributedString alloc] initWithString:[currentDACSampleRate stringValue]
                                                                             attributes:mSRCStringAttributes];
         [currentDACSampleRate setAttributedStringValue:dacSplRateStr];
