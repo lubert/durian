@@ -262,7 +262,7 @@
                         <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="Silver_PlayerWin_integermode_off" id="822"/>
                     </imageView>
                     <textField focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="829">
-                        <rect key="frame" x="853" y="193" width="22" height="14"/>
+                        <rect key="frame" x="856" y="193" width="22" height="14"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" allowsUndo="NO" sendsActionOnEndEditing="YES" alignment="left" title="+" id="830">
                             <font key="font" metaFont="smallSystem"/>
@@ -271,7 +271,7 @@
                         </textFieldCell>
                     </textField>
                     <textField focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="831">
-                        <rect key="frame" x="853" y="86" width="22" height="14"/>
+                        <rect key="frame" x="856" y="86" width="22" height="14"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" allowsUndo="NO" sendsActionOnEndEditing="YES" alignment="left" title="-" id="832">
                             <font key="font" metaFont="smallSystem"/>
