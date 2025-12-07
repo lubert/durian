@@ -73,6 +73,11 @@
 {
     if ([[theEvent characters] compare:@" "] == NSOrderedSame) {
         [[NSApp mainMenu] performKeyEquivalent:theEvent];
+    } else if ([[theEvent charactersIgnoringModifiers] isEqualToString:@"\x7F"]) {
+        // Delete or Backspace key pressed
+        if ([[self dataSource] respondsToSelector:@selector(remove:)]) {
+            [[self dataSource] performSelector:@selector(remove:) withObject:self];
+        }
     } else
         [super keyDown:theEvent];
 }
