@@ -224,7 +224,7 @@ NSString* const AUDMediaKeysUseChangeNotification = @"AUDMediaKeysUseChangeNotif
 
 - (IBAction)raisePreferredDeviceChangeSheet:(id)sender
 {
-    [NSApp beginSheet:preferenceChangeSheet modalForWindow:[self window] modalDelegate:nil didEndSelector:NULL contextInfo:NULL];
+    [[self window] beginSheet:preferenceChangeSheet completionHandler:nil];
 }
 
 - (IBAction)cancelPreferredDeviceChange:(id)sender

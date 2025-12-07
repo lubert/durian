@@ -30,7 +30,7 @@
     [super awakeFromNib];
 
     [self registerForDraggedTypes:[NSArray arrayWithObjects:AUDPlaylistItemPBoardType,
-                                      NSFilenamesPboardType, NSPasteboardTypeURL,
+                                      NSPasteboardTypeFileURL, NSPasteboardTypeURL,
                                       iTunesPBoardType, nil]];
 
     // Use system font size for better accessibility

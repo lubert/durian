@@ -100,7 +100,8 @@ NSString* const AUDTogglePlaylistShuffle = @"AUDTogglePlaylistShuffle";
 
     [openPanel setCanChooseDirectories:TRUE];
     [openPanel setAllowsMultipleSelection:TRUE];
-    if ([openPanel runModalForTypes:audioFilesExtensions] == NSModalResponseOK) {
+    [openPanel setAllowedFileTypes:audioFilesExtensions];
+    if ([openPanel runModal] == NSModalResponseOK) {
         [self insertPlaylistItems:[openPanel URLs] atRow:[playlist count] sortToplist:YES];
     }
 }
@@ -147,11 +148,7 @@ NSString* const AUDTogglePlaylistShuffle = @"AUDTogglePlaylistShuffle";
             [addingTracksProgress setMinValue:0.0f];
             [addingTracksProgress setMaxValue:[urlsToOpen count]];
             [addingTracksProgress setDoubleValue:0.0f];
-            [NSApp beginSheet:progressSheet
-                modalForWindow:[playlistView window]
-                 modalDelegate:nil
-                didEndSelector:NULL
-                   contextInfo:NULL];
+            [[playlistView window] beginSheet:progressSheet completionHandler:nil];
         });
 
         if (isSorted) {
@@ -588,15 +585,19 @@ NSString* const AUDTogglePlaylistShuffle = @"AUDTogglePlaylistShuffle";
         result = [playlistData writeToURL:playlistFile atomically:YES encoding:NSISOLatin1StringEncoding error:NULL];
 
         if (!result) {
-            if (NSRunAlertPanel(NSLocalizedString(@"Error saving playlist", @"Error saving playlist alert panel"),
-                    NSLocalizedString(@"Unable to save the playlist in M3U format.\nThis may be due to a character encoding issue.\nDo you want to tray saving in M3U8 format ?", @"Error saving playlist alert panel"),
-                    NSLocalizedString(@"Cancel", @"Cancel button title"),
-                    NSLocalizedString(@"Yes", @"Yes button title"), nil)
-                == NSAlertAlternateReturn) {
+            NSAlert* alert = [[NSAlert alloc] init];
+            [alert setMessageText:NSLocalizedString(@"Error saving playlist", @"Error saving playlist alert panel")];
+            [alert setInformativeText:NSLocalizedString(@"Unable to save the playlist in M3U format.\nThis may be due to a character encoding issue.\nDo you want to tray saving in M3U8 format ?", @"Error saving playlist alert panel")];
+            [alert addButtonWithTitle:NSLocalizedString(@"Cancel", @"Cancel button title")];
+            [alert addButtonWithTitle:NSLocalizedString(@"Yes", @"Yes button title")];
+
+            if ([alert runModal] == NSAlertSecondButtonReturn) {
                 playlistFile = [[playlistFile URLByDeletingPathExtension] URLByAppendingPathExtension:@"m3u8"];
                 result = [playlistData writeToURL:playlistFile atomically:YES encoding:NSUTF8StringEncoding error:NULL];
             } else
                 aborted = TRUE;
+
+            [alert release];
         }
         break;
     }
@@ -607,10 +608,14 @@ NSString* const AUDTogglePlaylistShuffle = @"AUDTogglePlaylistShuffle";
         [[self window] setRepresentedURL:playlistFile];
         [[self window] setTitle:[playlistFile lastPathComponent]];
     } else {
-        if (!aborted)
-            NSRunAlertPanel(NSLocalizedString(@"Error saving playlist", @"Error saving playlist alert panel"),
-                NSLocalizedString(@"An error occured trying to save the playlist", @"Error saving playlist alert panel"),
-                NSLocalizedString(@"Cancel", @"Cancel button title"), nil, nil);
+        if (!aborted) {
+            NSAlert* alert = [[NSAlert alloc] init];
+            [alert setMessageText:NSLocalizedString(@"Error saving playlist", @"Error saving playlist alert panel")];
+            [alert setInformativeText:NSLocalizedString(@"An error occured trying to save the playlist", @"Error saving playlist alert panel")];
+            [alert addButtonWithTitle:NSLocalizedString(@"Cancel", @"Cancel button title")];
+            [alert runModal];
+            [alert release];
+        }
     }
 
     return result;
