@@ -18,6 +18,7 @@
 - (void)handleStartPlaybackNotification:(NSNotification*)notification;
 - (void)handleUpdateRepeatStatus:(NSNotification*)notification;
 - (void)handleUpdateShuffleStatus:(NSNotification*)notification;
+- (void)handlePlaylistWindowClosed:(NSNotification*)notification;
 - (void)handleUpdateAppearanceMode:(NSNotification*)notification;
 - (void)handleUpdateUISkinTheme:(NSNotification*)notification;
 - (void)handleUpdateAppleRemoteUse:(NSNotification*)notification;
@@ -326,6 +327,10 @@
     [nc addObserver:self
            selector:@selector(handleUpdateShuffleStatus:)
                name:AUDTogglePlaylistShuffle
+             object:nil];
+    [nc addObserver:self
+           selector:@selector(handlePlaylistWindowClosed:)
+               name:@"AUDPlaylistWindowClosed"
              object:nil];
     // And UI pref changes
     [nc addObserver:self
@@ -1705,6 +1710,12 @@
         [mPlaylistDoc setLoadedTrackIndex:newStartPos];
         [mPlaylistDoc refreshTableDisplay];
     }
+}
+
+- (void)handlePlaylistWindowClosed:(NSNotification*)notification
+{
+    // Update the playlist button state when the window is closed
+    [togglePlaylistButton setState:NO];
 }
 
 - (void)handleUpdateAppearanceMode:(NSNotification*)notification

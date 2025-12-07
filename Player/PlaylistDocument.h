@@ -19,7 +19,7 @@ typedef enum {
     kAudioPlaylistM3U8 = 2
 } AudioPlaylistFormats;
 
-@interface PlaylistDocument : NSWindowController {
+@interface PlaylistDocument : NSWindowController <NSWindowDelegate> {
     NSArray* audioFilesExtensions;
     NSMutableArray* playlist;
     NSMutableArray* mShuffleIndexes;
