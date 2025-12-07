@@ -92,7 +92,7 @@
     [defaultValues setObject:[NSNumber numberWithInt:kAUDSRCNoForcedUpsampling] forKey:AUDForceUpsamlingType];
     [defaultValues setObject:[NSNumber numberWithBool:YES] forKey:AUDForceMaxIOBufferSize];
     [defaultValues setObject:[NSNumber numberWithBool:YES] forKey:AUDUseAppleRemote];
-    [defaultValues setObject:[NSNumber numberWithBool:YES] forKey:AUDUseMediaKeys];
+    [defaultValues setObject:[NSNumber numberWithBool:NO] forKey:AUDUseMediaKeys];
     [defaultValues setObject:[NSNumber numberWithBool:YES] forKey:AUDUseMediaKeysForVolumeControl];
     [defaultValues setObject:[NSNumber numberWithBool:YES] forKey:AUDUseUTF8forM3U];
     [defaultValues setObject:[NSNumber numberWithBool:YES] forKey:AUDOutsideOpenedPlaylistPlaybackAutoStart];
