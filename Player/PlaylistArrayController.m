@@ -182,7 +182,7 @@ NSString* const iTunesPBoardType = @"CorePasteboardFlavorType 0x6974756E";
             }
             [mDocument insertPlaylistItems:droppedURLs atRow:row sortToplist:YES];
             success = YES;
-        } else if ([droppedTypes containsObject:NSURLPboardType]) {
+        } else if ([droppedTypes containsObject:NSPasteboardTypeURL]) {
             NSURL* droppedURL = [NSURL URLFromPasteboard:pboard];
             if ([droppedURL isFileURL]) {
                 [mDocument insertPlaylistItems:[NSArray arrayWithObject:droppedURL] atRow:row sortToplist:YES];

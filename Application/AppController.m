@@ -505,7 +505,6 @@
 - (void)abortPlayingStart:(NSError*)error
 {
     Float64 deviceMaxSplRate;
-    NSAttributedString* errorString;
 
     mPlaybackInitiating = NO;
 
@@ -845,7 +844,7 @@
 
     [openPlaylistPanel setCanChooseDirectories:NO];
     [openPlaylistPanel setAllowsMultipleSelection:NO];
-    if ([openPlaylistPanel runModalForTypes:[NSArray arrayWithObjects:@"m3u", @"m3u8", nil]] == NSOKButton) {
+    if ([openPlaylistPanel runModalForTypes:[NSArray arrayWithObjects:@"m3u", @"m3u8", nil]] == NSModalResponseOK) {
         [mPlaylistDoc loadPlaylist:[openPlaylistPanel URL] appendToExisting:NO];
     }
 }
@@ -857,7 +856,7 @@
     [savePlaylistPanel setCanCreateDirectories:YES];
     [savePlaylistPanel setAllowedFileTypes:[NSArray arrayWithObjects:@"m3u", @"m3u8", nil]];
     [savePlaylistPanel setAllowsOtherFileTypes:NO];
-    if ([savePlaylistPanel runModal] == NSOKButton) {
+    if ([savePlaylistPanel runModal] == NSModalResponseOK) {
         NSURL* savedFile = [savePlaylistPanel URL];
         if ([[savedFile pathExtension] caseInsensitiveCompare:@"m3u8"] == NSOrderedSame)
             [mPlaylistDoc savePlaylist:[savePlaylistPanel URL] format:kAudioPlaylistM3U8];
@@ -1040,7 +1039,7 @@
 {
     NSAttributedString* volumeControlText;
     NSMutableParagraphStyle* styledParagraphStyle = [[NSMutableParagraphStyle alloc] init];
-    [styledParagraphStyle setAlignment:NSCenterTextAlignment];
+    [styledParagraphStyle setAlignment:NSTextAlignmentCenter];
     NSFont* greyscaleFont = [NSFont fontWithName:@"GreyscaleBasic" size:8.5f];
     if (!greyscaleFont)
         greyscaleFont = [NSFont labelFontOfSize:8.5f];
@@ -1058,7 +1057,7 @@
     [styledParagraphStyle release];
 
     styledParagraphStyle = [[NSMutableParagraphStyle alloc] init];
-    [styledParagraphStyle setAlignment:NSLeftTextAlignment];
+    [styledParagraphStyle setAlignment:NSTextAlignmentLeft];
     greyscaleFont = [NSFont fontWithName:@"GreyscaleBasic" size:14.0f];
     if (!greyscaleFont)
         greyscaleFont = [NSFont labelFontOfSize:14.0f];
@@ -1251,8 +1250,8 @@
 {
     UInt64 currentFrame = [audioOut currentPlayingPosition];
     // Update dockicon display
-    NSString* dockIconString = [NSString stringWithFormat:@"Tr.%02i\n%02i:%02i",
-        [mPlaylistDoc playingTrackIndex] + 1,
+    NSString* dockIconString = [NSString stringWithFormat:@"Tr.%02li\n%02i:%02i",
+        (long)([mPlaylistDoc playingTrackIndex] + 1),
         (int)(currentFrame / [audioOut audioDeviceCurrentNominalSampleRate]) / 60,
         (int)(currentFrame / [audioOut audioDeviceCurrentNominalSampleRate]) % 60];
     NSImage* dockIcon = [[NSImage alloc] initWithSize:NSMakeSize(128, 128)];
@@ -1805,7 +1804,7 @@
         if (mSRCStringAttributes)
             [mSRCStringAttributes release];
         NSMutableParagraphStyle* styledParagraphStyle = [[NSMutableParagraphStyle alloc] init];
-        [styledParagraphStyle setAlignment:NSCenterTextAlignment];
+        [styledParagraphStyle setAlignment:NSTextAlignmentCenter];
         NSFont* greyscaleFont = [NSFont fontWithName:@"GreyscaleBasic" size:11.0f];
         if (!greyscaleFont)
             greyscaleFont = [NSFont labelFontOfSize:11.0f];
@@ -1879,7 +1878,7 @@
         if (mSRCStringAttributes)
             [mSRCStringAttributes release];
         NSMutableParagraphStyle* styledParagraphStyle = [[NSMutableParagraphStyle alloc] init];
-        [styledParagraphStyle setAlignment:NSCenterTextAlignment];
+        [styledParagraphStyle setAlignment:NSTextAlignmentCenter];
         NSFont* greyscaleFont = [NSFont fontWithName:@"GreyscaleBasic" size:11.0f];
         if (!greyscaleFont)
             greyscaleFont = [NSFont labelFontOfSize:11.0f];
@@ -1981,7 +1980,7 @@
         // Display warning to user
         [displayOverload setHidden:NO];
         [[self class] cancelPreviousPerformRequestsWithTarget:self
-                                                     selector:@selector(clearProcessorOverload:)
+                                                     selector:@selector(clearProcessorOverload)
                                                        object:nil];
         [self performSelector:@selector(clearProcessorOverload) withObject:nil afterDelay:1.0];
     }
