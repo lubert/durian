@@ -231,5 +231,9 @@
 	<string>NSApplication</string>
 	<key>NSAppleMusicUsageDescription</key>
 	<string>Display track info and enable playback control in Now Playing (Control Center, lock screen, etc.).</string>
+	<key>NSHumanReadableCopyright</key>
+	<string>Durian is open source, free software and will remain free.
+
+Distributed under the GPL v3 license.</string>
 </dict>
 </plist>

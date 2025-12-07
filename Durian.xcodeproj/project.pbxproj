@@ -26,7 +26,6 @@
 		6D735303133D374400971A80 /* ButtonPlus.png in Resources */ = {isa = PBXBuildFile; fileRef = 6D7352FF133D374400971A80 /* ButtonPlus.png */; };
 		6D735304133D374400971A80 /* ButtonRepeat_off.png in Resources */ = {isa = PBXBuildFile; fileRef = 6D735300133D374400971A80 /* ButtonRepeat_off.png */; };
 		6D735305133D374400971A80 /* ButtonRepeat_on.png in Resources */ = {isa = PBXBuildFile; fileRef = 6D735301133D374400971A80 /* ButtonRepeat_on.png */; };
-		6D73A31C12C5562A00088378 /* Credits.rtfd in Resources */ = {isa = PBXBuildFile; fileRef = 6D73A31A12C5562A00088378 /* Credits.rtfd */; };
 		6D752FD21333FE660069BDF5 /* UserPrefsAudioFilters.png in Resources */ = {isa = PBXBuildFile; fileRef = 6D752FD01333FE660069BDF5 /* UserPrefsAudioFilters.png */; };
 		6D752FD31333FE660069BDF5 /* UserPrefsAudioSystem.png in Resources */ = {isa = PBXBuildFile; fileRef = 6D752FD11333FE660069BDF5 /* UserPrefsAudioSystem.png */; };
 		6D7A5CD51208569300007F5D /* AppController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D7A5CD41208569300007F5D /* AppController.m */; };
@@ -142,7 +141,6 @@
 		2FEDB6932EE3DF78006B81CE /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		32CA4F630368D1EE00C91783 /* Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Prefix.pch; sourceTree = "<group>"; };
 		6D016B23136C202C00555E24 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		6D016B24136C202C00555E24 /* fr */ = {isa = PBXFileReference; lastKnownFileType = wrapper.rtfd; name = fr; path = fr.lproj/Credits.rtfd; sourceTree = "<group>"; };
 		6D06C3D31260575B00A51557 /* AudioFileFLACLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AudioFileFLACLoader.h; path = AudioFileUtils/AudioFileFLACLoader.h; sourceTree = "<group>"; };
 		6D06C3D41260575B00A51557 /* AudioFileFLACLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AudioFileFLACLoader.m; path = AudioFileUtils/AudioFileFLACLoader.m; sourceTree = "<group>"; };
 		6D1028451286C184006391A4 /* DurianAppIcon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = DurianAppIcon.icns; path = Images/DurianAppIcon.icns; sourceTree = "<group>"; };
@@ -160,7 +158,6 @@
 		6D7352FF133D374400971A80 /* ButtonPlus.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ButtonPlus.png; path = Images/ButtonPlus.png; sourceTree = "<group>"; };
 		6D735300133D374400971A80 /* ButtonRepeat_off.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ButtonRepeat_off.png; path = Images/ButtonRepeat_off.png; sourceTree = "<group>"; };
 		6D735301133D374400971A80 /* ButtonRepeat_on.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ButtonRepeat_on.png; path = Images/ButtonRepeat_on.png; sourceTree = "<group>"; };
-		6D73A31B12C5562A00088378 /* en */ = {isa = PBXFileReference; lastKnownFileType = wrapper.rtfd; name = en; path = en.lproj/Credits.rtfd; sourceTree = "<group>"; };
 		6D752FD01333FE660069BDF5 /* UserPrefsAudioFilters.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = UserPrefsAudioFilters.png; path = Images/UserPrefsAudioFilters.png; sourceTree = "<group>"; };
 		6D752FD11333FE660069BDF5 /* UserPrefsAudioSystem.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = UserPrefsAudioSystem.png; path = Images/UserPrefsAudioSystem.png; sourceTree = "<group>"; };
 		6D7A5CD31208569300007F5D /* AppController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppController.h; path = Application/AppController.h; sourceTree = "<group>"; };
@@ -243,7 +240,6 @@
 		6DD906541335F0B800A09DB1 /* TrackNumberFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TrackNumberFormatter.h; path = common/TrackNumberFormatter.h; sourceTree = "<group>"; };
 		6DD906551335F0B800A09DB1 /* TrackNumberFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TrackNumberFormatter.m; path = common/TrackNumberFormatter.m; sourceTree = "<group>"; };
 		6DE536B51382FFF500CD56B0 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
-		6DE536B61382FFF500CD56B0 /* de */ = {isa = PBXFileReference; lastKnownFileType = wrapper.rtfd; name = de; path = de.lproj/Credits.rtfd; sourceTree = "<group>"; };
 		6DE536BA1382FFF500CD56B0 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		6DF17B38126984A900051593 /* PreferenceController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PreferenceController.h; path = Application/PreferenceController.h; sourceTree = "<group>"; };
 		6DF17B39126984A900051593 /* PreferenceController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PreferenceController.m; path = Application/PreferenceController.m; sourceTree = "<group>"; };
@@ -335,7 +331,6 @@
 			isa = PBXGroup;
 			children = (
 				6D7F6493136C3DA5000F1C27 /* Localizable.strings */,
-				6D73A31A12C5562A00088378 /* Credits.rtfd */,
 				6D6EEA2112747AAB00873D3C /* Images */,
 				8D1107310486CEB800E47090 /* Info.plist */,
 				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
@@ -634,7 +629,6 @@
 				6DF17B3D1269857800051593 /* Preferences.xib in Resources */,
 				6D1028461286C184006391A4 /* DurianAppIcon.icns in Resources */,
 				6DA2DFD112992FBD00F29798 /* Debug.xib in Resources */,
-				6D73A31C12C5562A00088378 /* Credits.rtfd in Resources */,
 				6D8BC406131954200090B9A5 /* Silver_PlayerWin_displayoff_on.png in Resources */,
 				6D8BC407131954200090B9A5 /* Silver_PlayerWin_displayoff_pressed.png in Resources */,
 				6D8BC408131954200090B9A5 /* Silver_PlayerWin_integermode_off.png in Resources */,
@@ -757,16 +751,6 @@
 			);
 			name = Playlist.xib;
 			path = Player;
-			sourceTree = "<group>";
-		};
-		6D73A31A12C5562A00088378 /* Credits.rtfd */ = {
-			isa = PBXVariantGroup;
-			children = (
-				6D73A31B12C5562A00088378 /* en */,
-				6D016B24136C202C00555E24 /* fr */,
-				6DE536B61382FFF500CD56B0 /* de */,
-			);
-			name = Credits.rtfd;
 			sourceTree = "<group>";
 		};
 		6D7F6493136C3DA5000F1C27 /* Localizable.strings */ = {
