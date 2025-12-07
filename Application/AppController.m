@@ -161,7 +161,8 @@
                                                                      [NSColor colorWithCalibratedRed:100.0f / 255.0f
                                                                                                green:100.0f / 255.0f
                                                                                                 blue:100.0f / 255.0f
-                                                                                               alpha:1.0f], nil]
+                                                                                               alpha:1.0f],
+                                                                     nil]
                                                          forKeys:[NSArray arrayWithObjects:NSFontAttributeName,
                                                                      NSParagraphStyleAttributeName,
                                                                      NSForegroundColorAttributeName, nil]];
@@ -402,7 +403,7 @@
 
 - (IBAction)openDonationPage:(id)sender
 {
-    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6PZANKDHSN358"]];
+    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://www.paypal.com/donate/?hosted_button_id=VSNP5GXXTLPZU"]];
 }
 
 - (IBAction)togglePlaylistDrawer:(id)sender
@@ -1155,7 +1156,7 @@
                fileSampleRate:(Float64)fileSampleRateInHz
             playingSampleRate:(Float64)playingSampleRateInHz
 {
-    NSAttributedString *strSplRate;
+    NSAttributedString* strSplRate;
     NSString* overWord;
 
     [songTitle setStringValue:title ? title : @""];
@@ -1887,7 +1888,8 @@
                                                                          [NSColor colorWithCalibratedRed:100.0f / 255.0f
                                                                                                    green:100.0f / 255.0f
                                                                                                     blue:100.0f / 255.0f
-                                                                                                   alpha:1.0f], nil]
+                                                                                                   alpha:1.0f],
+                                                                         nil]
                                                              forKeys:[NSArray arrayWithObjects:NSFontAttributeName,
                                                                          NSParagraphStyleAttributeName,
                                                                          NSForegroundColorAttributeName, nil]];
