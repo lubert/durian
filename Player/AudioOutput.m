@@ -1,5 +1,4 @@
 #include <dispatch/dispatch.h>
-#include <dispatch/dispatch.h>
 #include <libkern/OSAtomic.h>
 #include <mach/vm_map.h>
 #include <stdatomic.h>
@@ -1988,9 +1987,14 @@ OSStatus HALlistenerProc(AudioObjectID inObjectID,
 
     AudioObjectGetPropertyData(mBufferData.selectedAudioDeviceID, &propertyAddress, 0, NULL, &propertySize, &hoggingProcess);
     if ((hoggingProcess != -1) && (hoggingProcess != getpid())) {
-        NSRunAlertPanel(NSLocalizedString(@"Error initializing sound device", @"Hogged by other alert panel"),
-            NSLocalizedString(@"The sound device is already hogged by another application\nUnable to start playing", @"Hogged by other alert panel"),
-            NSLocalizedString(@"Cancel", @"Cancel button title"), nil, nil);
+        NSAlert* alert = [[NSAlert alloc] init];
+        [alert setMessageText:NSLocalizedString(@"Error initializing sound device", @"Hogged by other alert panel")];
+        [alert setInformativeText:NSLocalizedString(@"The sound device is already hogged by another application\nUnable to start playing", @"Hogged by other alert panel")];
+        [alert addButtonWithTitle:NSLocalizedString(@"Cancel", @"Cancel button title")];
+        [alert setAlertStyle:NSAlertStyleCritical];
+        [alert runModal];
+        [alert release];
+
         if (outError) {
             NSDictionary* errDict = [NSDictionary dictionaryWithObject:NSLocalizedString(@"Error: unable to grab exclusive access", @"Error message for exclusive access")
                                                                 forKey:NSLocalizedDescriptionKey];

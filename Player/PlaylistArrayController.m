@@ -1,6 +1,7 @@
 #import "PlaylistArrayController.h"
 #import "PlaylistDocument.h"
 #import "PlaylistItem.h"
+#import "PlaylistView.h"
 
 // Internal drag and drop type
 NSString* const AUDPlaylistItemPBoardType = @"com.github.durian.playlistitemtype";
@@ -15,8 +16,8 @@ NSString* const iTunesPBoardType = @"CorePasteboardFlavorType 0x6974756E";
 
 - (void)awakeFromNib
 {
-    [mPlaylistView setDoubleAction:@selector(trackSeek:)];
-    [mPlaylistView setTarget:self];
+    mPlaylistView.doubleAction = @selector(trackSeek:);
+    mPlaylistView.target = self;
 
     // Set SF Symbol images for buttons (dark mode compatible)
     if (@available(macOS 11.0, *)) {
@@ -123,7 +124,12 @@ NSString* const iTunesPBoardType = @"CorePasteboardFlavorType 0x6974756E";
 - (BOOL)tableView:(NSTableView*)tv writeRowsWithIndexes:(NSIndexSet*)rowIndexes toPasteboard:(NSPasteboard*)pboard
 {
     // Copy the row numbers to the pasteboard.
-    NSData* data = [NSKeyedArchiver archivedDataWithRootObject:rowIndexes];
+    NSError* error = nil;
+    NSData* data = [NSKeyedArchiver archivedDataWithRootObject:rowIndexes requiringSecureCoding:YES error:&error];
+    if (data == nil) {
+        NSLog(@"Failed to archive row indexes: %@", error);
+        return NO;
+    }
     [pboard declareTypes:[NSArray arrayWithObject:AUDPlaylistItemPBoardType] owner:self];
     [pboard setData:data forType:AUDPlaylistItemPBoardType];
     return YES;
@@ -148,7 +154,14 @@ NSString* const iTunesPBoardType = @"CorePasteboardFlavorType 0x6974756E";
         // Internal drag: Move the specified row to its new location...
         NSData* rowData = [pboard dataForType:AUDPlaylistItemPBoardType];
 
-        [mDocument movePlaylistItems:[NSKeyedUnarchiver unarchiveObjectWithData:rowData] toRow:row];
+        NSError* error = nil;
+        NSIndexSet* rowIndexes = [NSKeyedUnarchiver unarchivedObjectOfClass:[NSIndexSet class] fromData:rowData error:&error];
+        if (rowIndexes == nil) {
+            NSLog(@"Failed to unarchive row indexes: %@", error);
+            return NO;
+        }
+
+        [mDocument movePlaylistItems:rowIndexes toRow:row];
         success = YES;
     } else {
         // External drop
@@ -173,15 +186,25 @@ NSString* const iTunesPBoardType = @"CorePasteboardFlavorType 0x6974756E";
                 [mDocument insertPlaylistItems:droppedURLs atRow:row sortToplist:NO];
                 success = YES;
             }
-        } else if ([droppedTypes containsObject:NSFilenamesPboardType]) {
-            NSArray* droppedFiles = [pboard propertyListForType:NSFilenamesPboardType];
-            NSMutableArray* droppedURLs = [[[NSMutableArray alloc] initWithCapacity:[droppedFiles count]] autorelease];
+        } else if ([droppedTypes containsObject:NSPasteboardTypeFileURL]) {
+            NSMutableArray* droppedURLs = [[[NSMutableArray alloc] init] autorelease];
 
-            for (NSString* filename in droppedFiles) {
-                [droppedURLs addObject:[NSURL fileURLWithPath:filename]];
+            // Read file URLs from each pasteboard item
+            NSArray* pasteboardItems = [pboard pasteboardItems];
+            for (NSPasteboardItem* item in pasteboardItems) {
+                NSString* urlString = [item stringForType:NSPasteboardTypeFileURL];
+                if (urlString) {
+                    NSURL* url = [NSURL URLWithString:urlString];
+                    if (url && [url isFileURL]) {
+                        [droppedURLs addObject:url];
+                    }
+                }
             }
-            [mDocument insertPlaylistItems:droppedURLs atRow:row sortToplist:YES];
-            success = YES;
+
+            if ([droppedURLs count] > 0) {
+                [mDocument insertPlaylistItems:droppedURLs atRow:row sortToplist:YES];
+                success = YES;
+            }
         } else if ([droppedTypes containsObject:NSPasteboardTypeURL]) {
             NSURL* droppedURL = [NSURL URLFromPasteboard:pboard];
             if ([droppedURL isFileURL]) {

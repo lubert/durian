@@ -559,7 +559,7 @@
 
     UInt32 errCode = (UInt32)[error code];
     if (errCode) {
-        [songTitle setStringValue:[NSString stringWithFormat:@"%@ OSError=%.4s", [error localizedDescription], &errCode]];
+        [songTitle setStringValue:[NSString stringWithFormat:@"%@ OSError=%.4s", [error localizedDescription], (char*)&errCode]];
     } else {
         [songTitle setStringValue:[NSString stringWithFormat:@"%@", [error localizedDescription]]];
     }
@@ -853,7 +853,8 @@
 
     [openPlaylistPanel setCanChooseDirectories:NO];
     [openPlaylistPanel setAllowsMultipleSelection:NO];
-    if ([openPlaylistPanel runModalForTypes:[NSArray arrayWithObjects:@"m3u", @"m3u8", nil]] == NSModalResponseOK) {
+    [openPlaylistPanel setAllowedFileTypes:[NSArray arrayWithObjects:@"m3u", @"m3u8", nil]];
+    if ([openPlaylistPanel runModal] == NSModalResponseOK) {
         [mPlaylistDoc loadPlaylist:[openPlaylistPanel URL] appendToExisting:NO];
     }
 }
