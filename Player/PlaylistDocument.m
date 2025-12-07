@@ -100,7 +100,7 @@ NSString* const AUDTogglePlaylistShuffle = @"AUDTogglePlaylistShuffle";
 
     [openPanel setCanChooseDirectories:TRUE];
     [openPanel setAllowsMultipleSelection:TRUE];
-    if ([openPanel runModalForTypes:audioFilesExtensions] == NSOKButton) {
+    if ([openPanel runModalForTypes:audioFilesExtensions] == NSModalResponseOK) {
         [self insertPlaylistItems:[openPanel URLs] atRow:[playlist count] sortToplist:YES];
     }
 }
