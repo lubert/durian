@@ -1,6 +1,8 @@
 #include <dispatch/dispatch.h>
+#include <dispatch/dispatch.h>
 #include <libkern/OSAtomic.h>
 #include <mach/vm_map.h>
+#include <stdatomic.h>
 #include <strings.h>
 
 #import "AppController.h"
@@ -672,12 +674,7 @@ OSStatus coreAudioOutputIOProc(AudioDeviceID inDevice,
             outOutputData->mBuffers[0].mData, framesToCopy * bufferData->buffers[playingBuffer].bytesPerFrame);
 
     /* Update displayed current time */
-#ifndef __ppc__
-    OSAtomicAdd64(framesToCopy, &bufferData->buffers[playingBuffer].currentPlayingFrame);
-#else
-    // For the sake of building for ppc, but losing some thread safety...
-    bufferData->buffers[playingBuffer].currentPlayingFrame += framesToCopy;
-#endif
+    atomic_fetch_add_explicit(&bufferData->buffers[playingBuffer].currentPlayingFrame, framesToCopy, memory_order_relaxed);
     newCurrentSeconds = (UInt32)(bufferData->buffers[playingBuffer].currentPlayingFrame / bufferData->buffers[playingBuffer].sampleRate);
     if (newCurrentSeconds != bufferData->buffers[playingBuffer].currentPlayingTimeInSeconds) {
         bufferData->buffers[playingBuffer].currentPlayingTimeInSeconds = newCurrentSeconds;
@@ -778,7 +775,7 @@ OSStatus coreAudioOutputIOProc(AudioDeviceID inDevice,
                 }
             }
 
-            OSAtomicAdd64(framesToCopy, &bufferData->buffers[playingBuffer].currentPlayingFrame);
+            atomic_fetch_add_explicit(&bufferData->buffers[playingBuffer].currentPlayingFrame, framesToCopy, memory_order_relaxed);
 
         } // Otherwise request to change sampling rate
         else
