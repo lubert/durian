@@ -78,14 +78,14 @@ IA
                         </connections>
                     </button>
                     <scrollView fixedFrame="YES" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5">
-                        <rect key="frame" x="-1" y="33" width="757" height="278"/>
+                        <rect key="frame" x="-1" y="35" width="757" height="276"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <clipView key="contentView" id="w3c-Px-k1j">
-                            <rect key="frame" x="1" y="1" width="755" height="276"/>
+                            <rect key="frame" x="1" y="1" width="755" height="274"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" autosaveName="PlaylistTableView" headerView="6" id="7" customClass="PlaylistView">
-                                    <rect key="frame" x="0.0" y="0.0" width="755" height="248"/>
+                                <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" alternatingRowBackgroundColors="YES" autosaveName="PlaylistTableView" headerView="6" id="7" customClass="PlaylistView">
+                                    <rect key="frame" x="0.0" y="0.0" width="755" height="246"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <size key="intercellSpacing" width="3" height="2"/>
                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -102,6 +102,9 @@ IA
                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
+                                            <connections>
+                                                <binding destination="23" name="value" keyPath="arrangedObjects.trackNumber" id="999"/>
+                                            </connections>
                                         </tableColumn>
                                         <tableColumn identifier="title" editable="NO" width="207.5" minWidth="40" maxWidth="1000" id="14">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Title">
