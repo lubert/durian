@@ -118,6 +118,7 @@ NSString* const AUDMediaKeysUseChangeNotification = @"AUDMediaKeysUseChangeNotif
     [toolbar setSelectedItemIdentifier:@"General"];
     [preferenceTabs selectTabViewItemAtIndex:0];
     [[self window] setTitle:@"General"];
+    [[self window] setToolbarStyle:NSWindowToolbarStylePreference];
 
     activeDeviceMaxSplRate = 192000; // Default that should be overriden by the setActiveDeviceDesc call
 
