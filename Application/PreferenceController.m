@@ -65,6 +65,9 @@ NSString* const AUDMediaKeysUseChangeNotification = @"AUDMediaKeysUseChangeNotif
     maxAllowedAudioBufSize = ((int)ramSize >> 10) << 10;
     if (maxAllowedAudioBufSize < 512)
         maxAllowedAudioBufSize = 512;
+    // Cap at 4096 MB maximum
+    if (maxAllowedAudioBufSize > 4096)
+        maxAllowedAudioBufSize = 4096;
 
     [maxAudioBufferSizeSlider setMaxValue:maxAllowedAudioBufSize];
     [maxAudioBufferSizeSlider setNumberOfTickMarks:(maxAllowedAudioBufSize - 256) / 128 + 1];
@@ -185,13 +188,15 @@ NSString* const AUDMediaKeysUseChangeNotification = @"AUDMediaKeysUseChangeNotif
         [splRateHigherThan192kHz setHidden:YES];
 
     UInt64 maxSeconds = (UInt64)[maxAudioBufferSizeSlider intValue] * 1024 * 1024 / 2 / (44100 * 8);
-    [maxTrackLengthAt44_1 setStringValue:[NSString stringWithFormat:@"%imn @44.1kHz", maxSeconds / 60]];
+    int minutes = (int)(maxSeconds / 60);
+    [maxTrackLengthAt44_1 setStringValue:[NSString stringWithFormat:@"%d min at 44.1kHz", minutes]];
     if (activeDeviceMaxSplRate > 0.0) {
         maxSeconds = (UInt64)[maxAudioBufferSizeSlider intValue] * 1024 * 1024 / 2 / (activeDeviceMaxSplRate * 8);
+        minutes = (int)(maxSeconds / 60);
         if ((activeDeviceMaxSplRate % 1000) != 0)
-            [maxTrackLengthAt192 setStringValue:[NSString stringWithFormat:@"%imn @%.1fkHz", maxSeconds / 60, (float)activeDeviceMaxSplRate / 1000]];
+            [maxTrackLengthAt192 setStringValue:[NSString stringWithFormat:@"%d min at %.1fkHz", minutes, (float)activeDeviceMaxSplRate / 1000]];
         else
-            [maxTrackLengthAt192 setStringValue:[NSString stringWithFormat:@"%imn @%.0fkHz", maxSeconds / 60, (float)activeDeviceMaxSplRate / 1000]];
+            [maxTrackLengthAt192 setStringValue:[NSString stringWithFormat:@"%d min at %.0fkHz", minutes, (float)activeDeviceMaxSplRate / 1000]];
     }
 }
 
@@ -241,12 +246,14 @@ NSString* const AUDMediaKeysUseChangeNotification = @"AUDMediaKeysUseChangeNotif
 - (IBAction)changeMaxAudioBufferSize:(id)sender
 {
     UInt64 maxSeconds = (UInt64)[maxAudioBufferSizeSlider intValue] * 1024 * 1024 / 2 / (44100 * 8);
-    [maxTrackLengthAt44_1 setStringValue:[NSString stringWithFormat:@"%imn @44.1kHz", maxSeconds / 60]];
+    int minutes = (int)(maxSeconds / 60);
+    [maxTrackLengthAt44_1 setStringValue:[NSString stringWithFormat:@"%d min at 44.1kHz", minutes]];
     maxSeconds = (UInt64)[maxAudioBufferSizeSlider intValue] * 1024 * 1024 / 2 / (activeDeviceMaxSplRate * 8);
+    minutes = (int)(maxSeconds / 60);
     if ((activeDeviceMaxSplRate % 1000) != 0)
-        [maxTrackLengthAt192 setStringValue:[NSString stringWithFormat:@"%imn @%.1fkHz", maxSeconds / 60, (float)activeDeviceMaxSplRate / 1000]];
+        [maxTrackLengthAt192 setStringValue:[NSString stringWithFormat:@"%d min at %.1fkHz", minutes, (float)activeDeviceMaxSplRate / 1000]];
     else
-        [maxTrackLengthAt192 setStringValue:[NSString stringWithFormat:@"%imn @%.0fkHz", maxSeconds / 60, (float)activeDeviceMaxSplRate / 1000]];
+        [maxTrackLengthAt192 setStringValue:[NSString stringWithFormat:@"%d min at %.0fkHz", minutes, (float)activeDeviceMaxSplRate / 1000]];
 
     [maxAudioBufferSizeValue setIntValue:[maxAudioBufferSizeSlider intValue]];
 
@@ -276,13 +283,13 @@ NSString* const AUDMediaKeysUseChangeNotification = @"AUDMediaKeysUseChangeNotif
 
 - (IBAction)changeAppearanceMode:(id)sender
 {
-    [[NSUserDefaults standardUserDefaults] setInteger:[appearanceMode selectedRow] forKey:AUDAppearanceMode];
+    [[NSUserDefaults standardUserDefaults] setInteger:[appearanceMode indexOfSelectedItem] forKey:AUDAppearanceMode];
     [[NSNotificationCenter defaultCenter] postNotificationName:AUDAppearanceMode object:self];
 }
 
 - (IBAction)changeUISkinTheme:(id)sender
 {
-    [[NSUserDefaults standardUserDefaults] setInteger:[uiSkinTheme selectedRow] forKey:AUDUISkinTheme];
+    [[NSUserDefaults standardUserDefaults] setInteger:[uiSkinTheme indexOfSelectedItem] forKey:AUDUISkinTheme];
     [[NSNotificationCenter defaultCenter] postNotificationName:AUDUISkinTheme object:self];
 }
 
