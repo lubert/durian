@@ -241,33 +241,6 @@
     [(CustomSliderCell*)[songCurrentPlayingPosition cell] setBackgroundImage:[NSImage imageNamed:@"Silver_PlayerWin_timeline.png"]];
     [songCurrentPlayingPosition setNeedsDisplayInRect:[songCurrentPlayingPosition bounds]];
 
-    // Song title string attribute
-    NSFont* songTitleFont = [NSFont fontWithName:@"Lucida Grande Bold" size:14.0f];
-    if (!songTitleFont) {
-        songTitleFont = [NSFont labelFontOfSize:14.0f];
-    }
-    NSMutableParagraphStyle* songTitleParagraphStyle = [[NSMutableParagraphStyle alloc] init];
-    [songTitleParagraphStyle setLineBreakMode:NSLineBreakByTruncatingTail];
-    mSongTitleStringAttributes = [[NSDictionary alloc] initWithObjects:[NSArray arrayWithObjects:songTitleFont,
-                                                                           lcdColor,
-                                                                           songTitleParagraphStyle,
-                                                                           nil]
-                                                               forKeys:[NSArray arrayWithObjects:NSFontAttributeName,
-                                                                           NSForegroundColorAttributeName,
-                                                                           NSParagraphStyleAttributeName, nil]];
-    [songTitleParagraphStyle release];
-
-    // Song info string attribute
-    NSFont* songInfoFont = [NSFont fontWithName:@"Lucida Grande" size:12.0f];
-    if (!songInfoFont) {
-        songInfoFont = [NSFont labelFontOfSize:12.0f];
-    }
-    mSongInfoStringAttributes = [[NSDictionary alloc] initWithObjects:[NSArray arrayWithObjects:songInfoFont,
-                                                                          lcdColor,
-                                                                          nil]
-                                                              forKeys:[NSArray arrayWithObjects:NSFontAttributeName,
-                                                                          NSForegroundColorAttributeName, nil]];
-
     // Integer Mode is disabled at start
     [integerModeStatus setToolTip:NSLocalizedString(@"Integer Mode is OFF", @"IntegerOFF tooltip for LCD info")];
     [integerModeStatus setImage:[NSImage imageNamed:@"Silver_PlayerWin_integermode_off.png"]];
@@ -394,8 +367,6 @@
     [mDockStringAttributes release];
     [mLCDStringAttributes release];
     [mLCDSelectedStringAttributes release];
-    [mSongTitleStringAttributes release];
-    [mSongInfoStringAttributes release];
     [self startStopAppleRemoteUse:NO];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     if (preferenceController)
@@ -462,10 +433,7 @@
     if ([mPlaylistDoc playlistCount] <= 0)
         return;
 
-    NSAttributedString* initString = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"Initializing audio device...", @"Initializing Audio Device info in LCD title line")
-                                                                     attributes:mSongInfoStringAttributes];
-    [songTitle setAttributedStringValue:initString];
-    [initString release];
+    [songTitle setStringValue:NSLocalizedString(@"Initializing audio device...", @"Initializing Audio Device info in LCD title line")];
 
     // Attempt to select the preferred audio device
     // Repeat this attempt each time playback is initiated to cope with hot plugging
@@ -582,14 +550,10 @@
 
     UInt32 errCode = (UInt32)[error code];
     if (errCode) {
-        errorString = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@ OSError=%.4s", [error localizedDescription], &errCode]
-                                                      attributes:mSongInfoStringAttributes];
+        [songTitle setStringValue:[NSString stringWithFormat:@"%@ OSError=%.4s", [error localizedDescription], &errCode]];
     } else {
-        errorString = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@", [error localizedDescription]]
-                                                      attributes:mSongInfoStringAttributes];
+        [songTitle setStringValue:[NSString stringWithFormat:@"%@", [error localizedDescription]]];
     }
-    [songTitle setAttributedStringValue:errorString];
-    [errorString release];
 }
 
 - (IBAction)playPause:(id)sender
@@ -1194,24 +1158,13 @@
                fileSampleRate:(Float64)fileSampleRateInHz
             playingSampleRate:(Float64)playingSampleRateInHz
 {
-    NSAttributedString *strSplRate, *songInfoStr;
+    NSAttributedString *strSplRate;
     NSString* overWord;
 
-    songInfoStr = [[NSAttributedString alloc] initWithString:title ? title : @"" attributes:mSongTitleStringAttributes];
-    [songTitle setAttributedStringValue:songInfoStr];
-    [songInfoStr release];
-
-    songInfoStr = [[NSAttributedString alloc] initWithString:album_name ? album_name : @"" attributes:mSongInfoStringAttributes];
-    [songAlbum setAttributedStringValue:songInfoStr];
-    [songInfoStr release];
-
-    songInfoStr = [[NSAttributedString alloc] initWithString:artist_name ? artist_name : @"" attributes:mSongInfoStringAttributes];
-    [songArtist setAttributedStringValue:songInfoStr];
-    [songInfoStr release];
-
-    songInfoStr = [[NSAttributedString alloc] initWithString:composer_name ? composer_name : @"" attributes:mSongInfoStringAttributes];
-    [songComposer setAttributedStringValue:songInfoStr];
-    [songInfoStr release];
+    [songTitle setStringValue:title ? title : @""];
+    [songAlbum setStringValue:album_name ? album_name : @""];
+    [songArtist setStringValue:artist_name ? artist_name : @""];
+    [songComposer setStringValue:composer_name ? composer_name : @""];
 
     [songCoverImage setImage:cover_image];
     NSAttributedString* lcdString = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%02i:%02i", (int)duration_seconds / 60,
