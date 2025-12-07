@@ -103,7 +103,7 @@ enum {
 
 @class AudioDeviceDescription;
 
-@interface PreferenceController : NSWindowController {
+@interface PreferenceController : NSWindowController <NSTabViewDelegate> {
     IBOutlet NSToolbar* preferenceTabsToolbar;
     IBOutlet NSTabView* preferenceTabs;
 
