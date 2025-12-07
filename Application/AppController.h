@@ -82,8 +82,6 @@ typedef struct {
     NSDictionary* mSRCStringAttributes;
     NSDictionary* mLCDSelectedStringAttributes;
     NSDictionary* mLCDStringAttributes;
-    NSDictionary* mSongTitleStringAttributes;
-    NSDictionary* mSongInfoStringAttributes;
     NSDictionary* mDockStringAttributes;
 }
 
