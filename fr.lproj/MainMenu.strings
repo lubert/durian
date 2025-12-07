@@ -1,0 +1,63 @@
+/* Menu translations for French */
+
+/* About Durian */
+"58.title" = "À propos de Durian";
+
+/* File menu */
+"81.title" = "Fichier";
+"83.title" = "Fichier";
+"798.title" = "Charger liste de lecture...";
+"75.title" = "Sauvegarder liste de lecture";
+"799.title" = "Sauvegarder liste de lecture sous...";
+
+/* Durian menu */
+"129.title" = "Préférences...";
+"131.title" = "Services";
+"130.title" = "Services";
+"134.title" = "Masquer Durian";
+"145.title" = "Masquer les autres";
+"150.title" = "Tout afficher";
+"136.title" = "Quitter Durian";
+"803.title" = "Faire un don...";
+"786.title" = "Informations de débogage...";
+
+/* Edit menu */
+"444.title" = "Édition";
+"445.title" = "Édition";
+"446.title" = "Annuler";
+"447.title" = "Rétablir";
+"454.title" = "Tout sélectionner";
+"811.title" = "Supprimer";
+"793.title" = "Effacer liste de lecture";
+
+/* Play menu */
+"731.title" = "Lecture";
+"734.title" = "Lecture";
+"735.title" = "Lecture/Pause";
+"736.title" = "Piste précédente";
+"737.title" = "Piste suivante";
+"741.title" = "Arrêter";
+
+/* Window menu */
+"241.title" = "Fenêtre";
+"242.title" = "Fenêtre";
+"244.title" = "Réduire/Agrandir";
+"245.title" = "Tout amener au premier plan";
+"246.title" = "Placer dans le Dock";
+"835.title" = "Fermer";
+
+/* Help menu */
+"518.title" = "Aide";
+"519.title" = "Aide";
+"520.title" = "Aide Durian";
+
+/* UI labels */
+"783.title" = "Volume";
+"845.title" = "Préc";
+"848.title" = "Lecture";
+"850.title" = "Arrêt";
+"852.title" = "Suiv";
+"857.title" = "Alimentation";
+"859.title" = "Affichage éteint";
+"861.title" = "Liste de lecture";
+"744.title" = "Surcharge CPU";

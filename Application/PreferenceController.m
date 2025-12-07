@@ -124,7 +124,7 @@ NSString* const AUDNowPlayingUseChangeNotification = @"AUDNowPlayingUseChangeNot
 
     [toolbar setSelectedItemIdentifier:@"General"];
     [preferenceTabs selectTabViewItemAtIndex:0];
-    [[self window] setTitle:@"General"];
+    [[self window] setTitle:NSLocalizedString(@"General", @"General preferences tab title")];
     [[self window] setToolbarStyle:NSWindowToolbarStylePreference];
 
     activeDeviceMaxSplRate = 192000; // Default that should be overriden by the setActiveDeviceDesc call
@@ -246,14 +246,14 @@ NSString* const AUDNowPlayingUseChangeNotification = @"AUDNowPlayingUseChangeNot
 
     UInt64 maxSeconds = (UInt64)[maxAudioBufferSizeSlider intValue] * 1024 * 1024 / 2 / (44100 * 8);
     int minutes = (int)(maxSeconds / 60);
-    [maxTrackLengthAt44_1 setStringValue:[NSString stringWithFormat:@"%d min at 44.1kHz", minutes]];
+    [maxTrackLengthAt44_1 setStringValue:[NSString stringWithFormat:NSLocalizedString(@"%d min at 44.1kHz", @"Max track length at 44.1kHz"), minutes]];
     if (activeDeviceMaxSplRate > 0.0) {
         maxSeconds = (UInt64)[maxAudioBufferSizeSlider intValue] * 1024 * 1024 / 2 / (activeDeviceMaxSplRate * 8);
         minutes = (int)(maxSeconds / 60);
         if ((activeDeviceMaxSplRate % 1000) != 0)
-            [maxTrackLengthAt192 setStringValue:[NSString stringWithFormat:@"%d min at %.1fkHz", minutes, (float)activeDeviceMaxSplRate / 1000]];
+            [maxTrackLengthAt192 setStringValue:[NSString stringWithFormat:NSLocalizedString(@"%d min at %.1fkHz", @"Max track length at sample rate (decimal)"), minutes, (float)activeDeviceMaxSplRate / 1000]];
         else
-            [maxTrackLengthAt192 setStringValue:[NSString stringWithFormat:@"%d min at %.0fkHz", minutes, (float)activeDeviceMaxSplRate / 1000]];
+            [maxTrackLengthAt192 setStringValue:[NSString stringWithFormat:NSLocalizedString(@"%d min at %.0fkHz", @"Max track length at sample rate (integer)"), minutes, (float)activeDeviceMaxSplRate / 1000]];
     }
 }
 
@@ -262,19 +262,19 @@ NSString* const AUDNowPlayingUseChangeNotification = @"AUDNowPlayingUseChangeNot
 - (IBAction)selectGeneralTab:(id)sender
 {
     [preferenceTabs selectTabViewItemAtIndex:0];
-    [[self window] setTitle:@"General"];
+    [[self window] setTitle:NSLocalizedString(@"General", @"General preferences tab title")];
 }
 
 - (IBAction)selectAudioDeviceTab:(id)sender
 {
     [preferenceTabs selectTabViewItemAtIndex:1];
-    [[self window] setTitle:@"Audio System"];
+    [[self window] setTitle:NSLocalizedString(@"Audio System", @"Audio System preferences tab title")];
 }
 
 - (IBAction)selectAudioFiltersTab:(id)sender
 {
     [preferenceTabs selectTabViewItemAtIndex:2];
-    [[self window] setTitle:@"Upsampling"];
+    [[self window] setTitle:NSLocalizedString(@"Upsampling", @"Upsampling preferences tab title")];
 }
 
 #pragma mark Preferred device change
@@ -304,13 +304,13 @@ NSString* const AUDNowPlayingUseChangeNotification = @"AUDNowPlayingUseChangeNot
 {
     UInt64 maxSeconds = (UInt64)[maxAudioBufferSizeSlider intValue] * 1024 * 1024 / 2 / (44100 * 8);
     int minutes = (int)(maxSeconds / 60);
-    [maxTrackLengthAt44_1 setStringValue:[NSString stringWithFormat:@"%d min at 44.1kHz", minutes]];
+    [maxTrackLengthAt44_1 setStringValue:[NSString stringWithFormat:NSLocalizedString(@"%d min at 44.1kHz", @"Max track length at 44.1kHz"), minutes]];
     maxSeconds = (UInt64)[maxAudioBufferSizeSlider intValue] * 1024 * 1024 / 2 / (activeDeviceMaxSplRate * 8);
     minutes = (int)(maxSeconds / 60);
     if ((activeDeviceMaxSplRate % 1000) != 0)
-        [maxTrackLengthAt192 setStringValue:[NSString stringWithFormat:@"%d min at %.1fkHz", minutes, (float)activeDeviceMaxSplRate / 1000]];
+        [maxTrackLengthAt192 setStringValue:[NSString stringWithFormat:NSLocalizedString(@"%d min at %.1fkHz", @"Max track length at sample rate (decimal)"), minutes, (float)activeDeviceMaxSplRate / 1000]];
     else
-        [maxTrackLengthAt192 setStringValue:[NSString stringWithFormat:@"%d min at %.0fkHz", minutes, (float)activeDeviceMaxSplRate / 1000]];
+        [maxTrackLengthAt192 setStringValue:[NSString stringWithFormat:NSLocalizedString(@"%d min at %.0fkHz", @"Max track length at sample rate (integer)"), minutes, (float)activeDeviceMaxSplRate / 1000]];
 
     [maxAudioBufferSizeValue setIntValue:[maxAudioBufferSizeSlider intValue]];
 

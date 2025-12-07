@@ -1,0 +1,63 @@
+/* Menu translations for English */
+
+/* About Durian */
+"58.title" = "About Durian";
+
+/* File menu */
+"81.title" = "File";
+"83.title" = "File";
+"798.title" = "Load Playlist...";
+"75.title" = "Save Playlist";
+"799.title" = "Save Playlist As...";
+
+/* Durian menu */
+"129.title" = "Preferences...";
+"131.title" = "Services";
+"130.title" = "Services";
+"134.title" = "Hide Durian";
+"145.title" = "Hide Others";
+"150.title" = "Show All";
+"136.title" = "Quit Durian";
+"803.title" = "Donate...";
+"786.title" = "Debug Info...";
+
+/* Edit menu */
+"444.title" = "Edit";
+"445.title" = "Edit";
+"446.title" = "Undo";
+"447.title" = "Redo";
+"454.title" = "Select All";
+"811.title" = "Delete";
+"793.title" = "Clear Playlist";
+
+/* Play menu */
+"731.title" = "Play";
+"734.title" = "Play";
+"735.title" = "Play/Pause";
+"736.title" = "Previous Track";
+"737.title" = "Next Track";
+"741.title" = "Stop";
+
+/* Window menu */
+"241.title" = "Window";
+"242.title" = "Window";
+"244.title" = "Zoom";
+"245.title" = "Bring All to Front";
+"246.title" = "Minimize";
+"835.title" = "Close";
+
+/* Help menu */
+"518.title" = "Help";
+"519.title" = "Help";
+"520.title" = "Durian Help";
+
+/* UI labels */
+"783.title" = "Volume";
+"845.title" = "Prev";
+"848.title" = "Play";
+"850.title" = "Stop";
+"852.title" = "Next";
+"857.title" = "Power";
+"859.title" = "Display Off";
+"861.title" = "Playlist";
+"744.title" = "CPU Over";

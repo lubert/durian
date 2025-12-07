@@ -1,0 +1,63 @@
+/* Menu translations for German */
+
+/* About Durian */
+"58.title" = "Über Durian";
+
+/* File menu */
+"81.title" = "Ablage";
+"83.title" = "Ablage";
+"798.title" = "Wiedergabeliste laden...";
+"75.title" = "Wiedergabeliste sichern";
+"799.title" = "Wiedergabeliste sichern unter...";
+
+/* Durian menu */
+"129.title" = "Einstellungen...";
+"131.title" = "Dienste";
+"130.title" = "Dienste";
+"134.title" = "Durian ausblenden";
+"145.title" = "Andere ausblenden";
+"150.title" = "Alle einblenden";
+"136.title" = "Durian beenden";
+"803.title" = "Spenden...";
+"786.title" = "Debug-Informationen...";
+
+/* Edit menu */
+"444.title" = "Bearbeiten";
+"445.title" = "Bearbeiten";
+"446.title" = "Widerrufen";
+"447.title" = "Wiederholen";
+"454.title" = "Alle auswählen";
+"811.title" = "Löschen";
+"793.title" = "Wiedergabeliste leeren";
+
+/* Play menu */
+"731.title" = "Wiedergabe";
+"734.title" = "Wiedergabe";
+"735.title" = "Wiedergabe/Pause";
+"736.title" = "Vorheriger Titel";
+"737.title" = "Nächster Titel";
+"741.title" = "Stopp";
+
+/* Window menu */
+"241.title" = "Fenster";
+"242.title" = "Fenster";
+"244.title" = "Zoomen";
+"245.title" = "Alle nach vorne";
+"246.title" = "Im Dock ablegen";
+"835.title" = "Schließen";
+
+/* Help menu */
+"518.title" = "Hilfe";
+"519.title" = "Hilfe";
+"520.title" = "Durian-Hilfe";
+
+/* UI labels */
+"783.title" = "Lautstärke";
+"845.title" = "Zurück";
+"848.title" = "Wiedergabe";
+"850.title" = "Stopp";
+"852.title" = "Weiter";
+"857.title" = "Power";
+"859.title" = "Display aus";
+"861.title" = "Wiedergabeliste";
+"744.title" = "CPU Überlast";

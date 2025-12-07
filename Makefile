@@ -1,7 +1,7 @@
 # Makefile for Durian audio player
 # Manages vcpkg dependencies and Xcode builds
 
-.PHONY: all deps verify build clean rebuild run help debug release lint
+.PHONY: all deps verify build clean rebuild run help debug release lint run-en run-de run-fr
 
 # Default configuration
 CONFIGURATION ?= Release
@@ -21,22 +21,28 @@ all: deps build
 help:
 	@echo "$(COLOR_BLUE)Durian Build System$(COLOR_RESET)"
 	@echo ""
-	@echo "$(COLOR_GREEN)Available targets:$(COLOR_RESET)"
-	@echo "  make deps       - Install/update vcpkg dependencies"
-	@echo "  make verify     - Verify vcpkg dependencies are installed"
-	@echo "  make build      - Build the project (incremental)"
-	@echo "  make rebuild    - Clean and build the project"
-	@echo "  make clean      - Clean build artifacts"
-	@echo "  make run        - Build and run the application"
-	@echo "  make debug      - Build debug configuration"
-	@echo "  make release    - Build release configuration (default)"
-	@echo "  make lint       - Format all Objective-C source files"
-	@echo "  make all        - Install deps and build (default)"
+	@echo "$(COLOR_GREEN)Build targets:$(COLOR_RESET)"
+	@echo "  make deps              - Install/update vcpkg dependencies"
+	@echo "  make verify            - Verify vcpkg dependencies are installed"
+	@echo "  make build             - Build the project (incremental)"
+	@echo "  make rebuild           - Clean and build the project"
+	@echo "  make clean             - Clean build artifacts"
+	@echo "  make debug             - Build debug configuration"
+	@echo "  make release           - Build release configuration (default)"
+	@echo "  make lint              - Format all Objective-C source files"
+	@echo "  make all               - Install deps and build (default)"
+	@echo ""
+	@echo "$(COLOR_GREEN)Run targets:$(COLOR_RESET)"
+	@echo "  make run               - Build and run the application"
+	@echo "  make run-en            - Run with English localization"
+	@echo "  make run-de            - Run with German localization"
+	@echo "  make run-fr            - Run with French localization"
 	@echo ""
 	@echo "$(COLOR_GREEN)Examples:$(COLOR_RESET)"
-	@echo "  make              # Install deps and build release"
-	@echo "  make debug        # Build debug configuration"
-	@echo "  make clean build  # Clean rebuild"
+	@echo "  make                   # Install deps and build release"
+	@echo "  make debug             # Build debug configuration"
+	@echo "  make clean build       # Clean rebuild"
+	@echo "  make run-fr            # Test French localization"
 
 deps:
 	@echo "$(COLOR_BLUE)Installing vcpkg dependencies...$(COLOR_RESET)"
@@ -86,6 +92,34 @@ clean:
 run: build
 	@echo "$(COLOR_BLUE)Running $(TARGET)...$(COLOR_RESET)"
 	open $(APP_BUNDLE)
+
+# Localization testing targets
+run-en: build
+	@echo "$(COLOR_BLUE)Running $(TARGET) in English...$(COLOR_RESET)"
+	@pkill -x Durian 2>/dev/null || true
+	@sleep 0.5
+	@defaults delete com.lubert.durian AppleLanguages 2>/dev/null || true
+	@open -n $(APP_BUNDLE) --args -AppleLanguages "(en)"
+	@echo "$(COLOR_GREEN)✓ Launched with English localization$(COLOR_RESET)"
+	@echo "$(COLOR_YELLOW)Note: Check Durian > About Durian to verify language$(COLOR_RESET)"
+
+run-de: build
+	@echo "$(COLOR_BLUE)Running $(TARGET) in German...$(COLOR_RESET)"
+	@pkill -x Durian 2>/dev/null || true
+	@sleep 0.5
+	@defaults delete com.lubert.durian AppleLanguages 2>/dev/null || true
+	@open -n $(APP_BUNDLE) --args -AppleLanguages "(de)"
+	@echo "$(COLOR_GREEN)✓ Launched with German localization$(COLOR_RESET)"
+	@echo "$(COLOR_YELLOW)Note: Check Durian > About Durian to verify language$(COLOR_RESET)"
+
+run-fr: build
+	@echo "$(COLOR_BLUE)Running $(TARGET) in French...$(COLOR_RESET)"
+	@pkill -x Durian 2>/dev/null || true
+	@sleep 0.5
+	@defaults delete com.lubert.durian AppleLanguages 2>/dev/null || true
+	@open -n $(APP_BUNDLE) --args -AppleLanguages "(fr)"
+	@echo "$(COLOR_GREEN)✓ Launched with French localization$(COLOR_RESET)"
+	@echo "$(COLOR_YELLOW)Note: Check Durian > About Durian to verify language$(COLOR_RESET)"
 
 debug:
 	@$(MAKE) build CONFIGURATION=Debug

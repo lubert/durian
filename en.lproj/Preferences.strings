@@ -1,0 +1,279 @@
+﻿
+/* Class = "NSWindow"; title = "Preferences"; ObjectID = "1"; */
+"1.title" = "Preferences";
+
+/* Class = "NSButton"; ibShadowedToolTip = "Take full control of the audio device, preventing any other audio application from intefering. Also called \"Hog Mode\""; ObjectID = "3"; */
+"3.ibShadowedToolTip" = "Take full control of the audio device, preventing any other audio application from intefering. Also called \"Hog Mode\"";
+
+/* Class = "NSButtonCell"; title = "Exclusive Access"; ObjectID = "4"; */
+"4.title" = "Exclusive Access";
+
+/* Class = "NSTextFieldCell"; title = "Preferred Audio Device:"; ObjectID = "8"; */
+"8.title" = "Preferred Audio Device:";
+
+/* Class = "NSTextFieldCell"; title = "Default Output"; ObjectID = "10"; */
+"10.title" = "Default Output";
+
+/* Class = "NSButtonCell"; title = "OK"; ObjectID = "12"; */
+"12.title" = "OK";
+
+/* Class = "NSMenu"; title = "OtherViews"; ObjectID = "21"; */
+"21.title" = "OtherViews";
+
+/* Class = "NSMenuItem"; title = "Item 1"; ObjectID = "22"; */
+"22.title" = "Item 1";
+
+/* Class = "NSMenuItem"; title = "Item 2"; ObjectID = "23"; */
+"23.title" = "Item 2";
+
+/* Class = "NSMenuItem"; title = "Item 3"; ObjectID = "24"; */
+"24.title" = "Item 3";
+
+/* Class = "NSTextFieldCell"; title = "4096"; ObjectID = "30"; */
+"30.title" = "4096";
+
+/* Class = "NSTextFieldCell"; title = "MB"; ObjectID = "32"; */
+"32.title" = "MB";
+
+/* Class = "NSTextFieldCell"; title = "Playback Cache Size:"; ObjectID = "34"; */
+"34.title" = "Playback Cache Size:";
+
+/* Class = "NSButtonCell"; title = "Use Apple Remote"; ObjectID = "44"; */
+"44.title" = "Use Apple Remote";
+
+/* Class = "NSButton"; ibShadowedToolTip = "Use the maximum device I/O buffer size. Helps to lessen CPU load, and increase sound quality."; ObjectID = "71"; */
+"71.ibShadowedToolTip" = "Use the maximum device I/O buffer size. Helps to lessen CPU load, and increase sound quality.";
+
+/* Class = "NSButtonCell"; title = "Max I/O Buffer Size"; ObjectID = "72"; */
+"72.title" = "Max I/O Buffer Size";
+
+/* Class = "NSButton"; ibShadowedToolTip = "To be compatible with iTunes that exports both M3U & M3U8 playlists using UTF-8 character encoding."; ObjectID = "75"; */
+"75.ibShadowedToolTip" = "To be compatible with iTunes that exports both M3U & M3U8 playlists using UTF-8 character encoding.";
+
+/* Class = "NSButtonCell"; title = "Use UTF-8 Encoding for M3U Playlists"; ObjectID = "76"; */
+"76.title" = "Use UTF-8 Encoding for M3U Playlists";
+
+/* Class = "NSToolbarItem"; label = "General"; ObjectID = "93"; */
+"93.label" = "General";
+
+/* Class = "NSToolbarItem"; paletteLabel = "General"; ObjectID = "93"; */
+"93.paletteLabel" = "General";
+
+/* Class = "NSToolbarItem"; label = "Audio System"; ObjectID = "94"; */
+"94.label" = "Audio System";
+
+/* Class = "NSToolbarItem"; paletteLabel = "Audio System"; ObjectID = "94"; */
+"94.paletteLabel" = "Audio System";
+
+/* Class = "NSTabViewItem"; label = "General"; ObjectID = "103"; */
+"103.label" = "General";
+
+/* Class = "NSTabViewItem"; label = "Audio System"; ObjectID = "104"; */
+"104.label" = "Audio System";
+
+/* Class = "NSTextFieldCell"; title = "Active Audio Device:"; ObjectID = "171"; */
+"171.title" = "Active Audio Device:";
+
+/* Class = "NSTextFieldCell"; title = "Default Output"; ObjectID = "173"; */
+"173.title" = "Default Output";
+
+/* Class = "NSTextFieldCell"; title = "44.1"; ObjectID = "175"; */
+"175.title" = "44.1";
+
+/* Class = "NSTextFieldCell"; title = "48"; ObjectID = "177"; */
+"177.title" = "48";
+
+/* Class = "NSTextFieldCell"; title = "88.2"; ObjectID = "179"; */
+"179.title" = "88.2";
+
+/* Class = "NSTextFieldCell"; title = "96"; ObjectID = "181"; */
+"181.title" = "96";
+
+/* Class = "NSTextFieldCell"; title = "176.4"; ObjectID = "183"; */
+"183.title" = "176.4";
+
+/* Class = "NSTextFieldCell"; title = "192"; ObjectID = "185"; */
+"185.title" = "192";
+
+/* Class = "NSTextFieldCell"; title = "HiFi Playback Options:"; ObjectID = "194"; */
+"194.title" = "HiFi Playback Options:";
+
+/* Class = "NSTextFieldCell"; title = "138min at 44.1kHz"; ObjectID = "196"; */
+"196.title" = "138min at 44.1kHz";
+
+/* Class = "NSTextFieldCell"; title = "138min at 192kHz"; ObjectID = "198"; */
+"198.title" = "138min at 192kHz";
+
+/* Class = "NSTextFieldCell"; title = "Playlist:"; ObjectID = "204"; */
+"204.title" = "Playlist:";
+
+/* Class = "NSTextFieldCell"; title = "Controls:"; ObjectID = "206"; */
+"206.title" = "Controls:";
+
+/* Class = "NSWindow"; title = "Window"; ObjectID = "209"; */
+"209.title" = "Window";
+
+/* Class = "NSButtonCell"; title = "Change"; ObjectID = "212"; */
+"212.title" = "Change";
+
+/* Class = "NSButtonCell"; title = "Cancel"; ObjectID = "215"; */
+"215.title" = "Cancel";
+
+/* Class = "NSTextFieldCell"; title = "Select Preferred Audio Device"; ObjectID = "234"; */
+"234.title" = "Select Preferred Audio Device";
+
+/* Class = "NSTextFieldCell"; title = "384"; ObjectID = "236"; */
+"236.title" = "384";
+
+/* Class = "NSTabViewItem"; label = "Upsampling"; ObjectID = "244"; */
+"244.label" = "Upsampling";
+
+/* Class = "NSTextFieldCell"; title = "Sample Rate Converter:"; ObjectID = "247"; */
+"247.title" = "Sample Rate Converter:";
+
+/* Class = "NSTextFieldCell"; title = "Quality:"; ObjectID = "249"; */
+"249.title" = "Quality:";
+
+/* Class = "NSSlider"; ibShadowedToolTip = "Converter Algorithm Quality\nNote that the fastest setting uses a linear algorithm ultra-fast, but very noisy"; ObjectID = "252"; */
+"252.ibShadowedToolTip" = "Converter Algorithm Quality\nNote that the fastest setting uses a linear algorithm ultra-fast, but very noisy";
+
+/* Class = "NSTextFieldCell"; title = "Faster"; ObjectID = "255"; */
+"255.title" = "Faster";
+
+/* Class = "NSTextFieldCell"; title = "Better"; ObjectID = "257"; */
+"257.title" = "Better";
+
+/* Class = "NSToolbarItem"; label = "Upsampling"; ObjectID = "261"; */
+"261.label" = "Upsampling";
+
+/* Class = "NSToolbarItem"; paletteLabel = "Upsampling"; ObjectID = "261"; */
+"261.paletteLabel" = "Upsampling";
+
+/* Class = "NSButton"; ibShadowedToolTip = "Start playback when playlist is opened from the Finder or dropped on Durian's icon."; ObjectID = "264"; */
+"264.ibShadowedToolTip" = "Start playback when playlist is opened from the Finder or dropped on Durian's icon.";
+
+/* Class = "NSButtonCell"; title = "Autoplay Files Opened Directly"; ObjectID = "265"; */
+"265.title" = "Autoplay Files Opened Directly";
+
+/* Class = "NSButtonCell"; title = "Disabled"; ObjectID = "269"; */
+"269.title" = "Disabled";
+
+/* Class = "NSButtonCell"; title = "Power of Two (2x or 4x)"; ObjectID = "270"; */
+"270.title" = "Power of Two (2x or 4x)";
+
+/* Class = "NSButtonCell"; title = "Radio"; ObjectID = "271"; */
+"271.title" = "Radio";
+
+/* Class = "NSButtonCell"; title = "Max Frequency"; ObjectID = "272"; */
+"272.title" = "Max Frequency";
+
+/* Class = "NSTextFieldCell"; title = "Forced Upsampling:"; ObjectID = "276"; */
+"276.title" = "Forced Upsampling:";
+
+/* Class = "NSButton"; ibShadowedToolTip = "Communicates using the audio device native format, thus removing two intermediary steps: mixing and format conversion."; ObjectID = "277"; */
+"277.ibShadowedToolTip" = "Communicates using the audio device native format, thus removing two intermediary steps: mixing and format conversion.";
+
+/* Class = "NSButtonCell"; title = "Integer Mode"; ObjectID = "278"; */
+"278.title" = "Integer Mode";
+
+/* Class = "NSTextFieldCell"; title = "Warning: Upsampling requires significant CPU power. If your CPU is not fast enough, you may experience audio dropouts."; ObjectID = "286"; */
+"286.title" = "Warning: Upsampling requires significant CPU power. If your CPU is not fast enough, you may experience audio dropouts.";
+
+/* Class = "NSTextFieldCell"; title = "Player Theme:"; ObjectID = "288"; */
+"288.title" = "Player Theme:";
+
+/* Class = "NSMenuItem"; title = "Silver"; ObjectID = "290"; */
+"290.title" = "Silver";
+
+/* Class = "NSMenuItem"; title = "Graphite"; ObjectID = "291"; */
+"291.title" = "Graphite";
+
+/* Class = "NSMenuItem"; title = "System"; ObjectID = "293"; */
+"293.title" = "System";
+
+/* Class = "NSButtonCell"; title = "Load Last Playlist at Startup"; ObjectID = "302"; */
+"302.title" = "Load Last Playlist at Startup";
+
+/* Class = "NSTextFieldCell"; title = "Max Sample Rate"; ObjectID = "308"; */
+"308.title" = "Max Sample Rate";
+
+/* Class = "NSTextFieldCell"; title = "Switching Latency"; ObjectID = "314"; */
+"314.title" = "Switching Latency";
+
+/* Class = "NSTextFieldCell"; title = "USB to S/PDIF Adapter:"; ObjectID = "325"; */
+"325.title" = "USB to S/PDIF Adapter:";
+
+/* Class = "NSMenu"; title = "OtherViews"; ObjectID = "328"; */
+"328.title" = "OtherViews";
+
+/* Class = "NSMenuItem"; title = "Apple CoreAudio"; ObjectID = "329"; */
+"329.title" = "Apple CoreAudio";
+
+/* Class = "NSMenuItem"; title = "SRC libSampleRate"; ObjectID = "330"; */
+"330.title" = "SRC libSampleRate";
+
+/* Class = "NSMenu"; title = "OtherViews"; ObjectID = "338"; */
+"338.title" = "OtherViews";
+
+/* Class = "NSMenuItem"; title = "Unlimited"; ObjectID = "339"; */
+"339.title" = "Unlimited";
+
+/* Class = "NSMenuItem"; title = "192kHz"; ObjectID = "340"; */
+"340.title" = "192kHz";
+
+/* Class = "NSMenuItem"; title = "96kHz"; ObjectID = "341"; */
+"341.title" = "96kHz";
+
+/* Class = "NSMenu"; title = "OtherViews"; ObjectID = "358"; */
+"358.title" = "OtherViews";
+
+/* Class = "NSMenuItem"; title = "None"; ObjectID = "359"; */
+"359.title" = "None";
+
+/* Class = "NSMenuItem"; title = "0.5s"; ObjectID = "360"; */
+"360.title" = "0.5s";
+
+/* Class = "NSMenuItem"; title = "1s"; ObjectID = "361"; */
+"361.title" = "1s";
+
+/* Class = "NSMenuItem"; title = "48kHz"; ObjectID = "371"; */
+"371.title" = "48kHz";
+
+/* Class = "NSMenuItem"; title = "44.1kHz"; ObjectID = "372"; */
+"372.title" = "44.1kHz";
+
+/* Class = "NSMenuItem"; title = "1.5s"; ObjectID = "373"; */
+"373.title" = "1.5s";
+
+/* Class = "NSMenuItem"; title = "2s"; ObjectID = "374"; */
+"374.title" = "2s";
+
+/* Class = "NSButtonCell"; title = "Use Keyboard Media Keys"; ObjectID = "385"; */
+"385.title" = "Use Keyboard Media Keys";
+
+/* Class = "NSButtonCell"; title = "... and for Volume Control"; ObjectID = "390"; */
+"390.title" = "... and for Volume Control";
+
+/* Class = "NSMenuItem"; title = "3s"; ObjectID = "394"; */
+"394.title" = "3s";
+
+/* Class = "NSMenuItem"; title = "4s"; ObjectID = "395"; */
+"395.title" = "4s";
+
+/* Class = "NSMenuItem"; title = "5s"; ObjectID = "396"; */
+"396.title" = "5s";
+
+/* Class = "NSTextFieldCell"; title = "Appearance:"; ObjectID = "397"; */
+"397.title" = "Appearance:";
+
+/* Class = "NSMenuItem"; title = "Light"; ObjectID = "399"; */
+"399.title" = "Light";
+
+/* Class = "NSMenuItem"; title = "Dark"; ObjectID = "400"; */
+"400.title" = "Dark";
+
+/* Class = "NSMenuItem"; title = "System"; ObjectID = "402"; */
+"402.title" = "System";
+
+/* Class = "NSButtonCell"; title = "Show in Now Playing"; ObjectID = "804"; */
+"804.title" = "Show in Now Playing";

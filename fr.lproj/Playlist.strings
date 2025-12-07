@@ -1,0 +1,48 @@
+
+/* Class = "NSWindow"; title = "Playlist"; ObjectID = "1"; */
+"1.title" = "Liste de lecture";
+
+/* Class = "NSTableColumn"; headerCell.title = "Duration"; ObjectID = "10"; */
+"10.headerCell.title" = "Durée";
+
+/* Class = "NSTableColumn"; headerCell.title = "Composer"; ObjectID = "11"; */
+"11.headerCell.title" = "Compositeur";
+
+/* Class = "NSTableColumn"; headerCell.title = "Artist"; ObjectID = "12"; */
+"12.headerCell.title" = "Artiste";
+
+/* Class = "NSTableColumn"; headerCell.title = "Album"; ObjectID = "13"; */
+"13.headerCell.title" = "Album";
+
+/* Class = "NSTableColumn"; headerCell.title = "Title"; ObjectID = "14"; */
+"14.headerCell.title" = "Titre";
+
+/* Class = "NSTextFieldCell"; title = "Text Cell"; ObjectID = "15"; */
+"15.title" = "Text Cell";
+
+/* Class = "NSTextFieldCell"; title = "Text Cell"; ObjectID = "16"; */
+"16.title" = "Text Cell";
+
+/* Class = "NSTextFieldCell"; title = "Text Cell"; ObjectID = "17"; */
+"17.title" = "Text Cell";
+
+/* Class = "NSTextFieldCell"; title = "Text Cell"; ObjectID = "18"; */
+"18.title" = "Text Cell";
+
+/* Class = "NSTextFieldCell"; title = "Text Cell"; ObjectID = "19"; */
+"19.title" = "Text Cell";
+
+/* Class = "NSWindow"; title = "Progress"; ObjectID = "60"; */
+"60.title" = "Progression";
+
+/* Class = "NSTextFieldCell"; title = "Adding tracks to playlist"; ObjectID = "63"; */
+"63.title" = "Ajout de pistes à la liste de lecture";
+
+/* Class = "NSButtonCell"; title = "Cancel"; ObjectID = "66"; */
+"66.title" = "Annuler";
+
+/* Class = "NSTableColumn"; headerCell.title = "#"; ObjectID = "78"; */
+"78.headerCell.title" = "#";
+
+/* Class = "NSTextFieldCell"; title = "Text Cell"; ObjectID = "79"; */
+"79.title" = "Text Cell";

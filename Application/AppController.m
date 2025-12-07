@@ -185,12 +185,12 @@
 
     deviceMaxSplRate = [[[audioOut audioDevicesList] objectAtIndex:[audioOut selectedAudioDeviceIndex]] maxSampleRate];
     if ((int)deviceMaxSplRate % 1000)
-        strSplRate = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%i/%.1f D/A converter",
-                                                                    [audioOut audioDeviceCurrentPhysicalBitDepth], deviceMaxSplRate / 1000]
+        strSplRate = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:NSLocalizedString(@"%i/%.1f D/A %@converter", @"DAC settings info line format for decimal spl rates"),
+                                                                    [audioOut audioDeviceCurrentPhysicalBitDepth], deviceMaxSplRate / 1000, @""]
                                                      attributes:mSRCStringAttributes];
     else
-        strSplRate = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%i/%.0f D/A converter",
-                                                                    [audioOut audioDeviceCurrentPhysicalBitDepth], deviceMaxSplRate / 1000]
+        strSplRate = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:NSLocalizedString(@"%i/%.0f D/A %@converter", @"DAC settings info line format for integer spl rates"),
+                                                                    [audioOut audioDeviceCurrentPhysicalBitDepth], deviceMaxSplRate / 1000, @""]
                                                      attributes:mSRCStringAttributes];
 
     [currentDACSampleRate setAttributedStringValue:strSplRate];
@@ -1142,31 +1142,31 @@
         [masterDeviceVolumeMinus setHidden:YES];
     }
 
-    NSAttributedString* buttonText = [[NSAttributedString alloc] initWithString:@"POWER" attributes:volumeStringAttributes];
+    NSAttributedString* buttonText = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"POWER", @"Power button label") attributes:volumeStringAttributes];
     [powerText setAttributedStringValue:buttonText];
     [buttonText release];
 
-    buttonText = [[NSAttributedString alloc] initWithString:@"DISPLAY\nOFF" attributes:volumeStringAttributes];
+    buttonText = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"DISPLAY\nOFF", @"Display Off button label") attributes:volumeStringAttributes];
     [displayOffText setAttributedStringValue:buttonText];
     [buttonText release];
 
-    buttonText = [[NSAttributedString alloc] initWithString:@"PLAYLIST" attributes:volumeStringAttributes];
+    buttonText = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"PLAYLIST", @"Playlist button label") attributes:volumeStringAttributes];
     [playlistText setAttributedStringValue:buttonText];
     [buttonText release];
 
-    buttonText = [[NSAttributedString alloc] initWithString:@"PREV" attributes:volumeStringAttributes];
+    buttonText = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"PREV", @"Previous button label") attributes:volumeStringAttributes];
     [prevText setAttributedStringValue:buttonText];
     [buttonText release];
 
-    buttonText = [[NSAttributedString alloc] initWithString:@"PLAY" attributes:volumeStringAttributes];
+    buttonText = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"PLAY", @"Play button label") attributes:volumeStringAttributes];
     [playText setAttributedStringValue:buttonText];
     [buttonText release];
 
-    buttonText = [[NSAttributedString alloc] initWithString:@"STOP" attributes:volumeStringAttributes];
+    buttonText = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"STOP", @"Stop button label") attributes:volumeStringAttributes];
     [stopText setAttributedStringValue:buttonText];
     [buttonText release];
 
-    buttonText = [[NSAttributedString alloc] initWithString:@"NEXT" attributes:volumeStringAttributes];
+    buttonText = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"NEXT", @"Next button label") attributes:volumeStringAttributes];
     [nextText setAttributedStringValue:buttonText];
     [buttonText release];
 
