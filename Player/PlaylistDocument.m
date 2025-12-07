@@ -51,6 +51,7 @@ NSString* const AUDTogglePlaylistShuffle = @"AUDTogglePlaylistShuffle";
     [playlistView_del setDocument:self];
     [playlistView setDelegate:playlistView_del];
     [playlistController setPlaylistDocument:self];
+    [[self window] setDelegate:self];
 }
 
 - (void)dealloc
@@ -114,8 +115,6 @@ NSString* const AUDTogglePlaylistShuffle = @"AUDTogglePlaylistShuffle";
     NSUInteger oldSelectionPos = [self nonShuffledIndexFromShuffled:[playlistController selectionIndex]];
     if (oldSelectionPos > [playlist count])
         oldSelectionPos = 0;
-
-    [[self window] setDocumentEdited:YES];
 
     /*If adding only one file, no need to display progress sheet and perform insert in background */
     if (([urlsToOpen count] == 1) && !mAddingTracksInBackground) {
@@ -388,7 +387,6 @@ NSString* const AUDTogglePlaylistShuffle = @"AUDTogglePlaylistShuffle";
                                                         object:self
                                                       userInfo:plTrackDict];
 
-    [[self window] setDocumentEdited:YES];
     [tmpArray release];
 }
 
@@ -443,8 +441,6 @@ NSString* const AUDTogglePlaylistShuffle = @"AUDTogglePlaylistShuffle";
     [[NSNotificationCenter defaultCenter] postNotificationName:AUDPlaylistMovePlayingTrackNotification
                                                         object:self
                                                       userInfo:plTrackDict];
-
-    [[self window] setDocumentEdited:YES];
 }
 
 - (void)deleteSelectedPlaylistItems
@@ -503,8 +499,6 @@ NSString* const AUDTogglePlaylistShuffle = @"AUDTogglePlaylistShuffle";
     [[NSNotificationCenter defaultCenter] postNotificationName:AUDPlaylistMovePlayingTrackNotification
                                                         object:self
                                                       userInfo:plTrackDict];
-
-    [[self window] setDocumentEdited:YES];
 }
 
 - (IBAction)cancelAddingTrack:(id)sender
@@ -561,9 +555,7 @@ NSString* const AUDTogglePlaylistShuffle = @"AUDTogglePlaylistShuffle";
     if (!isToAppend) {
         [[self window] setTitle:[playlistFile lastPathComponent]];
         [[self window] setRepresentedURL:playlistFile];
-        [[self window] setDocumentEdited:NO];
-    } else
-        [[self window] setDocumentEdited:YES];
+    }
 
     return result;
 }
@@ -612,7 +604,6 @@ NSString* const AUDTogglePlaylistShuffle = @"AUDTogglePlaylistShuffle";
     [playlistData release];
 
     if (result) {
-        [[self window] setDocumentEdited:NO];
         [[self window] setRepresentedURL:playlistFile];
         [[self window] setTitle:[playlistFile lastPathComponent]];
     } else {
@@ -752,4 +743,18 @@ NSString* const AUDTogglePlaylistShuffle = @"AUDTogglePlaylistShuffle";
     [playlistController setSelectionIndex:mPlayingTrackIndex];
     [playlistView reloadData];
 }
+
+#pragma mark NSWindowDelegate
+
+- (BOOL)windowShouldClose:(NSWindow*)sender
+{
+    // Hide the playlist window instead of closing it
+    [sender setIsVisible:NO];
+
+    // Post notification to update playlist button state in main window
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"AUDPlaylistWindowClosed" object:self];
+
+    return NO; // Don't actually close the window, just hide it
+}
+
 @end
