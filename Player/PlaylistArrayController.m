@@ -73,62 +73,7 @@ NSString* const iTunesPBoardType = @"CorePasteboardFlavorType 0x6974756E";
 
 - (id)tableView:(NSTableView*)tableView objectValueForTableColumn:(NSTableColumn*)tableColumn row:(NSInteger)row
 {
-    // Handle the track number column - add green bullet for loaded track
-    if ([[tableColumn identifier] isEqualToString:@"trackNumber"]) {
-        // Safety check
-        if (row < 0 || row >= [[self arrangedObjects] count]) {
-            return @"";
-        }
-
-        id trackObject = [[self arrangedObjects] objectAtIndex:row];
-        if (!trackObject) {
-            return @"";
-        }
-
-        NSNumber* number = [trackObject valueForKey:@"trackNumber"];
-        if (!number) {
-            return @"";
-        }
-
-        // Determine text color based on row state
-        NSColor* textColor;
-        BOOL isSelected = [tableView isRowSelected:row];
-
-        if (isSelected) {
-            textColor = [NSColor selectedTextColor];
-        } else if (mDocument && row == [mDocument playingTrackIndex]) {
-            textColor = [NSColor systemBlueColor];
-        } else {
-            textColor = [NSColor labelColor];
-        }
-
-        if (mDocument && row == [mDocument loadedTrackIndex] && row != [mDocument playingTrackIndex]) {
-            // Add green bullet after track number with colored bullet
-            NSString* text = [NSString stringWithFormat:@"%@ ●", number];
-            NSMutableAttributedString* attrString = [[NSMutableAttributedString alloc] initWithString:text];
-
-            // Color the track number with appropriate text color
-            NSRange numberRange = NSMakeRange(0, [text length] - 2);
-            [attrString addAttribute:NSForegroundColorAttributeName
-                               value:textColor
-                               range:numberRange];
-
-            // Color just the bullet green
-            NSRange bulletRange = NSMakeRange([text length] - 1, 1);
-            [attrString addAttribute:NSForegroundColorAttributeName
-                               value:[NSColor systemGreenColor]
-                               range:bulletRange];
-
-            return [attrString autorelease];
-        }
-
-        // Return attributed string with proper color for dark mode support
-        NSString* text = [number stringValue];
-        NSAttributedString* attrString = [[NSAttributedString alloc] initWithString:text
-                                                                         attributes:@{ NSForegroundColorAttributeName : textColor }];
-        return [attrString autorelease];
-    }
-    // For other columns, return nil to let bindings handle it
+    // For all columns, return nil to let bindings handle it
     return nil;
 }
 
