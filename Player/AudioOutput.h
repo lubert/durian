@@ -1,6 +1,7 @@
 #include <AudioToolbox/AudioToolbox.h>
 #import <Cocoa/Cocoa.h>
 #include <CoreAudio/CoreAudio.h>
+#include <stdatomic.h>
 
 @interface AudioStreamDescription : NSObject {
     AudioStreamRangedDescription* mPhysicalFormats;
@@ -69,7 +70,7 @@ typedef struct {
 typedef struct {
     Float64 sampleRate;
     SInt64 firstFrameOffset; // Number of frames in the audio track before the first one of this buffer
-    SInt64 currentPlayingFrame;
+    _Atomic SInt64 currentPlayingFrame;
     SInt64 lengthFrames;
     SInt64 loadedFrames;
     SInt64 inputFileNextPosition;
