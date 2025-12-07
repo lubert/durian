@@ -23,6 +23,7 @@
 - (void)handleUpdateUISkinTheme:(NSNotification*)notification;
 - (void)handleUpdateAppleRemoteUse:(NSNotification*)notification;
 - (void)handleUpdateMediaKeysUse:(NSNotification*)notification;
+- (void)handleUpdateNowPlayingUse:(NSNotification*)notification;
 - (void)handleDeviceChange:(NSNotification*)notification;
 @end
 
@@ -107,6 +108,7 @@
     [defaultValues setObject:[NSNumber numberWithBool:YES] forKey:AUDUseAppleRemote];
     [defaultValues setObject:[NSNumber numberWithBool:NO] forKey:AUDUseMediaKeys];
     [defaultValues setObject:[NSNumber numberWithBool:YES] forKey:AUDUseMediaKeysForVolumeControl];
+    [defaultValues setObject:[NSNumber numberWithBool:YES] forKey:AUDUseNowPlaying];
     [defaultValues setObject:[NSNumber numberWithBool:YES] forKey:AUDUseUTF8forM3U];
     [defaultValues setObject:[NSNumber numberWithBool:YES] forKey:AUDOutsideOpenedPlaylistPlaybackAutoStart];
     [defaultValues setObject:[NSNumber numberWithBool:YES] forKey:AUDAutosavePlaylist];
@@ -367,9 +369,19 @@
            selector:@selector(handleUpdateMediaKeysUse:)
                name:AUDMediaKeysUseChangeNotification
              object:nil];
+    [nc addObserver:self
+           selector:@selector(handleUpdateNowPlayingUse:)
+               name:AUDNowPlayingUseChangeNotification
+             object:nil];
 
     [self handleUpdateAppearanceMode:nil];
     [self handleUpdateUISkinTheme:nil];
+
+    // Setup Now Playing integration if enabled
+    mNowPlayingEnabled = [[NSUserDefaults standardUserDefaults] boolForKey:AUDUseNowPlaying];
+    if (mNowPlayingEnabled) {
+        [self setupNowPlayingIntegration];
+    }
 }
 
 - (void)dealloc
@@ -593,6 +605,9 @@
                 [playPauseButton setAlternateImage:[NSImage imageNamed:@"Black_PlayerWin_play_pressed.png"]];
             }
         }
+
+        // Update Now Playing playback state
+        [self updateNowPlayingInfo];
     }
 }
 
@@ -631,6 +646,9 @@
         [dockIcon release];
 
         [mPlaylistDoc resetPlayingPosToStart];
+
+        // Clear Now Playing info
+        [self clearNowPlayingInfo];
     }
 }
 
@@ -1242,6 +1260,9 @@
         [songCoverImage setHidden:YES];
         [songTextView setFrame:NSMakeRect(204, 82, 431, 115)];
     }
+
+    // Update Now Playing info
+    [self updateNowPlayingInfo];
 }
 
 - (void)updateCurrentTrackTotalLength:(UInt64)totalFrames duration:(Float64)duration_seconds forBuffer:(int)bufferIdx
@@ -1298,6 +1319,9 @@
     [songCurrentPlayingTime setAttributedStringValue:playingTime];
     [playingTime release];
     [songCurrentPlayingPosition setDoubleValue:currentFrame];
+
+    // Update Now Playing elapsed time
+    [self updateNowPlayingInfo];
 }
 
 - (void)updateLoadStatus:(UInt64)firstLoadedFrame
@@ -2044,6 +2068,204 @@
     [self notifyDeviceVolumeChanged];
     // Workaround for latency afeter notification
     [self performSelector:@selector(notifyDeviceVolumeChanged) withObject:nil afterDelay:1.5];
+}
+
+#pragma mark Now Playing Integration
+
+- (void)handleUpdateNowPlayingUse:(NSNotification*)notification
+{
+    mNowPlayingEnabled = [[NSUserDefaults standardUserDefaults] boolForKey:AUDUseNowPlaying];
+
+    if (mNowPlayingEnabled) {
+        // Only set up once
+        if (!mNowPlayingIntegrationSetUp) {
+            [self setupNowPlayingIntegration];
+            mNowPlayingIntegrationSetUp = YES;
+        }
+        // Update current playback info if something is playing
+        if ([audioOut isPlaying]) {
+            [self updateNowPlayingInfo];
+        }
+    } else {
+        [self tearDownNowPlayingIntegration];
+        [self clearNowPlayingInfo];
+    }
+}
+
+- (void)setupNowPlayingIntegration
+{
+    MPRemoteCommandCenter* commandCenter = [MPRemoteCommandCenter sharedCommandCenter];
+
+    // Enable play command
+    [[commandCenter playCommand] setEnabled:YES];
+    mPlayCommandTarget = [[commandCenter playCommand] addTargetWithHandler:^MPRemoteCommandHandlerStatus(MPRemoteCommandEvent* _Nonnull event) {
+        [self playPause:nil];
+        return MPRemoteCommandHandlerStatusSuccess;
+    }];
+
+    // Enable pause command
+    [[commandCenter pauseCommand] setEnabled:YES];
+    mPauseCommandTarget = [[commandCenter pauseCommand] addTargetWithHandler:^MPRemoteCommandHandlerStatus(MPRemoteCommandEvent* _Nonnull event) {
+        [self playPause:nil];
+        return MPRemoteCommandHandlerStatusSuccess;
+    }];
+
+    // Enable next track command
+    [[commandCenter nextTrackCommand] setEnabled:YES];
+    mNextTrackCommandTarget = [[commandCenter nextTrackCommand] addTargetWithHandler:^MPRemoteCommandHandlerStatus(MPRemoteCommandEvent* _Nonnull event) {
+        [self seekNext:nil];
+        return MPRemoteCommandHandlerStatusSuccess;
+    }];
+
+    // Enable previous track command
+    [[commandCenter previousTrackCommand] setEnabled:YES];
+    mPreviousTrackCommandTarget = [[commandCenter previousTrackCommand] addTargetWithHandler:^MPRemoteCommandHandlerStatus(MPRemoteCommandEvent* _Nonnull event) {
+        [self seekPrevious:nil];
+        return MPRemoteCommandHandlerStatusSuccess;
+    }];
+
+    // Enable seek to position command
+    [[commandCenter changePlaybackPositionCommand] setEnabled:YES];
+    mChangePlaybackPositionCommandTarget = [[commandCenter changePlaybackPositionCommand] addTargetWithHandler:^MPRemoteCommandHandlerStatus(MPRemoteCommandEvent* _Nonnull event) {
+        MPChangePlaybackPositionCommandEvent* seekEvent = (MPChangePlaybackPositionCommandEvent*)event;
+        Float64 targetTime = seekEvent.positionTime;
+        Float64 sampleRate = [audioOut audioDeviceCurrentNominalSampleRate];
+        UInt64 targetFrame = (UInt64)(targetTime * sampleRate);
+
+        // Update the slider position
+        [songCurrentPlayingPosition setDoubleValue:(double)targetFrame];
+
+        // Immediately update Now Playing to reflect the new position
+        // This prevents it from snapping back before the seek completes
+        [self updateNowPlayingInfo];
+
+        // Trigger the actual seek
+        [self performSelector:@selector(seekPosition:) withObject:nil afterDelay:0.0];
+
+        return MPRemoteCommandHandlerStatusSuccess;
+    }];
+}
+
+- (void)tearDownNowPlayingIntegration
+{
+    MPRemoteCommandCenter* commandCenter = [MPRemoteCommandCenter sharedCommandCenter];
+
+    // Remove all command targets
+    if (mPlayCommandTarget) {
+        [[commandCenter playCommand] removeTarget:mPlayCommandTarget];
+        mPlayCommandTarget = nil;
+    }
+    if (mPauseCommandTarget) {
+        [[commandCenter pauseCommand] removeTarget:mPauseCommandTarget];
+        mPauseCommandTarget = nil;
+    }
+    if (mNextTrackCommandTarget) {
+        [[commandCenter nextTrackCommand] removeTarget:mNextTrackCommandTarget];
+        mNextTrackCommandTarget = nil;
+    }
+    if (mPreviousTrackCommandTarget) {
+        [[commandCenter previousTrackCommand] removeTarget:mPreviousTrackCommandTarget];
+        mPreviousTrackCommandTarget = nil;
+    }
+    if (mChangePlaybackPositionCommandTarget) {
+        [[commandCenter changePlaybackPositionCommand] removeTarget:mChangePlaybackPositionCommandTarget];
+        mChangePlaybackPositionCommandTarget = nil;
+    }
+
+    // Disable all commands
+    [[commandCenter playCommand] setEnabled:NO];
+    [[commandCenter pauseCommand] setEnabled:NO];
+    [[commandCenter nextTrackCommand] setEnabled:NO];
+    [[commandCenter previousTrackCommand] setEnabled:NO];
+    [[commandCenter changePlaybackPositionCommand] setEnabled:NO];
+
+    mNowPlayingIntegrationSetUp = NO;
+}
+
+// Helper method to get current playback position and duration in seconds
+// This ensures consistency across UI and Now Playing calculations
+- (void)getCurrentPlaybackPosition:(Float64*)outPosition duration:(Float64*)outDuration
+{
+    Float64 sampleRate = [audioOut audioDeviceCurrentNominalSampleRate];
+
+    if (sampleRate > 0) {
+        Float64 maxFrames = [songCurrentPlayingPosition maxValue];
+        Float64 currentFrames = [songCurrentPlayingPosition doubleValue];
+
+        if (outDuration) {
+            *outDuration = maxFrames / sampleRate;
+        }
+        if (outPosition) {
+            *outPosition = currentFrames / sampleRate;
+        }
+    } else {
+        if (outDuration)
+            *outDuration = 0.0;
+        if (outPosition)
+            *outPosition = 0.0;
+    }
+}
+
+- (void)updateNowPlayingInfo
+{
+    if (!mNowPlayingEnabled) {
+        return;
+    }
+
+    NSMutableDictionary* nowPlayingInfo = [NSMutableDictionary dictionary];
+
+    // Get track metadata
+    NSString* title = [songTitle stringValue];
+    NSString* album = [songAlbum stringValue];
+    NSString* artist = [songArtist stringValue];
+    NSImage* coverImage = [songCoverImage image];
+
+    if (title && [title length] > 0) {
+        nowPlayingInfo[MPMediaItemPropertyTitle] = title;
+    }
+
+    if (album && [album length] > 0) {
+        nowPlayingInfo[MPMediaItemPropertyAlbumTitle] = album;
+    }
+
+    if (artist && [artist length] > 0) {
+        nowPlayingInfo[MPMediaItemPropertyArtist] = artist;
+    }
+
+    // Get duration and position using shared calculation
+    Float64 currentPosition = 0.0;
+    Float64 duration = 0.0;
+    [self getCurrentPlaybackPosition:&currentPosition duration:&duration];
+
+    if (duration > 0) {
+        nowPlayingInfo[MPMediaItemPropertyPlaybackDuration] = @(duration);
+    }
+
+    nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = @(currentPosition);
+
+    // Set playback rate (1.0 = playing, 0.0 = paused/stopped)
+    if ([audioOut isPlaying] && ![audioOut isPaused]) {
+        nowPlayingInfo[MPNowPlayingInfoPropertyPlaybackRate] = @(1.0);
+    } else {
+        nowPlayingInfo[MPNowPlayingInfoPropertyPlaybackRate] = @(0.0);
+    }
+
+    // Add artwork if available
+    if (coverImage) {
+        MPMediaItemArtwork* artwork = [[MPMediaItemArtwork alloc] initWithBoundsSize:coverImage.size
+                                                                      requestHandler:^NSImage* _Nonnull(CGSize size) {
+                                                                          return coverImage;
+                                                                      }];
+        nowPlayingInfo[MPMediaItemPropertyArtwork] = artwork;
+        [artwork release];
+    }
+
+    [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:nowPlayingInfo];
+}
+
+- (void)clearNowPlayingInfo
+{
+    [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:nil];
 }
 
 @end

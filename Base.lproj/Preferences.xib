@@ -31,6 +31,7 @@
                 <outlet property="useAppleRemote" destination="43" id="46"/>
                 <outlet property="useKbdMediaKeys" destination="384" id="387"/>
                 <outlet property="useKbdMediaKeysForVolumeControl" destination="389" id="392"/>
+                <outlet property="useNowPlaying" destination="803" id="805"/>
                 <outlet property="window" destination="1" id="15"/>
             </connections>
         </customObject>
@@ -127,7 +128,7 @@
                                             </connections>
                                         </button>
                                         <button toolTip="To be compatible with iTunes that exports both M3U &amp; M3U8 playlists using UTF-8 character encoding." imageHugsTitle="YES" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="75">
-                                            <rect key="frame" x="204" y="198" width="356" height="18"/>
+                                            <rect key="frame" x="204" y="197" width="356" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="check" title="Use UTF-8 Encoding for M3U Playlists" bezelStyle="regularSquare" imagePosition="leading" alignment="left" state="on" inset="2" id="76">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -147,7 +148,7 @@
                                             </textFieldCell>
                                         </textField>
                                         <button toolTip="Start playback when playlist is opened from the Finder or dropped on Durian's icon." imageHugsTitle="YES" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="264">
-                                            <rect key="frame" x="204" y="174" width="356" height="18"/>
+                                            <rect key="frame" x="204" y="173" width="356" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="check" title="Autoplay Files Opened Directly" bezelStyle="regularSquare" imagePosition="leading" alignment="left" state="on" inset="2" id="265">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -158,7 +159,7 @@
                                             </connections>
                                         </button>
                                         <button imageHugsTitle="YES" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="301">
-                                            <rect key="frame" x="204" y="150" width="356" height="18"/>
+                                            <rect key="frame" x="204" y="149" width="356" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="check" title="Load Last Playlist at Startup" bezelStyle="regularSquare" imagePosition="leading" alignment="left" state="on" inset="2" id="302">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -199,6 +200,17 @@
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                         </textField>
+                                        <button imageHugsTitle="YES" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="803">
+                                            <rect key="frame" x="204" y="125" width="356" height="18"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <buttonCell key="cell" type="check" title="Show in Now Playing" bezelStyle="regularSquare" imagePosition="leading" alignment="left" state="on" inset="2" id="804">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <action selector="changeUseNowPlaying:" target="-2" id="806"/>
+                                            </connections>
+                                        </button>
                                     </subviews>
                                 </view>
                             </tabViewItem>
@@ -640,16 +652,22 @@ Note that the fastest setting uses a linear algorithm ultra-fast, but very noisy
             <toolbar key="toolbar" implicitIdentifier="F26B6827-0C29-4E13-B728-82B396004BDC" autosavesConfiguration="NO" allowsUserCustomization="NO" showsBaselineSeparator="NO" displayMode="iconAndLabel" sizeMode="regular" id="85">
                 <allowedToolbarItems>
                     <toolbarItem implicitItemIdentifier="6A0F4E02-7A73-498F-B828-9C83EED464DC" explicitItemIdentifier="General" label="General" paletteLabel="General" tag="-1" selectable="YES" id="93">
+                        <size key="minSize" width="32" height="32"/>
+                        <size key="maxSize" width="32" height="32"/>
                         <connections>
                             <action selector="selectGeneralTab:" target="-2" id="168"/>
                         </connections>
                     </toolbarItem>
                     <toolbarItem implicitItemIdentifier="9C9DC059-65E9-4926-A7B8-6606A0942169" explicitItemIdentifier="AudioSystem" label="Audio System" paletteLabel="Audio System" tag="-1" selectable="YES" id="94">
+                        <size key="minSize" width="32" height="32"/>
+                        <size key="maxSize" width="32" height="32"/>
                         <connections>
                             <action selector="selectAudioDeviceTab:" target="-2" id="166"/>
                         </connections>
                     </toolbarItem>
                     <toolbarItem implicitItemIdentifier="79FCA91B-0A6A-4133-985C-3930A23DA750" explicitItemIdentifier="AudioFilters" label="Upsampling" paletteLabel="Upsampling" tag="-1" selectable="YES" id="261">
+                        <size key="minSize" width="32" height="32"/>
+                        <size key="maxSize" width="32" height="32"/>
                         <connections>
                             <action selector="selectAudioFiltersTab:" target="-2" id="263"/>
                         </connections>

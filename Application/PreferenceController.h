@@ -6,6 +6,7 @@ extern NSString* const AUDUISkinTheme;
 extern NSString* const AUDUseAppleRemote;
 extern NSString* const AUDUseMediaKeys;
 extern NSString* const AUDUseMediaKeysForVolumeControl;
+extern NSString* const AUDUseNowPlaying;
 extern NSString* const AUDHogMode;
 extern NSString* const AUDIntegerMode;
 extern NSString* const AUDPreferredAudioDeviceUID;
@@ -29,6 +30,7 @@ extern NSString* const AUDShuffleModeActive;
 extern NSString* const AUDPreferredDeviceChangeNotification;
 extern NSString* const AUDAppleRemoteUseChangeNotification;
 extern NSString* const AUDMediaKeysUseChangeNotification;
+extern NSString* const AUDNowPlayingUseChangeNotification;
 
 /*
  Max sample rate limit settings
@@ -133,6 +135,7 @@ enum {
     IBOutlet NSButton* useAppleRemote;
     IBOutlet NSButton* useKbdMediaKeys;
     IBOutlet NSButton* useKbdMediaKeysForVolumeControl;
+    IBOutlet NSButton* useNowPlaying;
 
     NSMutableArray* audioDevicesUIDs;
     NSUInteger activeDeviceMaxSplRate;
@@ -154,6 +157,7 @@ enum {
 - (IBAction)changeUseAppleRemote:(id)sender;
 - (IBAction)changeUseKbdMediaKeys:(id)sender;
 - (IBAction)changeUseKbdMediaKeysForVolumeControl:(id)sender;
+- (IBAction)changeUseNowPlaying:(id)sender;
 
 - (void)setAvailableDevicesList:(NSArray*)devicesList;
 - (void)setActiveDeviceDesc:(AudioDeviceDescription*)audioDevDesc;

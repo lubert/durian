@@ -11,6 +11,7 @@ NSString* const AUDUISkinTheme = @"UISkinTheme";
 NSString* const AUDUseAppleRemote = @"UseAppleRemote";
 NSString* const AUDUseMediaKeys = @"UseMediaKeys";
 NSString* const AUDUseMediaKeysForVolumeControl = @"UseMediaKeysForVolumeControl";
+NSString* const AUDUseNowPlaying = @"UseNowPlaying";
 NSString* const AUDHogMode = @"HogMode";
 NSString* const AUDIntegerMode = @"IntegerMode";
 NSString* const AUDPreferredAudioDeviceUID = @"PreferredAudioDeviceUID";
@@ -32,6 +33,7 @@ NSString* const AUDShuffleModeActive = @"ShuffleModeActive";
 NSString* const AUDPreferredDeviceChangeNotification = @"AUDPreferredDeviceChanged";
 NSString* const AUDAppleRemoteUseChangeNotification = @"AUDAppleRemoteUseChangeNotification";
 NSString* const AUDMediaKeysUseChangeNotification = @"AUDMediaKeysUseChangeNotification";
+NSString* const AUDNowPlayingUseChangeNotification = @"AUDNowPlayingUseChangeNotification";
 
 #pragma mark PreferenceController implementation
 
@@ -75,6 +77,8 @@ NSString* const AUDMediaKeysUseChangeNotification = @"AUDMediaKeysUseChangeNotif
     [maxAudioBufferSizeValue setIntValue:[maxAudioBufferSizeSlider intValue]];
 
     [useAppleRemote setState:[[NSUserDefaults standardUserDefaults] boolForKey:AUDUseAppleRemote]];
+
+    [useNowPlaying setState:[[NSUserDefaults standardUserDefaults] boolForKey:AUDUseNowPlaying]];
 
     [preferredAudioDevice setStringValue:[[NSUserDefaults standardUserDefaults] stringForKey:AUDPreferredAudioDeviceName]];
 
@@ -371,6 +375,12 @@ NSString* const AUDMediaKeysUseChangeNotification = @"AUDMediaKeysUseChangeNotif
 {
     [[NSUserDefaults standardUserDefaults] setBool:[useKbdMediaKeysForVolumeControl state] forKey:AUDUseMediaKeysForVolumeControl];
     [[NSNotificationCenter defaultCenter] postNotificationName:AUDMediaKeysUseChangeNotification object:self];
+}
+
+- (IBAction)changeUseNowPlaying:(id)sender
+{
+    [[NSUserDefaults standardUserDefaults] setBool:[useNowPlaying state] forKey:AUDUseNowPlaying];
+    [[NSNotificationCenter defaultCenter] postNotificationName:AUDNowPlayingUseChangeNotification object:self];
 }
 
 @end
