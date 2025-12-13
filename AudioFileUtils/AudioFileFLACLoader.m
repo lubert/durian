@@ -113,9 +113,9 @@ static OSStatus CoreAudioEncoderDataProc(AudioConverterRef inAudioConverter,
                     tmpInt32buf[sample * 2 + 1] = mFLACchannels > 1 ? buffer[1][sample] << (32 - frame->header.bits_per_sample) : 0;
                 }
 
-                readData = (UInt32)(frame->header.blocksize * mOutputStreamFormat.mBytesPerFrame);
+                readData = (UInt32)(samplesToConvert * mOutputStreamFormat.mBytesPerFrame);
                 err = AudioConverterConvertBuffer(mCoreAudioConverterRef,
-                    (UInt32)(frame->header.blocksize * sizeof(SInt32) * 2), tmpInt32buf,
+                    (UInt32)(samplesToConvert * sizeof(SInt32) * 2), tmpInt32buf,
                     &readData,
                     ((UInt8*)mFLACbufferData) + (mFLACreadFrames * mOutputStreamFormat.mBytesPerFrame));
 
