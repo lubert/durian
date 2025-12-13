@@ -2431,6 +2431,9 @@ OSStatus HALlistenerProc(AudioObjectID inObjectID,
      of a buffer swap requested by the playing thread is prevented */
     SInt32 playingBuffer = mBufferData.playingAudioBuffer;
 
+    // Save pause state before any buffer operations
+    bool wasPaused = [self isPaused];
+
     /* First check if current is "split loaded" : either current buffer load is incomplete
      or it doesn't start at 0 (check needed in case of last load)*/
     if (((mBufferData.buffers[playingBuffer].inputFileLoadStatus & kAudioFileLoaderStatusEOF) == 0)
@@ -2472,7 +2475,7 @@ OSStatus HALlistenerProc(AudioObjectID inObjectID,
                     // Is needed as there is no chunk load calling load progress bar update method
                     [mBufferData.appController resetLoadStatus:YES];
                 }
-                [self pause:NO];
+                [self pause:wasPaused];
             } else {
                 // Need to reload both buffers
                 [self pause:YES];
@@ -2499,7 +2502,7 @@ OSStatus HALlistenerProc(AudioObjectID inObjectID,
                 }
 
                 [mBufferData.appController fillBufferWithNext:playingBuffer];
-                [self pause:NO];
+                [self pause:wasPaused];
             }
         }
 
