@@ -29,3 +29,18 @@ jobs:
 
       - name: Build
         run: make ci
+
+      - name: Package
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: cd build/Release && zip -r ../../Durian.zip Durian.app
+
+      - name: Release
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          SHORT_SHA=$(git rev-parse --short HEAD)
+          gh release create "dev-${SHORT_SHA}" Durian.zip \
+            --title "Dev build ${SHORT_SHA}" \
+            --notes "Automated build from commit ${GITHUB_SHA}" \
+            --prerelease
