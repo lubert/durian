@@ -1,7 +1,7 @@
 # Makefile for Durian audio player
 # Manages vcpkg dependencies and Xcode builds
 
-.PHONY: all deps verify build clean rebuild run help debug release lint run-en run-de run-fr
+.PHONY: all deps verify build clean rebuild run help debug release lint run-en run-de run-fr ci
 
 # Default configuration
 CONFIGURATION ?= Release
@@ -120,6 +120,19 @@ run-fr: build
 	@open -n $(APP_BUNDLE) --args -AppleLanguages "(fr)"
 	@echo "$(COLOR_GREEN)✓ Launched with French localization$(COLOR_RESET)"
 	@echo "$(COLOR_YELLOW)Note: Check Durian > About Durian to verify language$(COLOR_RESET)"
+
+ci:
+	@echo "$(COLOR_BLUE)Building $(TARGET) ($(CONFIGURATION), no code signing)...$(COLOR_RESET)"
+	xcodebuild \
+		-project $(PROJECT) \
+		-target $(TARGET) \
+		-configuration $(CONFIGURATION) \
+		CODE_SIGN_IDENTITY="" \
+		CODE_SIGNING_REQUIRED=NO \
+		CODE_SIGNING_ALLOWED=NO \
+		build
+	@echo ""
+	@echo "$(COLOR_GREEN)✓ Build successful!$(COLOR_RESET)"
 
 debug:
 	@$(MAKE) build CONFIGURATION=Debug
